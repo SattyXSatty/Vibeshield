@@ -1,0 +1,39 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Check current disk space usage on the system.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Execute a system command to check the current disk space usage and return the output. Use a cross-platform command if possible, or a common Linux/macOS command like 'df -h'. Save the output as 'disk_space_usage_T001'.",
+        "reads": [],
+        "writes": [
+          "disk_space_usage_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the disk space usage report into a readable format.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Take the raw disk space usage output from 'disk_space_usage_T001' and format it into a clear, human-readable summary. Present it as a table or a concise list, highlighting total capacity, used space, and available space for each mounted filesystem.",
+        "reads": [
+          "disk_space_usage_T001"
+        ],
+        "writes": [
+          "formatted_disk_space_report_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

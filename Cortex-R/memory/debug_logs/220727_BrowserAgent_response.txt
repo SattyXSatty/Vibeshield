@@ -1,0 +1,8 @@
+I need to archive the content of the provided URL. Since the `browser-use` library is not installed, I cannot use `browser_use_action`. I will inform the user about this limitation and suggest an alternative if possible, or await further instructions.
+
+```json
+{
+  "thought": "The previous attempt to use `browser_use_action` failed because the required library (`browser-use`) is not installed. I cannot proceed with archiving the URL using this tool. I need to inform the user about this limitation.",
+  "call_tool": null
+}
+```

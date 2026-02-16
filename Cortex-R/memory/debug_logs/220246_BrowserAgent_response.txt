@@ -1,0 +1,11 @@
+```json
+{
+  "thought": "The user wants to extract text from a URL. The `browser_use_action` tool was attempted but failed with an error indicating the 'browser-use' library is not installed. I need to use a different tool to extract text from the URL. `web_extract_text` is a suitable alternative for this purpose.",
+  "call_tool": {
+    "name": "web_extract_text",
+    "arguments": {
+      "string": "https://www.google.com"
+    }
+  }
+}
+```

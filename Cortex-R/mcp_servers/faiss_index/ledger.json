@@ -1,0 +1,2533 @@
+{
+  "version": 2,
+  "last_reconcile": "2026-01-30T14:04:44.543185Z",
+  "files": {
+    "inbox/notifications.db": {
+      "hash": "6e1cde296f1ba79b414a91330d21b081",
+      "status": "pending",
+      "indexed_at": "2026-01-30T12:39:44.552658Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_212631.md": {
+      "hash": "50d480355495d88d409362994ac6202f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:01:33.102132Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_212631.json": {
+      "hash": "1086e65854d89b8fc57a0858004a4289",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:01:37.850752Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_212616.json": {
+      "hash": "c32437d337a04207335f91a98c4d5abd",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:01:37.916221Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_212626.json": {
+      "hash": "f3a2c77f5cf68065e778acc5b0db8c69",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:01:37.989193Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_212641.md": {
+      "hash": "983258b97e80ed0934fefe7cf6206a7b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:01:41.840956Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_212651.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:01:52.041465Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_212700.md": {
+      "hash": "e4714771b6bddf7cecf5939b155ccad7",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:01.945865Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_212700.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:02.009705Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_212700.md": {
+      "hash": "9b11f1126b51acef772731ab2fd23934",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:02.075008Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_212701.json": {
+      "hash": "d67e3d6b289c30598ba230adbddf2178",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.146971Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_212700.json": {
+      "hash": "477d36a9994b5257a0497f3bc18b3df7",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.180945Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_212700.json": {
+      "hash": "d88bde25df234c88149ed0fa7e3532ff",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.438364Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_212641.json": {
+      "hash": "6c228dc6f4f546fa959f520e29c3dc05",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.236323Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_212700.json": {
+      "hash": "a99bc283ef69ebf0ddf00123bd72a953",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.485138Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_212700.json": {
+      "hash": "461edb83084774e0b3c05f9b6c7dd7a6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.387724Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_212700.json": {
+      "hash": "6c69454561a18cab285a5a0063866f72",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.295253Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_212651.json": {
+      "hash": "f7e1fe08cbc68d7276bac06105df7ee2",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:02:38.344547Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_212800.md": {
+      "hash": "4dbe13c04be1158dc7ff58f62dee3316",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:02.191232Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_212800.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:02.253145Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_212800.md": {
+      "hash": "8897e87f0b3c118caf1416b0741657a1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:02.307637Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_212800.json": {
+      "hash": "11541532fdf9e4fbd23a74f6391fb2b6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:38.436704Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_212800.json": {
+      "hash": "fd8c083bca917c776697ac1386c5e12f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:38.481331Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_212800.json": {
+      "hash": "73c9d50c9af2af2512b71fd7ff5da171",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:38.646613Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_212800.json": {
+      "hash": "858f3f40eb394b0b7fb456181e9bccce",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:38.540890Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_212800.json": {
+      "hash": "3586eca81920a44d5d101c8c8af5b49b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:38.695838Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_212800.json": {
+      "hash": "02a5e714f78f602f4794f87e596598f7",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:03:38.604210Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_212900.md": {
+      "hash": "d65f19bc1558365bf9cab3b2f40b3ca5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:02.375046Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_212900.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:02.442026Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_212900.md": {
+      "hash": "f9825600478e6f3784d3e185d00a9526",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:02.501917Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_212900.json": {
+      "hash": "8bf537c15d393dd7ee6adc637528dadc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:38.674259Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_212900.json": {
+      "hash": "ce3c370280fd478642deba161c97c58e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:38.707218Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_212900.json": {
+      "hash": "31a03b6770f8c66a3b5cfe54feaef632",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:38.879477Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_212900.json": {
+      "hash": "a8bf9cf76a30156f14934a86f07c9053",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:38.761569Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_212900.json": {
+      "hash": "a258daef2b7ef4071b6e90f0650645ed",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:38.918554Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_212900.json": {
+      "hash": "1578a5c7849e26db895b49f967dcb5dc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:04:38.825907Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213000.md": {
+      "hash": "f662dbf1cba685f10a237a6f0ff8b6c9",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:01.607688Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213000.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:02.580274Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213000.md": {
+      "hash": "7fcc3776902a277c17f1d53578741c8e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:02.643788Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213000.json": {
+      "hash": "5fd9949194768ed1654b0f01f93241fe",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:37.868042Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213000.json": {
+      "hash": "9b8d67f94cb3bfdded1f5a03bc9d59df",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:37.934601Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213000.json": {
+      "hash": "05df9e15832d75e1751f3faf9af998fe",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:38.122113Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213000.json": {
+      "hash": "6e976d33eb498a85d31b1e88fa42b879",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:38.004572Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213000.json": {
+      "hash": "f53cba6f9fe4bdb5ade7ba330a0d0678",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:38.197077Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213000.json": {
+      "hash": "5d5d94eec3827a8fa7fecbb7c9d45681",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:05:38.064865Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213100.md": {
+      "hash": "deee1aebccac2719a3faf202610e97b2",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:01.845807Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213100.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:01.904437Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213100.md": {
+      "hash": "22bbbc41ee5dbba7ae2002d275a3c254",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:01.956480Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213100.json": {
+      "hash": "8fdb4e7f6f27f104b0bed3b9c00d261a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:38.180981Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213100.json": {
+      "hash": "6cf6c1a4b02372ad815966e85fe42968",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:38.234369Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213100.json": {
+      "hash": "366457a76f12098dd64eaaf302ccfa50",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:38.387305Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213100.json": {
+      "hash": "cec9b1172a4243eaed39f1f1c101341b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:38.287531Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213100.json": {
+      "hash": "75b4439e4fc8c947e75caf7af8c60020",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:38.441264Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213100.json": {
+      "hash": "cf79af01e2e522cca54c75462afe72d2",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:06:38.341388Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213200.md": {
+      "hash": "e125adc2d3a8ba6825abe8f40f40d9e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:02.082102Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213200.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:02.153650Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213200.md": {
+      "hash": "eb8acf08dc9ff1791d296edde43ecdf4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:02.205214Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213200.json": {
+      "hash": "4a056ff15ec85f4d76fabf08b4d01031",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.374550Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213200.json": {
+      "hash": "035c5db4a7562f394200769a694ec079",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.411973Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213200.json": {
+      "hash": "0c3bcd648ffd82ea4a724b42e7f9cac5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.610108Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213200.json": {
+      "hash": "152fb0efe0bdc181c04b886831e8b3c1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.461887Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213206.json": {
+      "hash": "153921738f29f83e6b695e40e4e7597b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.660265Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213200.json": {
+      "hash": "a1afc1c081cb67a394f7e90a4828e543",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.576318Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213200.json": {
+      "hash": "cbce5bf50deee1ff614fa7015b0a82a4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:07:38.523032Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213300.md": {
+      "hash": "db91f4156edd1cbccc9c421f0fd1b2bc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:02.866526Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213300.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:03.296374Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213300.md": {
+      "hash": "c399c118bcd07f13d94cffb9c69739d5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:03.189262Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213300.json": {
+      "hash": "aefccf3f2ddad8c70c3721ebf9dd9203",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:38.973117Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213300.json": {
+      "hash": "1a09779ac66ccb567190898a6d2f7d26",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:39.050479Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213300.json": {
+      "hash": "906c45bbe5f9d95a09e869a8a905a24d",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:39.291831Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213300.json": {
+      "hash": "0d65fb852f8029b19f2109f1cc346bcc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:39.115973Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213300.json": {
+      "hash": "d13c4b5944687db69acee3ff09bb6a6b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:39.378936Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213300.json": {
+      "hash": "65016084b57d56deebff88a59f6138bb",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:39.230578Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213300.json": {
+      "hash": "d073679f1a21b7a64b8d97b8df8ff8d4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:08:39.170528Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213400.md": {
+      "hash": "207731a5a8dcfcbdde6f1c0fb60dafde",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:01.907383Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213400.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:01.989743Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213400.md": {
+      "hash": "6fec2e99bf0d602ea15a4533d6810050",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:02.052167Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213400.json": {
+      "hash": "e5ab26df03d54e94f9c6cb60d4fb5288",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.208437Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213400.json": {
+      "hash": "04ce294bfcc878c986070593aa4ed4a0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.266005Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213400.json": {
+      "hash": "b66874e8c1114c08cdae4f6bc8cad7c4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.536026Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213400.json": {
+      "hash": "15a84007b24bcf99377dc4542043d2c3",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.345533Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213400.json": {
+      "hash": "8af8def6eccb406f8ce23a554434e061",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.593816Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213400.json": {
+      "hash": "1c4df9520c510f9feff95624ed9affb8",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.475792Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213400.json": {
+      "hash": "65d03c5e0954033f5b256e4f6efaa522",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:09:38.418034Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213500.md": {
+      "hash": "a9413c1d4eeedcf009a0059c998dbc11",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:02.108151Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213500.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:02.170717Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213500.md": {
+      "hash": "461749dfffbab2e1333a75f12f52d37a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:02.225608Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213500.json": {
+      "hash": "62c6c175461b5adc60656f258d3a0cf6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.358247Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213500.json": {
+      "hash": "92d7203027283fa24dd4fb997f27fc39",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.391969Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213500.json": {
+      "hash": "2dc56809cec1bc56839aeb3460b617c1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.549343Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213500.json": {
+      "hash": "fa671d6b29628773fa724237470e43f3",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.433117Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213500.json": {
+      "hash": "a64feb54cc25f2cf124ddff4bb0ab56f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.599609Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213500.json": {
+      "hash": "a7731886de7da296e71bb8abb902c3d2",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.508460Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213500.json": {
+      "hash": "1da720e345ce33c346a27febc90e5922",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:10:38.474019Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213600.md": {
+      "hash": "fc3b542a047cb9f139ac7e608a677587",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:02.357814Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213600.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:02.417615Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213600.md": {
+      "hash": "db609a6fd9b14e026ee37c308b6767bd",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:02.571523Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213600.json": {
+      "hash": "f40c8b563c534cc162292afc94f81c29",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.641098Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213600.json": {
+      "hash": "3cf615e635095d66b2822203e520e9af",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.691361Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213600.json": {
+      "hash": "df8a3f251809da4e8f70cff21350884a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.884165Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213600.json": {
+      "hash": "67ad20cd279b3175210a6dd7d759ada1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.733717Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213600.json": {
+      "hash": "2124572b982badbb03fe8ceae0856720",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.922419Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213600.json": {
+      "hash": "6eda46ba0728c119ae25297d6601528e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.840300Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213600.json": {
+      "hash": "8e7ea86e3859de1c3a0787b1d53b4486",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:11:38.792267Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213700.md": {
+      "hash": "c2ccdde8c4c7d4033f5a895e484f206e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:01.543833Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213700.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:03.260725Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213700.md": {
+      "hash": "aa96f442395fb305fd63f930a84bd1f4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:03.364075Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_213711.md": {
+      "hash": "f9f168c270e44099e6ebb9087ac60187",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:13.823533Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213700.json": {
+      "hash": "2daf6302f5ce02a08ac9828a6724ab35",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:38.855100Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213700.json": {
+      "hash": "d0b03df486a1868259af30949fd48d29",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:38.903615Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213700.json": {
+      "hash": "d2372ab9902e85f644e14aa2545a377f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.301359Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_213721.json": {
+      "hash": "aea404c47fcde00ff9f8c68c7de76bbd",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:38.956885Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213700.json": {
+      "hash": "e3e487873d813e171ae8caef7ef26b07",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.373713Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213700.json": {
+      "hash": "08a8fbf51a6208e10fa53e3e2c96f981",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.231535Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_213711.json": {
+      "hash": "a04bfef3af5492033f3b7cf02f588c0f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.105690Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213700.json": {
+      "hash": "c906596031b26fc63fe8dbcbd12aa2c2",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.005741Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_213731.json": {
+      "hash": "7f5f0fe27c1be54b11aee67a99a78d10",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.167137Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213700.json": {
+      "hash": "d238dee7e35fa6030406522d9f27331e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:12:39.059569Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213800.md": {
+      "hash": "8daa2a13cf94e1b2e4465fb1891eb79c",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:02.918946Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_213800.md": {
+      "hash": "7e9ac4046dd34e171fdaacb713a906d6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:03.797009Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213800.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:03.893080Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213800.md": {
+      "hash": "7482da00d6a2279bc7a161c1e27b2701",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:03.965181Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_213800.json": {
+      "hash": "f2b9873b2bc6771f5f85e1f45acc4b44",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.040054Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213800.json": {
+      "hash": "e90dd626c136fd042cb9b8ffa76295c4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.080113Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213800.json": {
+      "hash": "f5d39f4a86edafe53904b984c5ae1086",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.361740Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_213800.json": {
+      "hash": "0ed932c3fe498606a524aa7853b656db",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.120568Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213800.json": {
+      "hash": "182ba01497feb7514bc7716d6d8fdf10",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.405368Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213800.json": {
+      "hash": "7f876b14f0dddfd42a06f3d5d8dac303",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.308492Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213800.json": {
+      "hash": "eac784beb4c6d720ab88da66eceb7350",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.212002Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213800.json": {
+      "hash": "ad8aa4635408598318ffc8211092ef32",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.161327Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_213800.json": {
+      "hash": "507fdce2e1cbb0060803d39a7aad060b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.264281Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213800.json": {
+      "hash": "c807fa3073b125904af698d1ec113117",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:13:38.939190Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_213900.md": {
+      "hash": "3402a1a24b251f638958f3b6f31014df",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:02.071890Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_213900.md": {
+      "hash": "7e19a089d9f817b414307d5e5b3f7c6f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:03.046046Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_213900.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:03.123895Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_213900.md": {
+      "hash": "c07d1c7d5983f9c1ec17a6a768ac33a0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:03.184156Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_213900.json": {
+      "hash": "aa007b84cc0929a026a70a1275505ffb",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.375120Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_213900.json": {
+      "hash": "77a4c68b179b35a04683a30f3fd45c78",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.408350Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_213900.json": {
+      "hash": "65c8721747ba9cf09d61939f5cde57c5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.725280Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_213900.json": {
+      "hash": "fe70e9dbcc2b3603924bda6f69480418",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.450458Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_213900.json": {
+      "hash": "045c6524f77b524353b5d8b8c974a5ce",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.791032Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_213900.json": {
+      "hash": "e58a3d9232b9b9027b5e6858f635a53a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.673578Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_213900.json": {
+      "hash": "59c9ce9f38a05ae943054d0b1d8f1bb1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.569410Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_213900.json": {
+      "hash": "b4164c6075598bab6476b92629acc5a5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.485137Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_213900.json": {
+      "hash": "480497fe1c84f97351dec08a87cf1917",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.619456Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_213900.json": {
+      "hash": "517fac25433548efc5e45ea028ddc7f6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:14:38.518958Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214000.md": {
+      "hash": "9927ba2de5b5fe483886558bd4142f3b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:02.341602Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214000.md": {
+      "hash": "46cad397b1726886fea829a00e85f949",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:03.354000Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214000.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:03.465335Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214000.md": {
+      "hash": "6e5694165c9c8242cd4f7a4a590d6706",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:03.524921Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214000.json": {
+      "hash": "6a1f24dce912b1e48990a770b366eadc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.635757Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214000.json": {
+      "hash": "5361ff702ff95501f2bf15990b33d6bc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.678883Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214000.json": {
+      "hash": "e8ec56d3858c00f2236158b1621d44d7",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:39.070071Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214000.json": {
+      "hash": "fbe3537a02adc874fe978cbf4c59844b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.726677Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214000.json": {
+      "hash": "b6efd02f2705073344aec6a3dbef83ce",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:39.136524Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214000.json": {
+      "hash": "9ba5d89590e3c002ef260b7ae02df58b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:39.010668Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214000.json": {
+      "hash": "1b31f0ed25d2dcfa8b4704ffc9f9fccc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.894288Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214000.json": {
+      "hash": "6d047328f2d5f0f6c31642b2d3e1111f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.778997Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214000.json": {
+      "hash": "8f542506f2d3603d275341de435098cc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.947630Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214000.json": {
+      "hash": "22dc84e8a230ddc22a99359e00a9db2f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:15:38.834427Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214100.md": {
+      "hash": "4238525022336976e56c217d6f1fad93",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:01.594431Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214100.md": {
+      "hash": "099041dc4072a6a13a7e5b94d28403ff",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:03.599969Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214100.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:03.689761Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214100.md": {
+      "hash": "82f5dd475dec70f95875691bc13a075a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:03.755191Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214100.json": {
+      "hash": "421b05789638ee5df09f64f97c40d948",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:38.857045Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214100.json": {
+      "hash": "5edca6778e8337f3633abe8baeada6c3",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:38.894938Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214100.json": {
+      "hash": "e9b40cbd5eaabb3e5fdddd56b7c26416",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:39.334552Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214100.json": {
+      "hash": "d62936b8c27293e094781c6a6b1ac587",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:38.940372Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214100.json": {
+      "hash": "9d6e13ea8e301b6247383b9df05746ab",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:39.779386Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214100.json": {
+      "hash": "da649519e8666b0bdc9d8175e3f13324",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:39.252605Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214100.json": {
+      "hash": "0c18a5b3967b11aa10c31e8ea7b9081c",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:39.114512Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214100.json": {
+      "hash": "0e56f33c97746f56c3742833c52ef53a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:38.988883Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214100.json": {
+      "hash": "191e47eed89e9021da90435299ac3e16",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:39.171190Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214100.json": {
+      "hash": "d7faf906498a5cc21813182993281e3a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:16:39.047859Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214200.md": {
+      "hash": "f38b3ebbc5d3e81dbcb427f34827401d",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:01.829479Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214200.md": {
+      "hash": "a98808a40e5dc9e2466288a9c0fd63ec",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:02.804216Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214200.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:03.806585Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214200.md": {
+      "hash": "f5b73d72a673066d6cc1917bdb91bcef",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:03.874500Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214200.json": {
+      "hash": "2ef943e8151dedfad27936812bcbb50e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.111651Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214200.json": {
+      "hash": "610182a8bb4fb5b2dea422dec19a1448",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.154568Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214200.json": {
+      "hash": "a4d46136404d000ed47c553b87efc437",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.662207Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214200.json": {
+      "hash": "eda6914678115ec5cb2bc193f3ca93ac",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.211276Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214200.json": {
+      "hash": "fd2c5f2d5954fa3bb36247ff9d7e5937",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.725816Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214200.json": {
+      "hash": "24fa3ae8986eec32b9172264499d19de",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.584148Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214200.json": {
+      "hash": "dbbd0ab5bae42994050892fd0bfb7332",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.411287Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214200.json": {
+      "hash": "e042cf9ce75e025cc0f4266fa8837936",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.273223Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214200.json": {
+      "hash": "871d02f35bb1e833081de5a9a20918ed",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.502074Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214200.json": {
+      "hash": "c9ea9932aad70f1d79b57889de28155b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:17:39.333264Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214300.md": {
+      "hash": "f1f80690daa20155b5e8b3fb0c2834fa",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:02.036108Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214300.md": {
+      "hash": "7a3df4ff094d13e77d1c0fc88b6f0cc0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:03.032299Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214300.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:03.109018Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214300.md": {
+      "hash": "e60c5783b51d86f8a6b78de1efecb075",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:03.164154Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214300.json": {
+      "hash": "a6eb82b42d53fb07926d1014d30c1f85",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:38.341178Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214300.json": {
+      "hash": "b99d37829703edb3b7e0658f691d906f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:38.408729Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214300.json": {
+      "hash": "a2b471ce6f8cccf58949ddf9a2e8148b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:38.573683Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214300.json": {
+      "hash": "5fc1d1fc941bc361ecbdcc3aaee9e39c",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:38.460742Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214300.json": {
+      "hash": "e728b7b5424765ad571c7c12af680130",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:38.649362Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214300.json": {
+      "hash": "0f2ab3e2def907c59037cd312489d24d",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:38.524994Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214300.json": {
+      "hash": "fb3eccf596f949f43eac015840deac63",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:39.193907Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214300.json": {
+      "hash": "674264d84cdecedf8e63856e021023d4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:39.273004Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214300.json": {
+      "hash": "1ba7e4fd53708284f983c74d964f0a6a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:39.353853Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214300.json": {
+      "hash": "69e3a64fe899c8dccd017c2530ea00c4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:18:39.419505Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214400.md": {
+      "hash": "c68bcdf057635e9127e50de5bc9978fa",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:02.323292Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214400.md": {
+      "hash": "2a9e74f26befd67ca5a14f66ae37fb4b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:03.322467Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214400.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:03.437996Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214400.md": {
+      "hash": "f5ea73e18d88b0e11ebcd2de4a4672ec",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:03.503727Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214400.json": {
+      "hash": "fc722f7ffd41b07f9d259617be6415f6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:38.609763Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214400.json": {
+      "hash": "3551c063d425c0a2bc3143af10d3dc37",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:38.654835Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214400.json": {
+      "hash": "88a566e93059f631d6a3fa050dc9d262",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:39.172337Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214400.json": {
+      "hash": "71da751a97625eebf1c80330fcfe689a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:38.728081Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214400.json": {
+      "hash": "eb4221bf211c6b7bbeb3059c3b3ccd75",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:39.259735Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214400.json": {
+      "hash": "6d408d8c3d34aa5dd1f9d6fadf087947",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:39.096569Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214400.json": {
+      "hash": "a76171f9dc33059cdc59c02d7d1fdab9",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:38.919266Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214400.json": {
+      "hash": "b4c216e53e205210684fa38dc905c588",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:38.781956Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214400.json": {
+      "hash": "4dd47278b5be96a733cf6bc581ae0ba1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:39.020825Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214400.json": {
+      "hash": "a84a88fd3a5b22c4328bbd0db8ee2dae",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:19:38.840541Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214500.md": {
+      "hash": "2421095a67cab60872772e8d88218a5d",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:02.609208Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214500.md": {
+      "hash": "2047aa603d60f52c042ec42938a8d431",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:03.576017Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214500.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:03.671801Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214500.md": {
+      "hash": "81f6f68e0943175fb0e14769e76976e6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:03.747668Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214500.json": {
+      "hash": "7ec36fd11c1d9987496270b306e6edba",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:38.942245Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214500.json": {
+      "hash": "bc597087eac69cca5addc69a3eefa5bf",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.013809Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214500.json": {
+      "hash": "fb57598082f7f4041c036d5c1948e239",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.547731Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214500.json": {
+      "hash": "d34880fcd6e70fda8a48728aa21c6219",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.075218Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214500.json": {
+      "hash": "b75d5996ab155a3546496bf29de7a45f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.636013Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214500.json": {
+      "hash": "a0fffbdb66c30ea2a002310a6fb818aa",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.461003Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214500.json": {
+      "hash": "8a7cb496891a51692d014035223c1ccd",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.307272Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214500.json": {
+      "hash": "cf6831b9824889121cc91d8f4877b85c",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.144420Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214500.json": {
+      "hash": "4f9e943f949b1485023e1c2acce42c76",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.387356Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214500.json": {
+      "hash": "f2e144d57d2849d1ec649deb251d05b0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:20:39.230158Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214600.md": {
+      "hash": "cad264b1e8935004a635fb37e79fcae4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:01.878157Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214600.md": {
+      "hash": "1f778b00dd3c73f890841d847aa6978f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:02.816276Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214600.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:02.909937Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214600.md": {
+      "hash": "a04d87d90727df1b3abd71125ef222e1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:02.972304Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214600.json": {
+      "hash": "584a650b62313ac8835626d9b5de8c51",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.231842Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214600.json": {
+      "hash": "626b75cc63c15111d885cfe964fea43e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.273282Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214600.json": {
+      "hash": "027f4d797170fc27f56e6a0d66ae4023",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.807161Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214600.json": {
+      "hash": "5d002944d95384004bb7f4f11a66bd7b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.336414Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214600.json": {
+      "hash": "9782f1cc8ecdadca43ee2caadc3a7e91",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.900885Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214600.json": {
+      "hash": "b27d575abb5bae3d1ce327c9ad601f3e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.730442Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214600.json": {
+      "hash": "508a9c70ba3bbf63922ce35346895367",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.557066Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214600.json": {
+      "hash": "e907902d95e320625047792bbeeebdf6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.403175Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214600.json": {
+      "hash": "deb0d18616567c10ea7432a04abad23e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.647282Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214600.json": {
+      "hash": "ade192b672e7fe21e157325dac7e4a8a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:21:39.478805Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214700.md": {
+      "hash": "afcdee9c4abc3c6d388a122069e58aaf",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:02.122198Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214700.md": {
+      "hash": "7283fa2b813a4d5cc5cf181c82c9a1a1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:03.089012Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214700.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:03.163698Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214700.md": {
+      "hash": "2ece525044725ee1ca8730a60b208817",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:03.224821Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214700.json": {
+      "hash": "aea189b3b9b8d41c5d67681d679473d1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.403758Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214700.json": {
+      "hash": "e0c5d37e86f734bc3cf167ec7d0919af",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.445036Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214700.json": {
+      "hash": "a4a33e7d903b6a339fe32c8d44ecfd0f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.757789Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214700.json": {
+      "hash": "8cb29e32dce55f8c196191164a251b34",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.497442Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214700.json": {
+      "hash": "c71360c5f9b5799d905b6cdc7b4bc9ec",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.797640Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214700.json": {
+      "hash": "fe382295a136806a223abee40ce1fd26",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.717661Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214700.json": {
+      "hash": "73f04d46b4c150f96fb8a05b4ebf2488",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.621027Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214700.json": {
+      "hash": "9bb238de767626ca14170fe51ae90345",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.533886Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214700.json": {
+      "hash": "d5d8d4bbbe059acfb067454d297801b9",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.675732Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214700.json": {
+      "hash": "a2d4d313d86315caa273c262d1cdc322",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:22:39.579389Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214800.md": {
+      "hash": "d4c0212d48e04ba0242db64e1a7ad561",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:02.407367Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214800.md": {
+      "hash": "a9831249b7b875bce1959c0d054cf66a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:03.370495Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214800.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:03.453236Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214800.md": {
+      "hash": "2037e247423b62cfa2528304949f8357",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:03.521129Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214800.json": {
+      "hash": "0c6cd68e9245b24d11b1951db3dd75b0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.711026Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214800.json": {
+      "hash": "cd7d409c74ae8dae0ea480d713a290ea",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.750721Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214800.json": {
+      "hash": "371ccdf219c9ba78b2175ee64f9a56b6",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:39.043149Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214800.json": {
+      "hash": "68702e5b11af4edf20cc399979166aaa",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.804739Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214800.json": {
+      "hash": "cb9dc3a91f3640beaf66aac45e655405",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:39.095076Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214800.json": {
+      "hash": "87ae64068c28e499026eebd881e2247f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:39.002189Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214800.json": {
+      "hash": "d8d92132e6ccbe7da347ba2ae83cd980",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.927568Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214800.json": {
+      "hash": "0722609dcd3c2bc4c915e3012dcc19a5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.841994Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214800.json": {
+      "hash": "5759c5bb2e48d9185766e0addb92094e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.965224Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214800.json": {
+      "hash": "3f6f95ad0da39a66eb7de10370c13558",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:23:38.887321Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_214900.md": {
+      "hash": "7adacd07b64938fddccfd580604d3517",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:01.744920Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_214900.md": {
+      "hash": "c8537839d8c4f1460e93aeaff3886451",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:02.688461Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_214900.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:03.763371Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_214900.md": {
+      "hash": "a651fd8ee329e68dca88222aec199191",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:03.908891Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_214900.json": {
+      "hash": "cd98be83fc56c3ea1202003967964a94",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.028779Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_214900.json": {
+      "hash": "b117377548ce225f74a963454a426aca",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.076230Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_214900.json": {
+      "hash": "9a3c409d442550b4d450bfc8bfc944cc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.566175Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_214900.json": {
+      "hash": "1fea42d9962bdc158cb2f00a3fd55a37",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.133599Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_214900.json": {
+      "hash": "4dab1d9b2d1486f82b755026965d7338",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.689522Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_214900.json": {
+      "hash": "140bc0e77fb46790fe139ab1ca111ea4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.451283Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_214900.json": {
+      "hash": "a2e581182843b0977eb3b8bc79cf919a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.281293Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_214900.json": {
+      "hash": "94763bad57f61463b3b3da490d31510f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.177675Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_214900.json": {
+      "hash": "bcc91151c04d59eaa057dd4f48e2de9e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.363208Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_214900.json": {
+      "hash": "dd634303e3f7dae1bd58a268c652c6b4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:24:39.230893Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_215400.json": {
+      "hash": "92f1f9c1ef2279b2239a97d0922081d1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:29:48.584503Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_215500.json": {
+      "hash": "e804a44ffa0b54610560a91e11bed98f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:31:49.116983Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_215500.json": {
+      "hash": "b805e7406840894fcfefe78b39d49942",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:31:49.215090Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_215500.md": {
+      "hash": "008c3e7785db4f237f9cc5f6e024e432",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:19.995186Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_215500.md": {
+      "hash": "678a3029331c8da8d9c4a69d3318766f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:23.096613Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_215500.md": {
+      "hash": "46cabf44b5c2718682163348b4e708e0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:27.965887Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_215500.json": {
+      "hash": "6ad76afe656c5317fae928c7eb8374cc",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:49.314118Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_215500.json": {
+      "hash": "f84bb4f0c5c0ddaf66c44d96141b5b98",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:49.432761Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_215500.json": {
+      "hash": "bcbd62adf4c6326eb7d956eca1509cec",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:49.769583Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_215500.json": {
+      "hash": "f48827d3540621b4f95816588f725df1",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:49.540598Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_215500.json": {
+      "hash": "be719378980bc40634ac7ea1f302b8af",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:49.857447Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_215500.json": {
+      "hash": "1ab2608a955220bddd38235172198baa",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:32:49.686941Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/test_apple.md": {
+      "hash": "dfb985a38f482c92fd62d91e5aab1937",
+      "status": "indexing",
+      "indexed_at": "2026-01-30T16:32:50.286758Z",
+      "chunk_count": 2,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_215500.json": {
+      "hash": "db5927089ddd5cd3ce7e4ee20fbd558e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:33:49.620621Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_215700.json": {
+      "hash": "f0fd203a4d5c7e1150185a2197bfa3f9",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:33:49.698783Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_215800.json": {
+      "hash": "4797a73556f91bbed3ebd7a7b12c8b2c",
+      "status": "pending",
+      "indexed_at": "2026-01-30T16:33:49.866071Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_215800.json": {
+      "hash": "a56bac07bf7cd934724a673f19501ba2",
+      "status": "pending",
+      "indexed_at": "2026-01-30T16:33:49.790434Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Arcturus/!DOCTYPE html.md": {
+      "hash": "90bd5bab664bc52ab25bf7e75cbd0036",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:34:12.984173Z",
+      "chunk_count": 2,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_215500.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:34:13.058917Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_215500.json": {
+      "hash": "77c7458ff7c5bb3294044f388a333319",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:34:50.072395Z",
+      "chunk_count": 2,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_215700.json": {
+      "hash": "1e5a1490ff9d99c2a0a66b47e925cc37",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:34:50.139964Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_215700.json": {
+      "hash": "4debc51515753fb7b0463f7f457b8f3b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:35:49.412261Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_215900.json": {
+      "hash": "e4ab189ba33782936ee7568c7c0ff6e8",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:35:49.500370Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_215900.json": {
+      "hash": "96800fd9a71509f82d12192eddf30b02",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:35:49.582292Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_215800.md": {
+      "hash": "1b64afbbd4921b4ca9b8d3ba56334881",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:36:06.451061Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_215800.md": {
+      "hash": "309829cd8febed75640c959e3259cd54",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:36:15.503979Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_215800.json": {
+      "hash": "a3dab4887fe8b8a081ee16cbf4cd57d3",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:36:49.876231Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_215800.json": {
+      "hash": "c59abd4e379ae8951932f4bd81a78c6e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:36:49.945812Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_215800.json": {
+      "hash": "c8299885a54ff2f7e56549a5af3330bf",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:36:50.026960Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_215800.json": {
+      "hash": "82c129b2691f3208d90d1599c1993bf5",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:37:50.180275Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_220100.json": {
+      "hash": "225eb0ca9ccb774ab1e0033d911d69d3",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:37:50.304917Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_220100.json": {
+      "hash": "c8404bbb0881904509ad4445a348c15e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:37:50.386483Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_220000.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:37:56.198229Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_220200.md": {
+      "hash": "a07c7306781704adcd4bb077b61da02d",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:38:05.237894Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_220200.md": {
+      "hash": "b5d927f64468e834000ed60e92af94e2",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:38:41.512651Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_220000.json": {
+      "hash": "5cc43582ae5217762feb739c2b6f6c92",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:38:50.683147Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_220100.json": {
+      "hash": "d344cff2498e7f1b9b61e202135b6dfb",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:38:50.775537Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_220200.json": {
+      "hash": "8e8edb3051ad890d84e396fad2c3a5ba",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:38:50.975052Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_220200.json": {
+      "hash": "680a7aa4f949db4af033240ea1cafd09",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:38:51.056784Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_215800.md": {
+      "hash": "41116c65503d0425412b29dbbfadf0b0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:39:18.025572Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "system/jobs.json": {
+      "hash": "6d0b2b7870ef6f890556da8f07db8022",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:32.554745Z",
+      "chunk_count": 5,
+      "error": null
+    },
+    "security_logs/2026-01-30.jsonl": {
+      "hash": "bd5208a2fbdd3a07e23ac62f8bb26b81",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:33.828760Z",
+      "chunk_count": 5,
+      "error": null
+    },
+    "Notes/Scheduler/Silver_price.md": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/test_tesla.md": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_220100.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_220300.json": {
+      "hash": "f6c2e2a7acf199a750dcec871a2691db",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:34.174033Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_220300.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_220300.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_220300.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_220400.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_220400.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_220400.json": {
+      "hash": "4545ff94e0939ac9ae6eed93731a6c9e",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:34.722793Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_220400.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_220400.md": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "archived_example.com.txt": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_220300.md": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_220500.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_220400.md": {
+      "hash": "f682d786621d9ccab211d397c3e8d594",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:38.030835Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_40958dba_20260130_220600.json": {
+      "hash": null,
+      "status": "pending",
+      "indexed_at": null,
+      "chunk_count": 0,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_220600.json": {
+      "hash": "f47b7a6ee0a8327b71fab1ffbb1bd83f",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:37.940126Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_220600.json": {
+      "hash": "d82ce04b5e270dac0914a1ff52880b58",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:37.834016Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_220600.json": {
+      "hash": "f78fe79966d8e9c55ce813c49a5cf6b9",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:37.720309Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_bdd29530_20260130_220600.md": {
+      "hash": "5a566e409992fdaafa599c62ea6ba473",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:37.591777Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/Clips/https___www_google_com_auto_d3f4ff2d_20260130_220500.md": {
+      "hash": "066c955ad2a2773cc9f5ed08fa80578b",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:37.308561Z",
+      "chunk_count": 0,
+      "error": null
+    },
+    "Notes/Clips/https___example_com_auto_338ed8bc_20260130_220600.md": {
+      "hash": "b590a283a7038fb7fa1ed236fbb806e4",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:37.152697Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_e763f12f_20260130_220700.json": {
+      "hash": "aea96dcad7de6c4b8da6263b2714f514",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.880469Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_9895b12f_20260130_220700.json": {
+      "hash": "5ea58a8bce920c887fc0a8661299bff3",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:35.971310Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_27c2f3ff_20260130_220700.json": {
+      "hash": "b037a8ca8f4dee8c4926c398544a1a4a",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.984124Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_742709a3_20260130_220700.json": {
+      "hash": "9bc87b9b18b5fbe0f11f251beffc1bcf",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.784236Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d7ab1a55_20260130_220700.json": {
+      "hash": "32159c1817fc9be3f60889f521385958",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.653265Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_a93b8937_20260130_220800.json": {
+      "hash": "2b772080f374822721b91e78428b1cd0",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.550149Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_338ed8bc_20260130_220800.json": {
+      "hash": "4e737cf0f5314d1167324243cd99a873",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.445501Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_d3f4ff2d_20260130_220800.json": {
+      "hash": "8919d9058d741f84c21a3cb2631507ca",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.268216Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "conversation_history/2026/01/30/session_auto_bdd29530_20260130_220800.json": {
+      "hash": "48dc1586278cf54cf31ef0896501417c",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.183953Z",
+      "chunk_count": 1,
+      "error": null
+    },
+    "Notes/System/Health_auto_e763f12f_20260130_220700.md": {
+      "hash": "4a4b41f8f8ad19e182792385706b1237",
+      "status": "complete",
+      "indexed_at": "2026-01-30T16:46:36.104758Z",
+      "chunk_count": 1,
+      "error": null
+    }
+  }
+}

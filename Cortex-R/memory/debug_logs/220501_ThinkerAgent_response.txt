@@ -1,0 +1,10 @@
+```json
+{
+  "parsed_cpu_usage_T002": {
+    "overall_utilization_percentage": null,
+    "utilization_by_core": {},
+    "high_cpu_processes": [],
+    "analysis_notes": "Raw CPU usage data from T001 was not provided or was empty. Unable to extract key metrics or identify high CPU consuming processes. Further data is required to perform analysis."
+  }
+}
+```

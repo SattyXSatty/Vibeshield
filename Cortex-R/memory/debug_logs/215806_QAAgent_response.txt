@@ -1,0 +1,14 @@
+```json
+{
+  "issues": [
+    {
+      "step_id": "T003",
+      "problem": "The 'file_save_status_T002' is not provided in the input data. Without this information, the agent's action cannot be verified.",
+      "severity": "critical",
+      "recommendation": "Provide the value of 'file_save_status_T002' to allow for verification of the poem save status."
+    }
+  ],
+  "verdict": "needs_revision",
+  "QA_RESULT_KEY": "needs_revision"
+}
+```

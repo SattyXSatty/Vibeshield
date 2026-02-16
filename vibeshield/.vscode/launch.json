@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run VibeShield Extension",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/ide-extension"
+            ],
+            "outFiles": [
+                "${workspaceFolder}/packages/ide-extension/dist/**/*.js"
+            ]
+        }
+    ]
+}

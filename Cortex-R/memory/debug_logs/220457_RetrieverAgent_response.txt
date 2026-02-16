@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": "cpu_usage_raw_T001",
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "import subprocess\n\ntry:\n    # Command to get detailed CPU usage (e.g., 'top -bn1' or 'mpstat -P ALL 1 1')\n    # Using 'top -bn1' for a snapshot, '-n 1' for one iteration, '-b' for batch mode\n    result = subprocess.run(['top', '-bn1'], capture_output=True, text=True, check=True)\n    cpu_usage_raw_T001 = result.stdout\nexcept FileNotFoundError:\n    cpu_usage_raw_T001 = 'Error: top command not found. Please ensure it is installed and in your PATH.'\nexcept subprocess.CalledProcessError as e:\n    cpu_usage_raw_T001 = f'Error executing top command: {e.stderr}'\nexcept Exception as e:\n    cpu_usage_raw_T001 = f'An unexpected error occurred: {e}'\n\nreturn {'cpu_usage_raw_T001': cpu_usage_raw_T001}"
+  }
+}
+```

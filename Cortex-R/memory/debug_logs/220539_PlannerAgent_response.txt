@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve content from the provided URL.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Use the BrowserAgent to navigate to the provided URL and extract the full HTML content. Save the content to a variable. The URL is: https://www.google.com",
+        "reads": [],
+        "writes": [
+          "url_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the retrieved URL content for readability.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the raw HTML content obtained from the URL into a more human-readable format. Focus on extracting meaningful text and structure, removing unnecessary HTML tags and scripts. The content to format is: {{url_content_T001}}",
+        "reads": [
+          "url_content_T001"
+        ],
+        "writes": [
+          "formatted_content_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T003"
+}
+```

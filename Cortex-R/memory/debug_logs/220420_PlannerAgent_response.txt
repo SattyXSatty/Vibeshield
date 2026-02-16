@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Research who built the pyramids.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search to determine who built the pyramids. Focus on credible historical sources. Use freshness='y' for historical context.",
+        "reads": [],
+        "writes": [
+          "pyramid_builders_info_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the pyramid builders information into a markdown file.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Take the information about who built the pyramids (`pyramid_builders_info_T001`) and format it into a human-readable markdown document. Save the output to 'Notes/test_pyramids.md' within the data directory.",
+        "reads": [
+          "pyramid_builders_info_T001"
+        ],
+        "writes": [
+          "formatted_pyramids_report_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

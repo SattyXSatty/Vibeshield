@@ -1,0 +1,282 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_bdd29530_20260130_215800",
+    "original_query": "Check system cpu usage",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:28:00.315753",
+    "status": "completed",
+    "globals_schema": {
+      "cpu_usage_raw_T001": [],
+      "cpu_usage_percentage_T002": "Insufficient data available in search results to determine CPU usage percentage.",
+      "formatted_cpu_usage_T003": []
+    }
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Retrieve current system CPU usage",
+              "agent": "RetrieverAgent",
+              "agent_prompt": "Execute a system command to retrieve the current CPU usage. The command should be efficient and provide a clear numerical output.  The output should be captured as a string.  Use the command `top -bn1 | grep \"Cpu(s)\"` to get CPU usage.",
+              "reads": [],
+              "writes": [
+                "cpu_usage_raw_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Parse and extract CPU usage percentage",
+              "agent": "ThinkerAgent",
+              "agent_prompt": "Parse the raw CPU usage string `cpu_usage_raw_T001` to extract the CPU usage percentage. The output should be a floating-point number representing the percentage (e.g., 15.5). The relevant line typically looks like `Cpu(s): 1.5 us, 0.5 sy, 0.0 ni, 98.0 id, 0.0 wa, 0.0 hi, 0.0 si, 0.0 st`. Extract the idle percentage and subtract from 100 to get the used percentage.",
+              "reads": [
+                "cpu_usage_raw_T001"
+              ],
+              "writes": [
+                "cpu_usage_percentage_T002"
+              ]
+            },
+            {
+              "id": "T003",
+              "description": "Format CPU usage for final output",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Format the extracted CPU usage percentage `cpu_usage_percentage_T002` into a human-readable string. Include a clear label indicating it's CPU usage and append a '%' sign. For example, 'System CPU Usage: 15.5%'.",
+              "reads": [
+                "cpu_usage_percentage_T002"
+              ],
+              "writes": [
+                "formatted_cpu_usage_T003"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "target": "T001"
+            },
+            {
+              "source": "T001",
+              "target": "T002"
+            },
+            {
+              "source": "T002",
+              "target": "T003"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 0.0001198,
+        "input_tokens": 22,
+        "output_tokens": 294,
+        "total_tokens": 316,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:28:44.576865",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Retrieve current system CPU usage",
+      "agent": "RetrieverAgent",
+      "agent_prompt": "Execute a system command to retrieve the current CPU usage. The command should be efficient and provide a clear numerical output.  The output should be captured as a string.  Use the command `top -bn1 | grep \"Cpu(s)\"` to get CPU usage.",
+      "reads": [],
+      "writes": [
+        "cpu_usage_raw_T001"
+      ],
+      "status": "completed",
+      "output": {
+        "result_variable": [],
+        "call_self": false,
+        "code_variants": {
+          "CODE_1A": "import subprocess\n\ncommand = 'top -bn1 | grep \"Cpu(s)\"'\nprocess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\nstdout, stderr = process.communicate()\ncpu_usage_raw_T001 = stdout.decode('utf-8').strip()\n\nreturn {'cpu_usage_raw_T001': cpu_usage_raw_T001}"
+        },
+        "cost": 2.5200000000000003e-05,
+        "input_tokens": 96,
+        "output_tokens": 39,
+        "total_tokens": 135,
+        "executed_model": "gemini:gemini-2.5-flash-lite",
+        "execution_result": null,
+        "execution_status": "blocked",
+        "execution_error": "Security violation: Subprocess execution",
+        "execution_time": "2026-01-30 21:59:40",
+        "executed_variant": "CODE_1A",
+        "execution_logs": null
+      },
+      "error": null,
+      "cost": 2.5200000000000003e-05,
+      "start_time": "2026-01-30T16:28:44.583137",
+      "end_time": "2026-01-30T16:29:40.937596",
+      "execution_time": 56.354459,
+      "iterations": [
+        {
+          "iteration": 1,
+          "output": {
+            "result_variable": [],
+            "call_self": false,
+            "code_variants": {
+              "CODE_1A": "import subprocess\n\ncommand = 'top -bn1 | grep \"Cpu(s)\"'\nprocess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\nstdout, stderr = process.communicate()\ncpu_usage_raw_T001 = stdout.decode('utf-8').strip()\n\nreturn {'cpu_usage_raw_T001': cpu_usage_raw_T001}"
+            },
+            "cost": 2.5200000000000003e-05,
+            "input_tokens": 96,
+            "output_tokens": 39,
+            "total_tokens": 135,
+            "executed_model": "gemini:gemini-2.5-flash-lite"
+          },
+          "execution_result": {
+            "status": "blocked",
+            "error": "Security violation: Subprocess execution",
+            "violations": [
+              "Subprocess execution",
+              "Subprocess execution",
+              "Subprocess execution"
+            ],
+            "blocked_pattern": "subprocess.",
+            "execution_time": "2026-01-30 21:59:40",
+            "total_time": "0.001",
+            "executed_variant": "CODE_1A"
+          }
+        }
+      ],
+      "input_tokens": 96,
+      "output_tokens": 39,
+      "total_tokens": 135
+    },
+    {
+      "id": "T002",
+      "description": "Parse and extract CPU usage percentage",
+      "agent": "ThinkerAgent",
+      "agent_prompt": "Parse the raw CPU usage string `cpu_usage_raw_T001` to extract the CPU usage percentage. The output should be a floating-point number representing the percentage (e.g., 15.5). The relevant line typically looks like `Cpu(s): 1.5 us, 0.5 sy, 0.0 ni, 98.0 id, 0.0 wa, 0.0 hi, 0.0 si, 0.0 st`. Extract the idle percentage and subtract from 100 to get the used percentage.",
+      "reads": [
+        "cpu_usage_raw_T001"
+      ],
+      "writes": [
+        "cpu_usage_percentage_T002"
+      ],
+      "status": "completed",
+      "output": {
+        "cpu_usage_percentage_T002": "Insufficient data available in search results to determine CPU usage percentage.",
+        "cost": 1.9900000000000003e-05,
+        "input_tokens": 127,
+        "output_tokens": 18,
+        "total_tokens": 145,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 1.9900000000000003e-05,
+      "start_time": "2026-01-30T16:29:41.071985",
+      "end_time": "2026-01-30T16:30:16.556998",
+      "execution_time": 35.485013,
+      "iterations": [
+        {
+          "iteration": 1,
+          "output": {
+            "cpu_usage_percentage_T002": "Insufficient data available in search results to determine CPU usage percentage.",
+            "cost": 1.9900000000000003e-05,
+            "input_tokens": 127,
+            "output_tokens": 18,
+            "total_tokens": 145,
+            "executed_model": "gemini:gemini-2.5-flash-lite"
+          }
+        }
+      ],
+      "input_tokens": 127,
+      "output_tokens": 18,
+      "total_tokens": 145
+    },
+    {
+      "id": "T003",
+      "description": "Format CPU usage for final output",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Format the extracted CPU usage percentage `cpu_usage_percentage_T002` into a human-readable string. Include a clear label indicating it's CPU usage and append a '%' sign. For example, 'System CPU Usage: 15.5%'.",
+      "reads": [
+        "cpu_usage_percentage_T002"
+      ],
+      "writes": [
+        "formatted_cpu_usage_T003"
+      ],
+      "status": "completed",
+      "output": {
+        "final_format": "html",
+        "fallback_markdown": "## System CPU Usage\n\nCPU usage data is unavailable.",
+        "formatted_report_T003": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>System Report</title>\n    <style>\n        :root { --primary: #2563eb; --surface: #ffffff; --background: #f8fafc; --text: #1e293b; --text-light: #64748b; }\n        body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; color: var(--text); background: var(--background); margin: 0; padding: 40px 20px; }\n        .report-container { max-width: 800px; margin: 0 auto; background: var(--surface); padding: 48px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }\n        h1 { font-size: 2.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.5em; letter-spacing: -0.025em; border-bottom: 2px solid var(--primary); padding-bottom: 16px; }\n        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5em; margin-bottom: 1em; color: var(--text); }\n        h3 { font-size: 1.125rem; font-weight: 600; margin-top: 2em; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }\n        p { margin-bottom: 1.5em; }\n        ul, ol { margin-bottom: 1.5em; padding-left: 1.5em; }\n        li { margin-bottom: 0.5em; }\n        .highlight-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 16px 24px; margin: 24px 0; border-radius: 4px; }\n        table { width: 100%; border-collapse: collapse; margin: 2em 0; }\n        th { text-align: left; background: #f1f5f9; padding: 12px; font-weight: 600; border-bottom: 2px solid #e2e8f0; }\n        td { padding: 12px; border-bottom: 1px solid #e2e8f0; }\n        a { color: var(--primary); text-decoration: none; font-weight: 500; }\n        a:hover { text-decoration: underline; }\n        .footer { margin-top: 4em; padding-top: 2em; border-top: 1px solid #e2e8f0; font-size: 0.875rem; color: var(--text-light); text-align: center; }\n    </style>\n</head>\n<body>\n    <div class='report-container'>\n        <h1>System Performance Report</h1>\n        \n        <h2>CPU Usage</h2>\n        <div class='highlight-box'>\n            <p><strong>System CPU Usage:</strong> Insufficient data available in search results to determine CPU usage percentage.</p>\n        </div>\n\n        <p>Detailed CPU usage metrics could not be retrieved at this time. Further investigation may be required to diagnose the data availability issue.</p>\n\n        <div class='footer'>\n            Report generated on 2026-01-30\n        </div>\n    </div>\n</body>\n</html>",
+        "call_self": false,
+        "cost": 0.0001822,
+        "input_tokens": 118,
+        "output_tokens": 426,
+        "total_tokens": 544,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0001822,
+      "start_time": "2026-01-30T16:30:16.560418",
+      "end_time": "2026-01-30T16:31:04.844709",
+      "execution_time": 48.284291,
+      "iterations": [
+        {
+          "iteration": 1,
+          "output": {
+            "final_format": "html",
+            "fallback_markdown": "## System CPU Usage\n\nCPU usage data is unavailable.",
+            "formatted_report_T003": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>System Report</title>\n    <style>\n        :root { --primary: #2563eb; --surface: #ffffff; --background: #f8fafc; --text: #1e293b; --text-light: #64748b; }\n        body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; color: var(--text); background: var(--background); margin: 0; padding: 40px 20px; }\n        .report-container { max-width: 800px; margin: 0 auto; background: var(--surface); padding: 48px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }\n        h1 { font-size: 2.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.5em; letter-spacing: -0.025em; border-bottom: 2px solid var(--primary); padding-bottom: 16px; }\n        h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5em; margin-bottom: 1em; color: var(--text); }\n        h3 { font-size: 1.125rem; font-weight: 600; margin-top: 2em; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }\n        p { margin-bottom: 1.5em; }\n        ul, ol { margin-bottom: 1.5em; padding-left: 1.5em; }\n        li { margin-bottom: 0.5em; }\n        .highlight-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 16px 24px; margin: 24px 0; border-radius: 4px; }\n        table { width: 100%; border-collapse: collapse; margin: 2em 0; }\n        th { text-align: left; background: #f1f5f9; padding: 12px; font-weight: 600; border-bottom: 2px solid #e2e8f0; }\n        td { padding: 12px; border-bottom: 1px solid #e2e8f0; }\n        a { color: var(--primary); text-decoration: none; font-weight: 500; }\n        a:hover { text-decoration: underline; }\n        .footer { margin-top: 4em; padding-top: 2em; border-top: 1px solid #e2e8f0; font-size: 0.875rem; color: var(--text-light); text-align: center; }\n    </style>\n</head>\n<body>\n    <div class='report-container'>\n        <h1>System Performance Report</h1>\n        \n        <h2>CPU Usage</h2>\n        <div class='highlight-box'>\n            <p><strong>System CPU Usage:</strong> Insufficient data available in search results to determine CPU usage percentage.</p>\n        </div>\n\n        <p>Detailed CPU usage metrics could not be retrieved at this time. Further investigation may be required to diagnose the data availability issue.</p>\n\n        <div class='footer'>\n            Report generated on 2026-01-30\n        </div>\n    </div>\n</body>\n</html>",
+            "call_self": false,
+            "cost": 0.0001822,
+            "input_tokens": 118,
+            "output_tokens": 426,
+            "total_tokens": 544,
+            "executed_model": "gemini:gemini-2.5-flash-lite"
+          }
+        }
+      ],
+      "input_tokens": 118,
+      "output_tokens": 426,
+      "total_tokens": 544
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "T001",
+      "target": "T002"
+    },
+    {
+      "source": "T002",
+      "target": "T003"
+    }
+  ]
+}

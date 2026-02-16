@@ -1,0 +1,76 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve current silver price using yahoo_finance tool",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get the current price for silver. The ticker symbol for silver is 'XAGUSD=X'. Save the retrieved price. \n\nTool: yahoo_finance.get_stock_price(ticker=\"XAGUSD=X\")",
+        "reads": [],
+        "writes": [
+          "silver_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Cross-reference silver price with web search for confirmation",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for 'current silver price' to cross-reference the price obtained from yahoo_finance. Ensure the freshness is set to 'd' (day) for the most up-to-date information.",
+        "reads": [],
+        "writes": [
+          "web_search_silver_price_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Synthesize silver price information from multiple sources",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Compare the silver price obtained from yahoo_finance (`silver_price_T001`) with the information found through web search (`web_search_silver_price_T002`). Identify any discrepancies and determine the most reliable current price.",
+        "reads": [
+          "silver_price_T001",
+          "web_search_silver_price_T002"
+        ],
+        "writes": [
+          "synthesized_silver_price_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Format the synthesized silver price into a Markdown report",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Create a concise Markdown report detailing the current silver price. Include the source of the information and any relevant context. The report should be saved to Notes/Scheduler/Silver_price.md. \n\nContent to format: \"Synthesized silver price information: {{synthesized_silver_price_T003}}\"",
+        "reads": [
+          "synthesized_silver_price_T003"
+        ],
+        "writes": [
+          "markdown_report_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "ROOT",
+        "target": "T002"
+      },
+      {
+        "source": "T001",
+        "target": "T003"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

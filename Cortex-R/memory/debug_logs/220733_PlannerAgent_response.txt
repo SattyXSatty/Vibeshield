@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Research who built the pyramids using web search.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search to answer the question: 'Who built the pyramids?'. Focus on reliable historical and archaeological sources.",
+        "reads": [],
+        "writes": [
+          "pyramids_builders_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Synthesize the research findings on pyramid builders.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Review the gathered information on who built the pyramids and synthesize the key findings into a concise summary. Ensure the summary clearly states the primary builders and mentions any relevant historical context or theories.",
+        "reads": [
+          "pyramids_builders_T001"
+        ],
+        "writes": [
+          "pyramids_builders_summary_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the synthesized answer and save to Notes/test_pyramids.md.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the following synthesized information about who built the pyramids into a human-readable markdown document. Save the final output to the file path 'Notes/test_pyramids.md'.\n\nSynthesized Information:\n{{pyramids_builders_summary_T002}}",
+        "reads": [
+          "pyramids_builders_summary_T002"
+        ],
+        "writes": [
+          "formatted_answer_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      },
+      {
+        "source": "T002",
+        "destination": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

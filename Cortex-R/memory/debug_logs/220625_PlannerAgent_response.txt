@@ -1,0 +1,74 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get recent news for Tesla using yahoo_finance",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to retrieve recent news articles for Tesla. Store the news data in a structured format.",
+        "reads": [],
+        "writes": [
+          "tesla_news_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Cross-reference Tesla news with web search for additional context",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for \"Tesla recent news\" to supplement the news obtained from yahoo_finance. Focus on recent developments and market impact. Store the search results.",
+        "reads": [
+          "tesla_news_T001"
+        ],
+        "writes": [
+          "web_tesla_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Synthesize Tesla news into a concise, data-driven summary",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Combine the news articles from 'tesla_news_T001' and web search results 'web_tesla_news_T002'. Extract key data points, market trends, and significant events related to Tesla. Produce a concise, data-driven summary.",
+        "reads": [
+          "tesla_news_T001",
+          "web_tesla_news_T002"
+        ],
+        "writes": [
+          "tesla_news_summary_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Format Tesla news summary into Markdown report",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the 'tesla_news_summary_T003' into a cohesive Markdown report. Ensure the report is data-driven and concise, as per the market analyst role. Save the output to Notes/test_tesla.md.",
+        "reads": [
+          "tesla_news_summary_T003"
+        ],
+        "writes": [
+          "formatted_report_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

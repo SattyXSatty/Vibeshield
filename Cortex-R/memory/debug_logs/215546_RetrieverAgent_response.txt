@@ -1,0 +1,8 @@
+```json
+{
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "search_results = web_search('who built the pyramids reputable historical archaeological sources', 5)\nreturn {'pyramid_builders_T001': search_results}"
+  }
+}
+```

@@ -1,0 +1,74 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve company news for Tesla using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Retrieve company news for Tesla using the yahoo_finance tool. Focus on recent news relevant to market analysis. The output should be structured news data.",
+        "reads": [],
+        "writes": [
+          "tesla_company_news_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Cross-reference Tesla news with web search for broader context.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for recent news and market analysis related to Tesla to supplement the information obtained from yahoo_finance. Ensure the freshness is set to 'w' for weekly updates. Output should be a list of relevant articles and summaries.",
+        "reads": [
+          "tesla_company_news_T001"
+        ],
+        "writes": [
+          "tesla_web_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Synthesize and distill news for Tesla into concise, data-driven points.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Synthesize the retrieved company news for Tesla from both yahoo_finance and web search. Extract key data points, significant events, and market sentiment. The output should be a structured summary of the most critical information.",
+        "reads": [
+          "tesla_company_news_T001",
+          "tesla_web_news_T002"
+        ],
+        "writes": [
+          "tesla_news_summary_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Format the Tesla news summary into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the distilled Tesla news summary into a cohesive Markdown report. Include a title, date, and the synthesized news points. Ensure the report is data-driven and concise. Save the output to 'Notes/test_tesla.md'.",
+        "reads": [
+          "tesla_news_summary_T003"
+        ],
+        "writes": [
+          "formatted_report_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

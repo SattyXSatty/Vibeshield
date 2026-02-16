@@ -1,0 +1,40 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a joke using an AI model.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Generate a clean, moderately humorous joke suitable for a general audience. The joke should be original and not rely on offensive stereotypes.",
+        "reads": [],
+        "writes": [
+          "generated_joke_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Save the generated joke to a markdown file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the following joke text into a markdown file named 'Notes/test_joke.md'. The joke text is: {{generated_joke_T001}}",
+        "reads": [
+          "generated_joke_T001"
+        ],
+        "writes": [
+          "file_write_result_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

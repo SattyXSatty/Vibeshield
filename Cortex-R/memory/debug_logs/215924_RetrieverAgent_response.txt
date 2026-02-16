@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": [],
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "import json\n\nticker = 'AAPL'\nquery_params = {'ticker': ticker}\n\n# The user prompt mentions using 'yahoo_finance' tool, but it's not available in the provided tool list.\n# Assuming the intent is to use 'web_search' for company news.\n# If a 'yahoo_finance' tool were available, the call would look something like:\n# news = yahoo_finance.get_company_news(ticker=ticker)\n\n# Using web_search as a proxy for news retrieval\nsearch_query = f'Apple (AAPL) recent company news'\nnews_urls = web_search(query=search_query, count=5)\n\n# Extracting text content from the found URLs to provide news snippets\nnews_content = []\nfor url in news_urls:\n    try:\n        text = web_extract_text(url)\n        # Truncate to avoid overly long responses, keeping the first 200 characters\n        news_content.append({'url': url, 'content': text[:200] + '...' if len(text) > 200 else text})\n    except Exception as e:\n        print(f\"Could not extract text from {url}: {e}\")\n\nreturn {'apple_company_news_T002': news_content}"
+  }
+}
+```

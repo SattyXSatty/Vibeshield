@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get recent news for Tesla using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the yahoo_finance tool to retrieve recent news articles for Tesla. Focus on the last week of data. Store the raw news content.",
+        "reads": [],
+        "writes": [
+          "raw_tesla_news_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Analyze and synthesize Tesla news for conciseness and data-driven insights.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Analyze the raw Tesla news content (`raw_tesla_news_T001`). Extract key data points, significant events, and market-relevant information. Synthesize these into concise, data-driven bullet points. Avoid promotional language and focus on factual reporting.",
+        "reads": [
+          "raw_tesla_news_T001"
+        ],
+        "writes": [
+          "synthesized_tesla_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the synthesized Tesla news into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the synthesized Tesla news (`synthesized_tesla_news_T002`) into a cohesive Markdown report. Ensure the report is concise, data-driven, and clearly presents the key information. Save the output to 'Notes/test_tesla.md'.",
+        "reads": [
+          "synthesized_tesla_news_T002"
+        ],
+        "writes": [
+          "formatted_report_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

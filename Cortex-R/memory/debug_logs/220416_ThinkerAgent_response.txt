@@ -1,0 +1,9 @@
+```json
+{
+  "extracted_content_T002": {
+    "title": "Page Title Not Found",
+    "main_content": "No main textual content could be extracted from the provided HTML. The input 'raw_html_T001' was empty, preventing the extraction of a title, meta description, or any body content.",
+    "meta_description": "Meta description not found."
+  }
+}
+```

@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get company news for Tesla using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to retrieve company news for Tesla. Focus on recent news. Store the raw news data.",
+        "reads": [],
+        "writes": [
+          "tesla_company_news_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Extract key information from Tesla news.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "From the provided Tesla company news, extract the most critical information. Focus on factual data, recent developments, and any financial implications. Summarize concisely.",
+        "reads": [
+          "tesla_company_news_T001"
+        ],
+        "writes": [
+          "extracted_tesla_news_summary_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the extracted Tesla news into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the following extracted Tesla news summary into a cohesive Markdown report. Ensure it is data-driven and concise, suitable for a Market Analyst. The report should be saved to Notes/test_tesla.md.",
+        "reads": [
+          "extracted_tesla_news_summary_T002"
+        ],
+        "writes": [
+          "formatted_tesla_report_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

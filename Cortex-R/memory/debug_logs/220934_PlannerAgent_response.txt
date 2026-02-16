@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve the current silver price using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get the current price of silver. The ticker symbol for silver is typically 'XAGUSD=X'. Store the retrieved price.",
+        "reads": [],
+        "writes": [
+          "silver_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the silver price into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the retrieved silver price into a concise Markdown report. The report should clearly state the current silver price and include a title indicating the date of the information. The output should be suitable for saving to a file.",
+        "reads": [
+          "silver_price_T001"
+        ],
+        "writes": [
+          "silver_price_report_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Save the formatted silver price report to Notes/Scheduler/Silver_price.md.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the content of `silver_price_report_T002` to a file named 'Silver_price.md' located in the 'Notes/Scheduler/' directory within the data path. Ensure the file is created if it does not exist, or overwritten if it does.",
+        "reads": [
+          "silver_price_report_T002"
+        ],
+        "writes": [
+          "file_save_status_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

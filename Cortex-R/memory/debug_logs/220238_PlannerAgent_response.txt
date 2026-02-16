@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Check available disk space on the system.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Write and execute a Python script to check the available disk space on the root partition. The script should output the total, used, and free space in a human-readable format (e.g., GB). Save the output to a variable named `disk_space_info_T001`.",
+        "reads": [],
+        "writes": [
+          "disk_space_info_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format disk space information for clarity.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided disk space information into a clear and concise summary. The input `disk_space_info_T001` should be presented in a readable format, suitable for an executive report. Output the formatted string as `formatted_disk_space_T002`.",
+        "reads": [
+          "disk_space_info_T001"
+        ],
+        "writes": [
+          "formatted_disk_space_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T002"
+}
+```

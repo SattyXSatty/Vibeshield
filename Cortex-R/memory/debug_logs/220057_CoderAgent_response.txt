@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import os\n\n# Ensure the directory exists\noutput_dir = 'Notes/Scheduler'\nos.makedirs(output_dir, exist_ok=True)\n\n# Get the content from the previous step\nmarkdown_content = markdown_report_T002\n\n# Define the file path\nfile_path = os.path.join(output_dir, 'Silver_price.md')\n\n# Write the content to the file\nwith open(file_path, 'w') as f:\n    f.write(markdown_content)\n\nreturn { \"file_save_status_T003\": f\"Successfully saved to {file_path}\" }"
+  }
+}
+```

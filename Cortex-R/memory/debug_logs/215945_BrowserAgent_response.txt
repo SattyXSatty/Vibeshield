@@ -1,0 +1,11 @@
+```json
+{
+  "thought": "The user wants to access a URL and extract its main content. The `web_extract_text` tool is suitable for this purpose. I will use this tool and then inform the user about the output file.",
+  "call_tool": {
+    "name": "web_extract_text",
+    "arguments": {
+      "url": "https://www.google.com"
+    }
+  }
+}
+```

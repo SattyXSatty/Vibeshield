@@ -1,0 +1,39 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a poem about rust.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Generate a poem about rust. The poem should be evocative and capture the essence of decay and transformation associated with rust. The output should be plain text.",
+        "reads": [],
+        "writes": [
+          "poem_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Save the generated poem to a Markdown file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the text content of `poem_text_T001` to a markdown file named `test_poem.md` within the Notes directory. The file path should be `/Users/satyendrasahani/Documents/EAG2/S15_NewArch/data/Notes/test_poem.md`.",
+        "reads": [
+          "poem_text_T001"
+        ],
+        "writes": [
+          "file_write_status_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

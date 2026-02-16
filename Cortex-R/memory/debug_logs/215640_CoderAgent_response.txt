@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "joke = \"Why don't scientists trust atoms? Because they make up everything!\"\nwith open('test_joke.md', 'w') as f:\n    f.write(joke)\nreturn {'joke_saved': 'test_joke.md'}"
+  }
+}
+```

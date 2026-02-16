@@ -1,0 +1,11 @@
+```json
+{
+  "generated_joke_T001": {
+    "joke_text": "Why don't scientists trust atoms? Because they make up everything!",
+    "category": "science",
+    "humor_style": "pun",
+    "audience_suitability": "general",
+    "originality_assessment": "original (common pun, but phrasing is typical)"
+  }
+}
+```

@@ -1,0 +1,55 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a poem about rust.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Generate a poem about rust. Focus on themes of decay, time, and transformation.",
+        "reads": [],
+        "writes": [
+          "poem_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the poem into Markdown for saving.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided poem content into a Markdown string suitable for saving to a file. Ensure the poem is presented clearly and legibly. Poem content: {{poem_content_T001}}",
+        "reads": [
+          "poem_content_T001"
+        ],
+        "writes": [
+          "formatted_poem_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Save the formatted poem to Notes/test_poem.md.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the following Markdown content to the file path 'Notes/test_poem.md'. Content: {{formatted_poem_T002}}",
+        "reads": [
+          "formatted_poem_T002"
+        ],
+        "writes": [
+          "file_save_status_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

@@ -1,0 +1,9 @@
+```json
+{
+  "call_self": false,
+  "result_variable": "tesla_news_T001",
+  "code_variants": {
+    "CODE_1A": "return {'tesla_news_T001': yahoo_finance.get_company_news('Tesla')}"
+  }
+}
+```

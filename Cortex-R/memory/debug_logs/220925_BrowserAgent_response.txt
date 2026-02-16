@@ -1,0 +1,12 @@
+```json
+{
+  "thought": "The user wants to archive a webpage. The `browser_use_action` tool is suitable for interacting with webpages and performing actions like saving content. I will instruct the tool to go to the provided URL and save the content.",
+  "call_tool": {
+    "name": "browser_use_action",
+    "arguments": {
+      "string": "Go to https://example.com, archive the page, and save the content to a file.",
+      "headless": true
+    }
+  }
+}
+```

@@ -1,0 +1,55 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get current disk space usage on the system.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Execute a system command to check the current disk space usage. The command should provide a clear output of used space, free space, and total capacity for the relevant partitions. Save the output for further analysis.",
+        "reads": [],
+        "writes": [
+          "disk_usage_output_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Parse and structure disk space information.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Parse the provided disk usage output (`disk_usage_output_T001`) to extract key metrics such as total disk space, used space, and free space. Structure this information into a clear, machine-readable format (e.g., JSON).",
+        "reads": [
+          "disk_usage_output_T001"
+        ],
+        "writes": [
+          "structured_disk_space_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the disk space report for human readability.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the structured disk space data (`structured_disk_space_T002`) into a user-friendly report. Include total capacity, used space, and free space with appropriate units (e.g., GB, TB). Present this as a clear summary.",
+        "reads": [
+          "structured_disk_space_T002"
+        ],
+        "writes": [
+          "formatted_disk_report_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

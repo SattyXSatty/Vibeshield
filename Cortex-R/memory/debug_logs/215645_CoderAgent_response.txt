@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import os\n\njoke_text = joke_text_T001\n\n# Ensure the directory exists\nnote_dir = 'Notes'\nos.makedirs(note_dir, exist_ok=True)\n\nfile_path = os.path.join(note_dir, 'test_joke.md')\n\nwith open(file_path, 'w') as f:\n    f.write(joke_text)\n\nreturn {'save_status_T002': f'Joke saved successfully to {file_path}'}"
+  }
+}
+```

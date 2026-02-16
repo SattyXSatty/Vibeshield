@@ -1,0 +1,8 @@
+I need to use the `browser_use_action` tool to log into a website and complete a task. What website should I go to and what is the specific task?
+
+```json
+{
+  "thought": "The user has not provided a specific task for the browser tool. I need to ask for more information.",
+  "call_tool": null
+}
+```

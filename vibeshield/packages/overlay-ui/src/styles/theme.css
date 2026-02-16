@@ -1,0 +1,60 @@
+:root {
+    /* Colors */
+    --color-bg-glass: rgba(18, 18, 20, 0.85);
+    --color-border: rgba(255, 255, 255, 0.1);
+    --color-text-primary: #f0f0f0;
+    --color-text-secondary: #a0a0a0;
+
+    --color-brand: #646cff;
+    --color-brand-hover: #7b82ff;
+
+    --color-success: #4caf50;
+    --color-warning: #ff9800;
+    --color-error: #f44336;
+    --color-info: #03a9f4;
+
+    /* Spacing */
+    --space-2xs: 4px;
+    --space-xs: 8px;
+    --space-sm: 12px;
+    --space-md: 16px;
+    --space-lg: 24px;
+
+    /* Typography */
+    --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-size-sm: 12px;
+    --font-size-md: 14px;
+    --font-size-lg: 16px;
+
+    /* Effects */
+    --backdrop-blur: 12px;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    /* The electron window is transparent, this is the main container background */
+    background: transparent;
+    color: var(--color-text-primary);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

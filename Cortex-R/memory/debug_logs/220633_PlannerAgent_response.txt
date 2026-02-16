@@ -1,0 +1,39 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get current system CPU usage.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Write and execute a Python script to retrieve the current system CPU usage. Save the output to a variable named `cpu_usage_T001`.",
+        "reads": [],
+        "writes": [
+          "cpu_usage_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the CPU usage data for presentation.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the system CPU usage data into a human-readable string. The data is available in `cpu_usage_T001`. Present the information clearly.",
+        "reads": [
+          "cpu_usage_T001"
+        ],
+        "writes": [
+          "formatted_cpu_usage_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

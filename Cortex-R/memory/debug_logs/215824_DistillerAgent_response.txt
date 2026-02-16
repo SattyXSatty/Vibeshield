@@ -1,0 +1,11 @@
+```json
+{
+  "pyramids_builders_summary_T002": {
+    "summary_bullets": [
+      "Evidence points to skilled, paid laborers, not enslaved people, constructing the pyramids.",
+      "These workers were organized, housed, and fed, indicating a structured labor force.",
+      "Grave sites near the pyramids contain the remains of these laborers."
+    ]
+  }
+}
+```

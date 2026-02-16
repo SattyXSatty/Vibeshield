@@ -1,0 +1,8 @@
+```json
+{
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "tesla_company_news_T001 = yahoo_finance.get_company_news(ticker='TSLA', news_type='general')\nreturn {'tesla_company_news_T001': tesla_company_news_T001}"
+  }
+}
+```

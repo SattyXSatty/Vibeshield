@@ -1,0 +1,218 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_bdd29530_20260130_220600",
+    "original_query": "Check system cpu usage",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:36:00.333271",
+    "status": "completed",
+    "globals_schema": {
+      "cpu_usage_T001": 43.3,
+      "formatted_cpu_usage_T002": []
+    }
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Get current system CPU usage.",
+              "agent": "CoderAgent",
+              "agent_prompt": "Write and execute a Python script to retrieve the current system CPU usage. Save the output to a variable named `cpu_usage_T001`.",
+              "reads": [],
+              "writes": [
+                "cpu_usage_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Format the CPU usage data for presentation.",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Format the system CPU usage data into a human-readable string. The data is available in `cpu_usage_T001`. Present the information clearly.",
+              "reads": [
+                "cpu_usage_T001"
+              ],
+              "writes": [
+                "formatted_cpu_usage_T002"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "destination": "T001"
+            },
+            {
+              "source": "T001",
+              "destination": "T002"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 5.38e-05,
+        "input_tokens": 22,
+        "output_tokens": 129,
+        "total_tokens": 151,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:36:33.412242",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Get current system CPU usage.",
+      "agent": "CoderAgent",
+      "agent_prompt": "Write and execute a Python script to retrieve the current system CPU usage. Save the output to a variable named `cpu_usage_T001`.",
+      "reads": [],
+      "writes": [
+        "cpu_usage_T001"
+      ],
+      "status": "completed",
+      "output": {
+        "code_variants": {
+          "CODE_1A": "import psutil\ncpu_usage = psutil.cpu_percent(interval=1)\nreturn {'cpu_usage_T001': cpu_usage}"
+        },
+        "cost": 1.1400000000000003e-05,
+        "input_tokens": 66,
+        "output_tokens": 12,
+        "total_tokens": 78,
+        "executed_model": "gemini:gemini-2.5-flash-lite",
+        "execution_result": {
+          "cpu_usage_T001": 43.3
+        },
+        "execution_status": "success",
+        "execution_error": null,
+        "execution_time": "2026-01-30 22:07:19",
+        "executed_variant": "CODE_1A",
+        "execution_logs": "",
+        "cpu_usage_T001": 43.3
+      },
+      "error": null,
+      "cost": 1.1400000000000003e-05,
+      "start_time": "2026-01-30T16:36:33.419968",
+      "end_time": "2026-01-30T16:37:20.933414",
+      "execution_time": 47.513446,
+      "iterations": [
+        {
+          "iteration": 1,
+          "output": {
+            "code_variants": {
+              "CODE_1A": "import psutil\ncpu_usage = psutil.cpu_percent(interval=1)\nreturn {'cpu_usage_T001': cpu_usage}"
+            },
+            "cost": 1.1400000000000003e-05,
+            "input_tokens": 66,
+            "output_tokens": 12,
+            "total_tokens": 78,
+            "executed_model": "gemini:gemini-2.5-flash-lite"
+          },
+          "execution_result": {
+            "status": "success",
+            "result": {
+              "cpu_usage_T001": 46.3
+            },
+            "raw": {
+              "cpu_usage_T001": 46.3
+            },
+            "logs": "",
+            "execution_time": "2026-01-30 22:07:13",
+            "total_time": "1.011",
+            "executed_variant": "CODE_1A"
+          }
+        }
+      ],
+      "input_tokens": 66,
+      "output_tokens": 12,
+      "total_tokens": 78
+    },
+    {
+      "id": "T002",
+      "description": "Format the CPU usage data for presentation.",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Format the system CPU usage data into a human-readable string. The data is available in `cpu_usage_T001`. Present the information clearly.",
+      "reads": [
+        "cpu_usage_T001"
+      ],
+      "writes": [
+        "formatted_cpu_usage_T002"
+      ],
+      "status": "completed",
+      "output": {
+        "final_format": "html",
+        "fallback_markdown": "CPU Usage Report\n\nNo specific CPU usage data found in the provided schema.",
+        "formatted_report_T002": "<!DOCTYPE html>\n<html>\n<head>\n<title>System CPU Usage Report</title>\n<style>\n:root {\n    --primary: #2563eb;\n    --surface: #ffffff;\n    --background: #f8fafc;\n    --text: #1e293b;\n    --text-light: #64748b;\n}\nbody {\n    font-family: 'Inter', system-ui, sans-serif;\n    line-height: 1.6;\n    color: var(--text);\n    background: var(--background);\n    margin: 0;\n    padding: 40px 20px;\n}\n.report-container {\n    max-width: 800px;\n    margin: 0 auto;\n    background: var(--surface);\n    padding: 48px;\n    border-radius: 12px;\n    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);\n}\nh1 {\n    font-size: 2.25rem;\n    font-weight: 700;\n    color: var(--text);\n    margin-bottom: 0.5em;\n    letter-spacing: -0.025em;\n    border-bottom: 2px solid var(--primary);\n    padding-bottom: 16px;\n}\nh2 {\n    font-size: 1.5rem;\n    font-weight: 600;\n    margin-top: 2.5em;\n    margin-bottom: 1em;\n    color: var(--text);\n}\nh3 {\n    font-size: 1.125rem;\n    font-weight: 600;\n    margin-top: 2em;\n    color: var(--text-light);\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\np {\n    margin-bottom: 1.5em;\n}\nul, ol {\n    margin-bottom: 1.5em;\n    padding-left: 1.5em;\n}\nli {\n    margin-bottom: 0.5em;\n}\n.highlight-box {\n    background: #eff6ff;\n    border-left: 4px solid var(--primary);\n    padding: 16px 24px;\n    margin: 24px 0;\n    border-radius: 4px;\n}\ntable {\n    width: 100%;\n    border-collapse: collapse;\n    margin: 2em 0;\n}\nth {\n    text-align: left;\n    background: #f1f5f9;\n    padding: 12px;\n    font-weight: 600;\n    border-bottom: 2px solid #e2e8f0;\n}\ntd {\n    padding: 12px;\n    border-bottom: 1px solid #e2e8f0;\n}\na {\n    color: var(--primary);\n    text-decoration: none;\n    font-weight: 500;\n}\na:hover {\n    text-decoration: underline;\n}\n.footer {\n    margin-top: 4em;\n    padding-top: 2em;\n    border-top: 1px solid #e2e8f0;\n    font-size: 0.875rem;\n    color: var(--text-light);\n    text-align: center;\n}\n</style>\n</head>\n<body>\n<div class='report-container'>\n    <h1>System CPU Usage Report</h1>\n    <div class='highlight-box'>\n        <p>No specific CPU usage data was found in the available system information. Please ensure the necessary metrics are being collected or provided for a comprehensive analysis.</p>\n    </div>\n    <p>This report could not be generated due to a lack of data. To provide a detailed analysis of CPU usage, please ensure that system performance metrics, including CPU utilization, load averages, and per-process CPU consumption, are accessible and included in the system schema.</p>\n</div>\n<div class='footer'>\n    Report generated on 2026-01-30.\n</div>\n</body>\n</html>",
+        "call_self": false,
+        "cost": 0.0001715,
+        "input_tokens": 67,
+        "output_tokens": 412,
+        "total_tokens": 479,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0001715,
+      "start_time": "2026-01-30T16:36:33.420895",
+      "end_time": "2026-01-30T16:37:20.935023",
+      "execution_time": 47.514128,
+      "iterations": [
+        {
+          "iteration": 1,
+          "output": {
+            "final_format": "html",
+            "fallback_markdown": "CPU Usage Report\n\nNo specific CPU usage data found in the provided schema.",
+            "formatted_report_T002": "<!DOCTYPE html>\n<html>\n<head>\n<title>System CPU Usage Report</title>\n<style>\n:root {\n    --primary: #2563eb;\n    --surface: #ffffff;\n    --background: #f8fafc;\n    --text: #1e293b;\n    --text-light: #64748b;\n}\nbody {\n    font-family: 'Inter', system-ui, sans-serif;\n    line-height: 1.6;\n    color: var(--text);\n    background: var(--background);\n    margin: 0;\n    padding: 40px 20px;\n}\n.report-container {\n    max-width: 800px;\n    margin: 0 auto;\n    background: var(--surface);\n    padding: 48px;\n    border-radius: 12px;\n    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);\n}\nh1 {\n    font-size: 2.25rem;\n    font-weight: 700;\n    color: var(--text);\n    margin-bottom: 0.5em;\n    letter-spacing: -0.025em;\n    border-bottom: 2px solid var(--primary);\n    padding-bottom: 16px;\n}\nh2 {\n    font-size: 1.5rem;\n    font-weight: 600;\n    margin-top: 2.5em;\n    margin-bottom: 1em;\n    color: var(--text);\n}\nh3 {\n    font-size: 1.125rem;\n    font-weight: 600;\n    margin-top: 2em;\n    color: var(--text-light);\n    text-transform: uppercase;\n    letter-spacing: 0.05em;\n}\np {\n    margin-bottom: 1.5em;\n}\nul, ol {\n    margin-bottom: 1.5em;\n    padding-left: 1.5em;\n}\nli {\n    margin-bottom: 0.5em;\n}\n.highlight-box {\n    background: #eff6ff;\n    border-left: 4px solid var(--primary);\n    padding: 16px 24px;\n    margin: 24px 0;\n    border-radius: 4px;\n}\ntable {\n    width: 100%;\n    border-collapse: collapse;\n    margin: 2em 0;\n}\nth {\n    text-align: left;\n    background: #f1f5f9;\n    padding: 12px;\n    font-weight: 600;\n    border-bottom: 2px solid #e2e8f0;\n}\ntd {\n    padding: 12px;\n    border-bottom: 1px solid #e2e8f0;\n}\na {\n    color: var(--primary);\n    text-decoration: none;\n    font-weight: 500;\n}\na:hover {\n    text-decoration: underline;\n}\n.footer {\n    margin-top: 4em;\n    padding-top: 2em;\n    border-top: 1px solid #e2e8f0;\n    font-size: 0.875rem;\n    color: var(--text-light);\n    text-align: center;\n}\n</style>\n</head>\n<body>\n<div class='report-container'>\n    <h1>System CPU Usage Report</h1>\n    <div class='highlight-box'>\n        <p>No specific CPU usage data was found in the available system information. Please ensure the necessary metrics are being collected or provided for a comprehensive analysis.</p>\n    </div>\n    <p>This report could not be generated due to a lack of data. To provide a detailed analysis of CPU usage, please ensure that system performance metrics, including CPU utilization, load averages, and per-process CPU consumption, are accessible and included in the system schema.</p>\n</div>\n<div class='footer'>\n    Report generated on 2026-01-30.\n</div>\n</body>\n</html>",
+            "call_self": false,
+            "cost": 0.0001715,
+            "input_tokens": 67,
+            "output_tokens": 412,
+            "total_tokens": 479,
+            "executed_model": "gemini:gemini-2.5-flash-lite"
+          }
+        }
+      ],
+      "input_tokens": 67,
+      "output_tokens": 412,
+      "total_tokens": 479
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "Query",
+      "target": "T002"
+    }
+  ]
+}

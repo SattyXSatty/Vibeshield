@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Check available disk space on the system.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Execute a command to check the available disk space on the primary filesystem. This typically involves using 'df -h' in a Unix-like environment. Return the output.",
+        "reads": [],
+        "writes": [
+          "disk_space_output_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Parse and present disk space information.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided disk space output. Extract relevant details such as total size, used space, available space, and percentage used for each mounted filesystem. Present this information in a clear, human-readable table.",
+        "reads": [
+          "disk_space_output_T001"
+        ],
+        "writes": [
+          "formatted_disk_space_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

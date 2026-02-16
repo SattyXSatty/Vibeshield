@@ -1,0 +1,55 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a joke.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Generate a short, original joke. Focus on a simple premise and a clear punchline.",
+        "reads": [],
+        "writes": [
+          "joke_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the joke for saving to a markdown file.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided joke text into a markdown string suitable for saving to a file. Ensure the joke is presented clearly.",
+        "reads": [
+          "joke_text_T001"
+        ],
+        "writes": [
+          "formatted_joke_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Save the joke to Notes/test_joke.md",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the following markdown formatted joke to a file named 'test_joke.md' within the 'Notes' directory. The directory should be created if it does not exist.\n\nContent:\n{{formatted_joke_T002}}",
+        "reads": [
+          "formatted_joke_T002"
+        ],
+        "writes": [
+          "file_save_status_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

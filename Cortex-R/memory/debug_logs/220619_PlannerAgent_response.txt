@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Archive the specified web page using BrowserAgent.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Use the BrowserAgent to archive the content of the URL: https://example.com. Save the archived content to a file in the data directory.",
+        "reads": [],
+        "writes": [
+          "archived_page_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Confirm successful archiving and provide a summary.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Review the result of the archiving task (archived_page_T001). Confirm that the page was successfully archived and provide a brief summary of the action taken.",
+        "reads": [
+          "archived_page_T001"
+        ],
+        "writes": [
+          "confirmation_summary_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the confirmation summary for the user.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the confirmation summary (confirmation_summary_T002) into a clear and concise message for the user, indicating that the page has been archived.",
+        "reads": [
+          "confirmation_summary_T002"
+        ],
+        "writes": [
+          "formatted_output_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      },
+      {
+        "source": "T002",
+        "destination": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

@@ -1,0 +1,25 @@
+```json
+{
+  "poem_content_T001": [
+    "A blush of amber, slow and deep,",
+    "Where iron's promise starts to sleep.",
+    "A whispered sigh of ages past,",
+    "On metal forms, a shadow cast.",
+    "",
+    "The patient tooth of air and rain,",
+    "Leaches strength, inflicts a stain.",
+    "Each fleck a moment, softly shed,",
+    "A silent story, softly read.",
+    "",
+    "From gleam to grit, a slow descent,",
+    "A testament to time well spent.",
+    "Yet in its crumble, new life stirs,",
+    "A rich, dark soil, where future blurs.",
+    "",
+    "Transformation's subtle art,",
+    "From solid form to broken heart.",
+    "Rust is not an end, you see,",
+    "But change, in deep effrontery."
+  ]
+}
+```

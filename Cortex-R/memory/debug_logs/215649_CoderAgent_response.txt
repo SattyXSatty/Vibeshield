@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import subprocess\n\ntry:\n    result = subprocess.run(['df', '-h'], capture_output=True, text=True, check=True)\n    output = result.stdout\nexcept FileNotFoundError:\n    output = \"Error: 'df' command not found. This tool is likely not running in a Unix-like environment.\"\nexcept subprocess.CalledProcessError as e:\n    output = f\"Error executing 'df -h': {e.stderr}\"\n\nreturn {'disk_space_output_T001': output}"
+  }
+}
+```

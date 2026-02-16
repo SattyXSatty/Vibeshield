@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a poem about rust.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Generate a poem with a theme of rust. The poem should explore themes of decay, time, and transformation. Output the poem as a string.",
+        "reads": [],
+        "writes": [
+          "poem_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the poem into Markdown and save to a file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the following poem text into a markdown file named 'test_poem.md' located in the 'Notes' directory. The poem text is: {{poem_text_T001}}",
+        "reads": [
+          "poem_text_T001"
+        ],
+        "writes": [
+          "file_path_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

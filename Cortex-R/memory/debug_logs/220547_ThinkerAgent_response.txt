@@ -1,0 +1,5 @@
+s `disk_space_info_T001` is empty. According to the rules, if the input variable is empty or contains no useful data, I must provide a clear explanation in the output. I need to use the variable name specified in the `writes` field.```json
+{
+  "analyzed_disk_space_T002": "Insufficient disk space data provided in the input to extract key metrics such as total space, used space, available space, and percentage used."
+}
+```

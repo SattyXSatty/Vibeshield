@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import os\n\ndirectory = 'Notes'\nfilename = os.path.join(directory, 'test_joke.md')\n\nif not os.path.exists(directory):\n    os.makedirs(directory)\n\njoke_content = formatted_joke_T002\n\nwith open(filename, 'w') as f:\n    f.write(joke_content)\n\nreturn { 'file_save_status_T003': f'Successfully saved joke to {filename}' }"
+  }
+}
+```

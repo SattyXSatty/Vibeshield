@@ -1,0 +1,9 @@
+```json
+{
+  "call_self": true,
+  "next_instruction": "Extract text from the found URLs to cross-reference stock price and company news.",
+  "code_variants": {
+    "CODE_1A": "urls_stock = web_search('Apple stock price today', 1, freshness='d')\nurls_news = web_search('Apple company news today', 1, freshness='d')\nreturn {'web_search_stock_price_T003': urls_stock, 'web_search_news_T003': urls_news}"
+  }
+}
+```

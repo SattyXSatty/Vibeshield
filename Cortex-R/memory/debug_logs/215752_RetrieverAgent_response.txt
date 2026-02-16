@@ -1,0 +1,8 @@
+```json
+{
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "pyramids_builders_T001 = web_search('who built the pyramids reliable historical sources', 5, freshness='y')\nif not isinstance(pyramids_builders_T001, list): pyramids_builders_T001 = []\nreturn {'pyramids_builders_T001': pyramids_builders_T001}"
+  }
+}
+```

@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve current system CPU usage",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Execute a system command to retrieve the current CPU usage. The command should be efficient and provide a clear numerical output.  The output should be captured as a string.  Use the command `top -bn1 | grep \"Cpu(s)\"` to get CPU usage.",
+        "reads": [],
+        "writes": [
+          "cpu_usage_raw_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Parse and extract CPU usage percentage",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Parse the raw CPU usage string `cpu_usage_raw_T001` to extract the CPU usage percentage. The output should be a floating-point number representing the percentage (e.g., 15.5). The relevant line typically looks like `Cpu(s): 1.5 us, 0.5 sy, 0.0 ni, 98.0 id, 0.0 wa, 0.0 hi, 0.0 si, 0.0 st`. Extract the idle percentage and subtract from 100 to get the used percentage.",
+        "reads": [
+          "cpu_usage_raw_T001"
+        ],
+        "writes": [
+          "cpu_usage_percentage_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format CPU usage for final output",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the extracted CPU usage percentage `cpu_usage_percentage_T002` into a human-readable string. Include a clear label indicating it's CPU usage and append a '%' sign. For example, 'System CPU Usage: 15.5%'.",
+        "reads": [
+          "cpu_usage_percentage_T002"
+        ],
+        "writes": [
+          "formatted_cpu_usage_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

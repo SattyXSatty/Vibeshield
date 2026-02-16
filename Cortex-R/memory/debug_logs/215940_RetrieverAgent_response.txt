@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": [],
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "import subprocess\n\ncommand = 'top -bn1 | grep \"Cpu(s)\"'\nprocess = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)\nstdout, stderr = process.communicate()\ncpu_usage_raw_T001 = stdout.decode('utf-8').strip()\n\nreturn {'cpu_usage_raw_T001': cpu_usage_raw_T001}"
+  }
+}
+```

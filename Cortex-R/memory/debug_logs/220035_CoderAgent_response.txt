@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import os\n\npoem_text_T001 = 'A melancholic hum,\nof gears and time,\nRust, a slow decay,\nA forgotten rhyme.\n\nOxidation's kiss,\nOn metal's face,\nA faded glory,\nLost in time and space.'\n\ndirectory = 'Notes'\nfilename = 'test_poem.md'\nfilepath = os.path.join(directory, filename)\n\nos.makedirs(directory, exist_ok=True)\n\nwith open(filepath, 'w') as f:\n    f.write(poem_text_T001)\n\nreturn { \"file_saved_status_T002\": f\"File saved successfully to {filepath}\" }"
+  }
+}
+```

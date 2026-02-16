@@ -1,0 +1,5 @@
+```json
+{
+  "poem_text_T001": "A slow blush on iron's cheek,\nA whispered rot, a silent speak.\nOnce strong and bright, a metal gleam,\nNow yielding to a fiery dream.\n\nFrom sun and rain, a kiss so deep,\nSecrets the sleeping ores do keep.\nIt blooms in flakes, a crimson stain,\nTransforming strength to gentle wane.\n\nNot death, but change, a story told,\nOf iron's journey, brave and bold.\nFrom solid form to dust's embrace,\nA new beginning, time's own grace."
+}
+```

@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Extract content from the provided URL using BrowserAgent.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Navigate to the URL 'https://www.google.com' and extract all visible text content and relevant metadata (e.g., title, description). Save the extracted content.",
+        "reads": [],
+        "writes": [
+          "extracted_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the extracted content into a readable summary.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Take the extracted content from the URL navigation step and format it into a concise, human-readable summary. Highlight key information if present.",
+        "reads": [
+          "extracted_content_T001"
+        ],
+        "writes": [
+          "formatted_summary_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T003"
+}
+```

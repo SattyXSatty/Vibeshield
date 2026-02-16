@@ -1,0 +1,73 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve content from the specified URL",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Use the browser tool to fetch the content of the webpage at the URL: 'https://example.com'. Save the raw HTML content.",
+        "reads": [],
+        "writes": [
+          "raw_html_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Parse and extract relevant information from the raw HTML",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Parse the provided raw HTML content (`raw_html_T001`). Extract the main textual content, title, and any meta descriptions. Ignore navigation, footers, and advertisements. Prepare this data for archiving.",
+        "reads": [
+          "raw_html_T001"
+        ],
+        "writes": [
+          "extracted_content_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the extracted content for archiving",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the extracted content (`extracted_content_T002`) into a structured and readable format suitable for archiving. Include the page title and main text. The output should be plain text.",
+        "reads": [
+          "extracted_content_T002"
+        ],
+        "writes": [
+          "archived_content_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Save the archived content to a file",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the formatted archived content (`archived_content_T003`) to a text file named 'archived_example.com.txt' in the data directory.",
+        "reads": [
+          "archived_content_T003"
+        ],
+        "writes": [
+          "file_save_status_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

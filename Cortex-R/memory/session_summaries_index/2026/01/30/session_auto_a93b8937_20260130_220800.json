@@ -1,0 +1,141 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_a93b8937_20260130_220800",
+    "original_query": "Write a poem about rust and save it to Notes/test_poem.md",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:38:00.324378",
+    "status": "running",
+    "globals_schema": {}
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Generate a poem about rust.",
+              "agent": "CoderAgent",
+              "agent_prompt": "Generate a poem about rust. The poem should be evocative and descriptive. Save the output to a file named 'test_poem.md' in the 'Notes' directory. The poem content will be returned as `poem_content_T001` and the file path as `output_file_path_T001`.",
+              "reads": [],
+              "writes": [
+                "poem_content_T001",
+                "output_file_path_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Confirm poem generation and file saving.",
+              "agent": "QAAgent",
+              "agent_prompt": "Review the output from T001. Confirm that a poem about rust was generated and that the file path `output_file_path_T001` indicates successful saving to 'Notes/test_poem.md'. If the file path is valid and the content is present, return a success verdict. Otherwise, return a revision needed verdict.",
+              "reads": [
+                "poem_content_T001",
+                "output_file_path_T001"
+              ],
+              "writes": [
+                "qa_verdict_T002"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "target": "T001"
+            },
+            {
+              "source": "T001",
+              "target": "T002"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 8.03e-05,
+        "input_tokens": 31,
+        "output_tokens": 193,
+        "total_tokens": 224,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:39:03.265829",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Generate a poem about rust.",
+      "agent": "CoderAgent",
+      "agent_prompt": "Generate a poem about rust. The poem should be evocative and descriptive. Save the output to a file named 'test_poem.md' in the 'Notes' directory. The poem content will be returned as `poem_content_T001` and the file path as `output_file_path_T001`.",
+      "reads": [],
+      "writes": [
+        "poem_content_T001",
+        "output_file_path_T001"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:39:03.272117",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T002",
+      "description": "Confirm poem generation and file saving.",
+      "agent": "QAAgent",
+      "agent_prompt": "Review the output from T001. Confirm that a poem about rust was generated and that the file path `output_file_path_T001` indicates successful saving to 'Notes/test_poem.md'. If the file path is valid and the content is present, return a success verdict. Otherwise, return a revision needed verdict.",
+      "reads": [
+        "poem_content_T001",
+        "output_file_path_T001"
+      ],
+      "writes": [
+        "qa_verdict_T002"
+      ],
+      "status": "pending",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "T001",
+      "target": "T002"
+    }
+  ]
+}

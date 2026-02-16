@@ -1,0 +1,39 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Identify who built the pyramids.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Conduct a web search to determine who built the pyramids. Focus on reputable historical and archaeological sources. Store the answer.",
+        "reads": [],
+        "writes": [
+          "pyramid_builders_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the answer to 'Who built the pyramids?' into a Markdown file.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Take the information about who built the pyramids (`pyramid_builders_T001`) and format it into a clear and concise Markdown document. Save the output to `Notes/test_pyramids.md`.",
+        "reads": [
+          "pyramid_builders_T001"
+        ],
+        "writes": [
+          "formatted_answer_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

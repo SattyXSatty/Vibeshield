@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Fetch content of the specified URL using BrowserAgent.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Fetch the content of the given URL. URL: https://example.com. Save the raw HTML content.",
+        "reads": [],
+        "writes": [
+          "raw_html_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Save the fetched HTML content to a file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the provided raw HTML content to a file named 'example_com_page.html' in the data directory. raw_html_content: `raw_html_content_T001`",
+        "reads": [
+          "raw_html_content_T001"
+        ],
+        "writes": [
+          "file_path_example_com_page_html_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Confirm the archiving of the page and provide the file path.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Confirm that the page has been archived. Provide the path to the saved HTML file. File path: `file_path_example_com_page_html_T002`",
+        "reads": [
+          "file_path_example_com_page_html_T002"
+        ],
+        "writes": [
+          "archiving_confirmation_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import re\n\nhtml_content = html_content_T001\n\n# Basic cleanup: remove excessive whitespace and comments\ncleaned_html = re.sub(r'<!--.*?-->', '', html_content, flags=re.DOTALL)\ncleaned_html = re.sub(r'\\s+', ' ', cleaned_html).strip()\n\n# For this specific task, we're assuming the primary goal is to get a clean string. \n# Advanced tasks like inlining CSS or rewriting links would require more complex parsing (e.g., BeautifulSoup).\n\nwith open('archived_example_com_page.html', 'w', encoding='utf-8') as f:\n    f.write(cleaned_html)\n\nreturn { \"cleaned_html_T003\": cleaned_html, \"created_file\": \"archived_example_com_page.html\" }"
+  }
+}
+```

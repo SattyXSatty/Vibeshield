@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve current silver price using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get the current price of silver (symbol: XAG=X). Return the price.",
+        "reads": [],
+        "writes": [
+          "silver_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the silver price into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided silver price into a concise Markdown report. The report should clearly state the current silver price. Save this report to Notes/Scheduler/Silver_price.md.",
+        "reads": [
+          "silver_price_T001"
+        ],
+        "writes": [
+          "formatted_report_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

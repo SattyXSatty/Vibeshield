@@ -1,0 +1,10 @@
+```json
+{
+  "summary_bullets": [
+    "The primary builders of the pyramids were skilled, paid Egyptian laborers, not slaves.",
+    "Evidence suggests a well-organized workforce, housed and fed near the construction sites.",
+    "Historical consensus points to Egyptian artisans, craftsmen, and laborers as the main construction force.",
+    "While some foreign laborers may have been involved, the core workforce was Egyptian."
+  ]
+}
+```

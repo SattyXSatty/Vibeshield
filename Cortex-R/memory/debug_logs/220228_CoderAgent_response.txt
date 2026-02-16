@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "with open('example_com_page.html', 'w') as f:\n    f.write(raw_html_content_T001)\nreturn { \"created_file\": \"example_com_page.html\" }"
+  }
+}
+```

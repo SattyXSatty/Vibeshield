@@ -1,0 +1,11 @@
+```json
+{
+  "market_summary_T003": {
+    "summary_bullets": [
+      "Apple's stock price performance is a key indicator of its current market standing.",
+      "Recent company news significantly influences investor sentiment and stock valuation.",
+      "A data-driven analysis requires integrating both stock price trends and news events to assess Apple's market position."
+    ]
+  }
+}
+```

@@ -1,0 +1,10 @@
+Cortex-R/Notes/
+node_modules/
+dist/
+build/
+out/
+dist-electron/
+coverage/
+.DS_Store
+*.tsbuildinfo
+*.log

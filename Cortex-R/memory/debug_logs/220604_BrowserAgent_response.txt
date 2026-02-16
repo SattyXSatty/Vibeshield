@@ -1,0 +1,11 @@
+```json
+{
+  "thought": "The user wants to extract the full HTML content of a given URL. The `web_extract_text` tool is suitable for this purpose as it extracts readable text from a webpage. Since the user specifically asked for 'full HTML content' and not just readable text, `webpage_url_to_raw_text` is a more appropriate tool. I will use this tool to get the raw HTML content of the provided URL.",
+  "call_tool": {
+    "name": "webpage_url_to_raw_text",
+    "arguments": {
+      "string": "https://www.google.com"
+    }
+  }
+}
+```

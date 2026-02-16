@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import os\n\nfile_path = os.path.join('Notes', 'test_joke.md')\n\nwith open(file_path, 'w') as f:\n    f.write(joke_text_T001)\n\nprint(f'Joke saved successfully to {file_path}')\n\nreturn { \"execution_result_T002\": f'Joke saved successfully to {file_path}' }"
+  }
+}
+```

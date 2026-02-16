@@ -1,0 +1,12 @@
+```json
+{
+  "pyramids_builders_summary_T002": {
+    "summary_bullets": [
+      "The Great Pyramids of Giza were primarily built by a skilled workforce of Egyptian laborers, not slaves.",
+      "These workers were well-fed, housed, and received medical care, indicating a paid or conscripted labor force rather than enslaved people.",
+      "Evidence suggests the construction occurred during the reign of Pharaoh Khufu for the Great Pyramid.",
+      "While the primary builders were Egyptians, there is ongoing academic debate regarding the extent and nature of foreign labor involvement."
+    ]
+  }
+}
+```

@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": [],
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "silver_price_data_T001 = yahoo_finance.get_stock_price('XAGUSD=X')\nreturn {'silver_price_data_T001': silver_price_data_T001}"
+  }
+}
+```

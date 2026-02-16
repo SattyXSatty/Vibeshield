@@ -1,0 +1,74 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get latest news for Tesla using yahoo_finance",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to retrieve the latest news articles for Tesla. The tool used should be 'get_company_news'. Be concise and data-driven. Ensure the output is structured for subsequent processing.",
+        "reads": [],
+        "writes": [
+          "tesla_news_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Web search for additional Tesla news if needed",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for recent news related to Tesla to supplement the data from 'yahoo_finance'. Focus on information that provides a broader market context or addresses any gaps in the initial retrieval. Use a freshness filter of 'd' for 'day' to ensure recency.",
+        "reads": [
+          "tesla_news_T001"
+        ],
+        "writes": [
+          "additional_tesla_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Synthesize Tesla news into a concise report",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Combine the news articles obtained from 'yahoo_finance' ('tesla_news_T001') and the supplementary web search ('additional_tesla_news_T002'). Synthesize this information into a concise, data-driven summary, focusing on key events, market impact, and trends relevant to Tesla. Present the synthesized information in a structured format suitable for a Markdown report.",
+        "reads": [
+          "tesla_news_T001",
+          "additional_tesla_news_T002"
+        ],
+        "writes": [
+          "synthesized_tesla_news_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Format the synthesized Tesla news into a Markdown report",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the synthesized Tesla news ('synthesized_tesla_news_T003') into a cohesive Markdown report. Ensure the report is well-structured, uses clear headings, and presents the data in a human-readable and data-driven manner. Save the final output to 'Notes/test_tesla.md'.",
+        "reads": [
+          "synthesized_tesla_news_T003"
+        ],
+        "writes": [
+          "formatted_tesla_report_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

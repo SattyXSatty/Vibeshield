@@ -1,0 +1,9 @@
+```json
+{
+  "call_self": true,
+  "next_instruction": "Extract text from the found URLs to find who built the pyramids.",
+  "code_variants": {
+    "CODE_1A": "urls = web_search('who built the pyramids credible historical sources', count=5, freshness='y')\nreturn {'found_urls': urls}"
+  }
+}
+```

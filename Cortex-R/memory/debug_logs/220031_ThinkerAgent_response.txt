@@ -1,0 +1,5 @@
+```json
+{
+  "poem_text_T001": "A blush of ochre, then a deeper red,\nWhere iron yields, and time has softly spread.\nIt crumbles, flakes, a powdery embrace,\nA rough-hewn map upon a metal face.\n\nCorrosion's art, a slow, deliberate decay,\nTurning the strong to dust, then swept away.\nIt speaks of age, of storms, of sun's fierce kiss,\nA silent witness to what once was this.\n\nMetaphor's deep well, for spirit, hope, or gleam,\nThat loses edge, succumbs to fading dream.\nYet, in its ruin, beauty can be found,\nIn textures rich, upon the hallowed ground."
+}
+```

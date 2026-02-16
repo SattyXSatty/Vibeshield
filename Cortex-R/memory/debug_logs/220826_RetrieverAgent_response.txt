@@ -1,0 +1,8 @@
+```json
+{
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "return {'apple_stock_price_T001': yahoo_finance.get_stock_price('AAPL')}"
+  }
+}
+```

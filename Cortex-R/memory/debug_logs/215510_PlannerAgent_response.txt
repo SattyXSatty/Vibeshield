@@ -1,0 +1,78 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Fetch content from the specified URL.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Access the webpage at the provided URL and retrieve its entire HTML content. Save the content to a file named 'example_com_page.html' in the data directory. The URL is: https://example.com",
+        "reads": [],
+        "writes": [
+          "html_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Analyze fetched HTML content for archival suitability.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Analyze the HTML content from 'example_com_page.html' to determine its suitability for archival. Identify key structural elements, text content, and any embedded resources (e.g., images, scripts). Assess potential issues like dynamic content loading or complex JavaScript that might hinder standard archival. The goal is to understand what needs to be captured for a faithful archive.",
+        "reads": [
+          "html_content_T001"
+        ],
+        "writes": [
+          "archival_analysis_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the HTML content for archival.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Take the raw HTML content from 'example_com_page.html' and process it to ensure it is suitable for archival. This may involve cleaning up extraneous elements, ensuring relative links are handled correctly if needed for local archival (though for this step, assume the output is a single, self-contained HTML file for potential later use), and potentially inlining critical CSS if present. The output should be a clean HTML string. Save this cleaned HTML to a file named 'archived_example_com_page.html' in the data directory.",
+        "reads": [
+          "html_content_T001"
+        ],
+        "writes": [
+          "cleaned_html_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Summarize archival findings and format for reporting.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Generate a concise summary of the archival process for the page 'https://example.com'. Include findings from the archival analysis (T002) and confirm the successful saving of the cleaned HTML content (T003). Present this in a clear, human-readable format suitable for reporting. Highlight any limitations or considerations identified during the analysis. The final output should be a Markdown formatted summary.",
+        "reads": [
+          "archival_analysis_T002",
+          "cleaned_html_T003"
+        ],
+        "writes": [
+          "archival_report_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T001",
+        "target": "T003"
+      },
+      {
+        "source": "T002",
+        "target": "T004"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

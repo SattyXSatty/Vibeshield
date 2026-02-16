@@ -1,0 +1,17 @@
+{
+    "name": "@vibeshield/cortex-bridge",
+    "version": "0.1.0",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "lint": "eslint src/**"
+    },
+    "dependencies": {
+        "@vibeshield/shared": "workspace:*"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3"
+    }
+}

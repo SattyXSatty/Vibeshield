@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Fetch content from the provided URL using BrowserAgent.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Retrieve the content from the URL: https://www.google.com. Save the raw HTML content to a variable named `raw_html_T001`.",
+        "reads": [],
+        "writes": [
+          "raw_html_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Distill key information from the fetched HTML content.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Analyze the provided HTML content (`raw_html_T001`) and extract the main title, meta description, and any prominent text. Structure the extracted information into a clear, concise summary. Save this summary as `distilled_content_T002`.",
+        "reads": [
+          "raw_html_T001"
+        ],
+        "writes": [
+          "distilled_content_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the distilled content for presentation.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the distilled content (`distilled_content_T002`) into a human-readable markdown string. The output should clearly present the extracted title, meta description, and prominent text. Save the formatted output as `formatted_summary_T003`.",
+        "reads": [
+          "distilled_content_T002"
+        ],
+        "writes": [
+          "formatted_summary_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

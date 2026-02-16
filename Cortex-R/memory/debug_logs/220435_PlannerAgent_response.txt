@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Check current disk space usage on the system.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Execute a command to check the current disk space usage. Return the output. This command might be 'df -h' on Linux/macOS or 'Get-PSDrive C' in PowerShell on Windows. Ensure the output is captured and returned as a string.",
+        "reads": [],
+        "writes": [
+          "disk_space_info_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Analyze disk space information to determine available and used space.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Analyze the provided disk space information (`disk_space_info_T001`) to extract key metrics such as total space, used space, available space, and percentage used. Present this information in a structured format.",
+        "reads": [
+          "disk_space_info_T001"
+        ],
+        "writes": [
+          "analyzed_disk_space_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the analyzed disk space information for final output.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the analyzed disk space information (`analyzed_disk_space_T002`) into a clear and concise summary. Include total, used, and available disk space, along with the percentage used. Present this in a human-readable string format.",
+        "reads": [
+          "analyzed_disk_space_T002"
+        ],
+        "writes": [
+          "formatted_disk_space_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

@@ -1,0 +1,176 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_27c2f3ff_20260130_215400",
+    "original_query": "Who built the pyramids? Save answer to Notes/test_pyramids.md",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:24:00.397971",
+    "status": "running",
+    "globals_schema": {}
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Research who built the pyramids.",
+              "agent": "RetrieverAgent",
+              "agent_prompt": "Perform a web search for 'who built the pyramids'. Focus on reliable historical sources and summarize the primary builders and any significant controversies or alternative theories.",
+              "reads": [],
+              "writes": [
+                "pyramids_builders_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Format the answer to 'Who built the pyramids?' into Markdown.",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Format the provided information about who built the pyramids into a clear and concise Markdown document. Ensure the primary builders are clearly stated and any supporting details or nuances are included.",
+              "reads": [
+                "pyramids_builders_T001"
+              ],
+              "writes": [
+                "formatted_pyramids_answer_T002"
+              ]
+            },
+            {
+              "id": "T003",
+              "description": "Save the formatted answer to Notes/test_pyramids.md.",
+              "agent": "CoderAgent",
+              "agent_prompt": "Write the content of `formatted_pyramids_answer_T002` to a file named 'Notes/test_pyramids.md'.",
+              "reads": [
+                "formatted_pyramids_answer_T002"
+              ],
+              "writes": [
+                "file_write_status_T003"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "destination": "T001"
+            },
+            {
+              "source": "T001",
+              "destination": "T002"
+            },
+            {
+              "source": "T002",
+              "destination": "T003"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 8.360000000000001e-05,
+        "input_tokens": 28,
+        "output_tokens": 202,
+        "total_tokens": 230,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:24:03.509740",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Research who built the pyramids.",
+      "agent": "RetrieverAgent",
+      "agent_prompt": "Perform a web search for 'who built the pyramids'. Focus on reliable historical sources and summarize the primary builders and any significant controversies or alternative theories.",
+      "reads": [],
+      "writes": [
+        "pyramids_builders_T001"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:03.544801",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T002",
+      "description": "Format the answer to 'Who built the pyramids?' into Markdown.",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Format the provided information about who built the pyramids into a clear and concise Markdown document. Ensure the primary builders are clearly stated and any supporting details or nuances are included.",
+      "reads": [
+        "pyramids_builders_T001"
+      ],
+      "writes": [
+        "formatted_pyramids_answer_T002"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:03.548712",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T003",
+      "description": "Save the formatted answer to Notes/test_pyramids.md.",
+      "agent": "CoderAgent",
+      "agent_prompt": "Write the content of `formatted_pyramids_answer_T002` to a file named 'Notes/test_pyramids.md'.",
+      "reads": [
+        "formatted_pyramids_answer_T002"
+      ],
+      "writes": [
+        "file_write_status_T003"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:03.550257",
+      "end_time": null,
+      "execution_time": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "Query",
+      "target": "T002"
+    },
+    {
+      "source": "Query",
+      "target": "T003"
+    }
+  ]
+}

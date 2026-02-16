@@ -1,0 +1,10 @@
+```json
+{
+  "result_variable": [],
+  "call_self": true,
+  "next_instruction": "Analyze the search results to identify the most relevant news articles for Tesla.",
+  "code_variants": {
+    "CODE_1A": "urls = web_search('recent news articles for Tesla', 5)\nreturn {'found_urls': urls}"
+  }
+}
+```

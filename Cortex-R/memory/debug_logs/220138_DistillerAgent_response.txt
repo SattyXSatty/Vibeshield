@@ -1,0 +1,9 @@
+```json
+{
+  "summary_bullets": [
+    "Tesla's Model S and Model X production may be canceled to refocus on Optimus robot development.",
+    "This strategic shift is detailed in recent business news, indicating a potential pivot from core vehicle lines towards AI and robotics.",
+    "The historical significance of the Model S, particularly its role in establishing Tesla's brand and the EV market, is being re-evaluated in light of this potential redirection."
+  ]
+}
+```

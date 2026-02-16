@@ -1,0 +1,5 @@
+```json
+{
+  "poem_content_T001": "A blush of ochre, slow embrace,\nOn iron's proud and steely face.\nA whisper starts, a tender stain,\nWhere sun and storm and time have lain.\n\nFrom forge's fire, a gleam so bright,\nTo patient yielding, day and night.\nEach droplet kissed, each atom frayed,\nA silent symphony, unmade.\n\nThe jagged edge, a softer line,\nA history in every sign.\nFrom ship's hull deep to garden gate,\nIt speaks of purpose, seals its fate.\n\nA filigree of crimson dust,\nBorn of exposure, built on trust\nThat all that's solid, hard, and bold,\nWill yield to stories to be told.\n\nNot end, but change, a slow release,\nInto a painter's, poet's peace.\nThe texture rough, the color deep,\nWhile ancient, silent secrets sleep."
+}
+```

@@ -1,0 +1,55 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a joke",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Generate a short, original, and humorous joke. The joke should be suitable for a general audience.",
+        "reads": [],
+        "writes": [
+          "joke_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format joke for saving to markdown",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the generated joke `joke_text_T001` into a markdown string suitable for saving to a file. Ensure the output is just the markdown content without any additional text.",
+        "reads": [
+          "joke_text_T001"
+        ],
+        "writes": [
+          "formatted_joke_markdown_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Save joke to Notes/test_joke.md",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the markdown formatted joke `formatted_joke_markdown_T002` to the file `Notes/test_joke.md`. The file should be created or overwritten if it already exists. The content should be the markdown string provided.",
+        "reads": [
+          "formatted_joke_markdown_T002"
+        ],
+        "writes": [
+          "file_save_status_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

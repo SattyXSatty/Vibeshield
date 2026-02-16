@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import shutil\n\ndef get_size_gb(size_bytes):\n    return round(size_bytes / (1024**3), 2)\n\nusage = shutil.disk_usage('/')\ntotal_gb = get_size_gb(usage.total)\nused_gb = get_size_gb(usage.used)\nfree_gb = get_size_gb(usage.free)\n\ndisk_space_info = {\n    'total_gb': total_gb,\n    'used_gb': used_gb,\n    'free_gb': free_gb\n}\n\nreturn {'disk_space_info_T001': disk_space_info}"
+  }
+}
+```

@@ -1,0 +1,76 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve current stock price for Apple using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get the current stock price for Apple (AAPL). Store the result.",
+        "reads": [],
+        "writes": [
+          "apple_stock_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Retrieve recent news for Apple using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get recent company news for Apple (AAPL). Store the result.",
+        "reads": [],
+        "writes": [
+          "apple_company_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Synthesize stock price and news into a brief summary.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Combine the Apple stock price ('apple_stock_price_T001') and company news ('apple_company_news_T002') into a concise, data-driven summary. Focus on key figures and recent developments.",
+        "reads": [
+          "apple_stock_price_T001",
+          "apple_company_news_T002"
+        ],
+        "writes": [
+          "apple_brief_summary_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Format the Apple brief into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the synthesized Apple brief ('apple_brief_summary_T003') into a clean Markdown report. Ensure it is concise and data-driven, suitable for saving to Notes/test_apple.md.",
+        "reads": [
+          "apple_brief_summary_T003"
+        ],
+        "writes": [
+          "apple_markdown_report_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "ROOT",
+        "target": "T002"
+      },
+      {
+        "source": "T001",
+        "target": "T003"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

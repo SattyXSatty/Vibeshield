@@ -1,0 +1,57 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a joke",
+        "agent": "CoderAgent",
+        "agent_prompt": "Generate a short, humorous joke. The joke should be original and appropriate for a general audience. Save the joke as a string variable.",
+        "reads": [],
+        "writes": [
+          "joke_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Save the joke to a file",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the provided joke text to a file named 'Notes/test_joke.md'. The file path is relative to the data directory.",
+        "reads": [
+          "joke_text_T001"
+        ],
+        "writes": [
+          "file_save_status_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Confirm joke saved successfully",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Confirm that the joke has been successfully saved to 'Notes/test_joke.md'. Provide a simple confirmation message.",
+        "reads": [
+          "file_save_status_T002"
+        ],
+        "writes": [
+          "confirmation_message_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

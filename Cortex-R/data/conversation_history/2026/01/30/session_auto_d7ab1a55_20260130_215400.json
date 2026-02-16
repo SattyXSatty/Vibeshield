@@ -1,0 +1,176 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_d7ab1a55_20260130_215400",
+    "original_query": "Write a joke and save to Notes/test_joke.md",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:24:00.699544",
+    "status": "running",
+    "globals_schema": {}
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Generate a joke",
+              "agent": "CoderAgent",
+              "agent_prompt": "Generate a short, humorous joke. The joke should be original and appropriate for a general audience. Save the joke as a string variable.",
+              "reads": [],
+              "writes": [
+                "joke_text_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Save the joke to a file",
+              "agent": "CoderAgent",
+              "agent_prompt": "Save the provided joke text to a file named 'Notes/test_joke.md'. The file path is relative to the data directory.",
+              "reads": [
+                "joke_text_T001"
+              ],
+              "writes": [
+                "file_save_status_T002"
+              ]
+            },
+            {
+              "id": "T003",
+              "description": "Confirm joke saved successfully",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Confirm that the joke has been successfully saved to 'Notes/test_joke.md'. Provide a simple confirmation message.",
+              "reads": [
+                "file_save_status_T002"
+              ],
+              "writes": [
+                "confirmation_message_T003"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "target": "T001"
+            },
+            {
+              "source": "T001",
+              "target": "T002"
+            },
+            {
+              "source": "T002",
+              "target": "T003"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 7.27e-05,
+        "input_tokens": 27,
+        "output_tokens": 175,
+        "total_tokens": 202,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:24:38.726778",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Generate a joke",
+      "agent": "CoderAgent",
+      "agent_prompt": "Generate a short, humorous joke. The joke should be original and appropriate for a general audience. Save the joke as a string variable.",
+      "reads": [],
+      "writes": [
+        "joke_text_T001"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:38.733302",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T002",
+      "description": "Save the joke to a file",
+      "agent": "CoderAgent",
+      "agent_prompt": "Save the provided joke text to a file named 'Notes/test_joke.md'. The file path is relative to the data directory.",
+      "reads": [
+        "joke_text_T001"
+      ],
+      "writes": [
+        "file_save_status_T002"
+      ],
+      "status": "pending",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T003",
+      "description": "Confirm joke saved successfully",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Confirm that the joke has been successfully saved to 'Notes/test_joke.md'. Provide a simple confirmation message.",
+      "reads": [
+        "file_save_status_T002"
+      ],
+      "writes": [
+        "confirmation_message_T003"
+      ],
+      "status": "pending",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "T001",
+      "target": "T002"
+    },
+    {
+      "source": "T002",
+      "target": "T003"
+    }
+  ]
+}

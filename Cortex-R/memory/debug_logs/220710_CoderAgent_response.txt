@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import os\n\npoem_text_T001 = \"\"\n# Assuming poem_text_T001 is available from a previous step\n# For demonstration, let's define it here. In a real scenario, it would be injected.\n# poem_text_T001 = \"The world will end in fire,\\nOr in ice. From what I’ve tasted of desire\\nI hold with those who favor fire.\\nBut if it had to perish twice,\\nI think I know enough of hate\\nTo say that for destruction ice\\nIs also great\\nAnd would suffice.\"\n\nnotes_dir = 'Notes'\nfile_path = os.path.join(notes_dir, 'test_poem.md')\n\nos.makedirs(notes_dir, exist_ok=True)\n\nwith open(file_path, 'w') as f:\n    f.write(poem_text_T001)\n\nreturn { \"file_path_T002\": file_path }"
+  }
+}
+```

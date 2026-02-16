@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": "web_silver_price_T002",
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "urls = web_search('current silver price', count=5, freshness='d')\nif not isinstance(urls, list): urls = []\nreturn {'web_silver_price_T002': urls}"
+  }
+}
+```

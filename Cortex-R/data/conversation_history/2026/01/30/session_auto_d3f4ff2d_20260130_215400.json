@@ -1,0 +1,176 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_d3f4ff2d_20260130_215400",
+    "original_query": "Clip url https://www.google.com",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:24:00.662549",
+    "status": "running",
+    "globals_schema": {}
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Fetch content from the provided URL using BrowserAgent.",
+              "agent": "BrowserAgent",
+              "agent_prompt": "Retrieve the content from the URL: https://www.google.com. Save the raw HTML content to a variable named `raw_html_T001`.",
+              "reads": [],
+              "writes": [
+                "raw_html_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Distill key information from the fetched HTML content.",
+              "agent": "DistillerAgent",
+              "agent_prompt": "Analyze the provided HTML content (`raw_html_T001`) and extract the main title, meta description, and any prominent text. Structure the extracted information into a clear, concise summary. Save this summary as `distilled_content_T002`.",
+              "reads": [
+                "raw_html_T001"
+              ],
+              "writes": [
+                "distilled_content_T002"
+              ]
+            },
+            {
+              "id": "T003",
+              "description": "Format the distilled content for presentation.",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Format the distilled content (`distilled_content_T002`) into a human-readable markdown string. The output should clearly present the extracted title, meta description, and prominent text. Save the formatted output as `formatted_summary_T003`.",
+              "reads": [
+                "distilled_content_T002"
+              ],
+              "writes": [
+                "formatted_summary_T003"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "target": "T001"
+            },
+            {
+              "source": "T001",
+              "target": "T002"
+            },
+            {
+              "source": "T002",
+              "target": "T003"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 8.970000000000001e-05,
+        "input_tokens": 21,
+        "output_tokens": 219,
+        "total_tokens": 240,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:24:34.761733",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Fetch content from the provided URL using BrowserAgent.",
+      "agent": "BrowserAgent",
+      "agent_prompt": "Retrieve the content from the URL: https://www.google.com. Save the raw HTML content to a variable named `raw_html_T001`.",
+      "reads": [],
+      "writes": [
+        "raw_html_T001"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:34.766162",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T002",
+      "description": "Distill key information from the fetched HTML content.",
+      "agent": "DistillerAgent",
+      "agent_prompt": "Analyze the provided HTML content (`raw_html_T001`) and extract the main title, meta description, and any prominent text. Structure the extracted information into a clear, concise summary. Save this summary as `distilled_content_T002`.",
+      "reads": [
+        "raw_html_T001"
+      ],
+      "writes": [
+        "distilled_content_T002"
+      ],
+      "status": "pending",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T003",
+      "description": "Format the distilled content for presentation.",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Format the distilled content (`distilled_content_T002`) into a human-readable markdown string. The output should clearly present the extracted title, meta description, and prominent text. Save the formatted output as `formatted_summary_T003`.",
+      "reads": [
+        "distilled_content_T002"
+      ],
+      "writes": [
+        "formatted_summary_T003"
+      ],
+      "status": "pending",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "T001",
+      "target": "T002"
+    },
+    {
+      "source": "T002",
+      "target": "T003"
+    }
+  ]
+}

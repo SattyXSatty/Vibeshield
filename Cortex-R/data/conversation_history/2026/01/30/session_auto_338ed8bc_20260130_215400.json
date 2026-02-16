@@ -1,0 +1,176 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_338ed8bc_20260130_215400",
+    "original_query": "Archive page https://example.com",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:24:00.441759",
+    "status": "running",
+    "globals_schema": {}
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Identify the best tool to archive a webpage.",
+              "agent": "ThinkerAgent",
+              "agent_prompt": "Given the goal 'Archive page https://example.com', identify the most suitable agent or tool for archiving a webpage. Consider available tools for web interaction and content capture. Respond with the name of the tool.",
+              "reads": [],
+              "writes": [
+                "archiving_tool_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Archive the specified webpage using the identified tool.",
+              "agent": "BrowserAgent",
+              "agent_prompt": "Archive the webpage located at 'https://example.com' using the `archive_url` tool. Ensure the full content of the page is captured. The output should be a confirmation of the archival action or any relevant archival identifier.",
+              "reads": [
+                "archiving_tool_T001"
+              ],
+              "writes": [
+                "archival_result_T002"
+              ]
+            },
+            {
+              "id": "T003",
+              "description": "Format the archival result for the user.",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Present the archival result. If the archival was successful, confirm the action. If there were any issues, report them clearly. Use the 'archival_result_T002' to inform the output.",
+              "reads": [
+                "archival_result_T002"
+              ],
+              "writes": [
+                "formatted_output_T003"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "destination": "T001"
+            },
+            {
+              "source": "T001",
+              "destination": "T002"
+            },
+            {
+              "source": "T002",
+              "destination": "T003"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 0.0001005,
+        "input_tokens": 21,
+        "output_tokens": 246,
+        "total_tokens": 267,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:24:08.766234",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Identify the best tool to archive a webpage.",
+      "agent": "ThinkerAgent",
+      "agent_prompt": "Given the goal 'Archive page https://example.com', identify the most suitable agent or tool for archiving a webpage. Consider available tools for web interaction and content capture. Respond with the name of the tool.",
+      "reads": [],
+      "writes": [
+        "archiving_tool_T001"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:08.783056",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T002",
+      "description": "Archive the specified webpage using the identified tool.",
+      "agent": "BrowserAgent",
+      "agent_prompt": "Archive the webpage located at 'https://example.com' using the `archive_url` tool. Ensure the full content of the page is captured. The output should be a confirmation of the archival action or any relevant archival identifier.",
+      "reads": [
+        "archiving_tool_T001"
+      ],
+      "writes": [
+        "archival_result_T002"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:08.783870",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T003",
+      "description": "Format the archival result for the user.",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Present the archival result. If the archival was successful, confirm the action. If there were any issues, report them clearly. Use the 'archival_result_T002' to inform the output.",
+      "reads": [
+        "archival_result_T002"
+      ],
+      "writes": [
+        "formatted_output_T003"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:24:08.784612",
+      "end_time": null,
+      "execution_time": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "Query",
+      "target": "T002"
+    },
+    {
+      "source": "Query",
+      "target": "T003"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve current silver price using yahoo_finance tool.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get the current price for silver. Ensure the tool is configured to fetch real-time or the most recent available data. The ticker symbol for silver is typically 'XAGUSD=X'. Save the retrieved price data.",
+        "reads": [],
+        "writes": [
+          "silver_price_data_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the silver price into a Markdown report.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided silver price data into a concise Markdown report. The report should clearly state the current silver price and mention the source of the data. The output file should be named 'Silver_price.md' and saved to the 'Notes/Scheduler/' directory.",
+        "reads": [
+          "silver_price_data_T001"
+        ],
+        "writes": [
+          "formatted_report_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}

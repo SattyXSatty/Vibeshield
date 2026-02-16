@@ -1,0 +1,122 @@
+[
+  {
+    "id": "9895b12f",
+    "name": "Test Market Check",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Check current stock price of Apple. Save brief to Notes/test_apple.md",
+    "skill_id": "market_analyst",
+    "enabled": true,
+    "last_run": "2026-01-30T22:07:00.308257",
+    "next_run": "2026-01-30T21:27:00+05:30",
+    "last_output": "Completed."
+  },
+  {
+    "id": "742709a3",
+    "name": "Test Silver Price",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Find silver price and save to Notes/Scheduler/Silver_price.md",
+    "skill_id": "market_analyst",
+    "enabled": true,
+    "last_run": "2026-01-30T22:09:00.682332",
+    "next_run": "2026-01-30T21:27:00+05:30",
+    "last_output": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Silver Price Report</title>\n    <style>\n       ..."
+  },
+  {
+    "id": "bdd29530",
+    "name": "Test System Health",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Check system cpu usage",
+    "skill_id": "system_monitor",
+    "enabled": true,
+    "last_run": "2026-01-30T22:08:00.325123",
+    "next_run": "2026-01-30T21:27:00+05:30",
+    "last_output": "CPU: 43.1%, RAM: 81.8%, Disk: 68.3%"
+  },
+  {
+    "id": "d3f4ff2d",
+    "name": "Test Clip Google",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Clip url https://www.google.com",
+    "skill_id": "web_clipper",
+    "enabled": true,
+    "last_run": "2026-01-30T22:08:00.345649",
+    "next_run": "2026-01-30T21:27:00+05:30",
+    "last_output": "Clipped https://www.google.com"
+  },
+  {
+    "id": "338ed8bc",
+    "name": "Test Clip Example",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Archive page https://example.com",
+    "skill_id": "web_clipper",
+    "enabled": true,
+    "last_run": "2026-01-30T22:08:00.004315",
+    "next_run": "2026-01-30T21:27:00+05:30",
+    "last_output": "Clipped https://example.com"
+  },
+  {
+    "id": "a93b8937",
+    "name": "Test Poem Writer",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Write a poem about rust and save it to Notes/test_poem.md",
+    "skill_id": null,
+    "enabled": true,
+    "last_run": "2026-01-30T22:08:00.274513",
+    "next_run": "2026-01-30T21:28:00+05:30",
+    "last_output": null
+  },
+  {
+    "id": "d7ab1a55",
+    "name": "Test Joke Writer",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Write a joke and save to Notes/test_joke.md",
+    "skill_id": null,
+    "enabled": true,
+    "last_run": "2026-01-30T22:09:00.723759",
+    "next_run": "2026-01-30T21:33:00+05:30",
+    "last_output": null
+  },
+  {
+    "id": "e763f12f",
+    "name": "Test Disk Check",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Check disk space",
+    "skill_id": "system_monitor",
+    "enabled": true,
+    "last_run": "2026-01-30T22:09:00.807360",
+    "next_run": "2026-01-30T21:38:00+05:30",
+    "last_output": "CPU: 83.6%, RAM: 81.9%, Disk: 61.5%"
+  },
+  {
+    "id": "40958dba",
+    "name": "Test Tesla News",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Get news for Tesla and save to Notes/test_tesla.md",
+    "skill_id": "market_analyst",
+    "enabled": true,
+    "last_run": "2026-01-30T22:06:00.252597",
+    "next_run": "2026-01-30T21:38:00+05:30",
+    "last_output": "Completed."
+  },
+  {
+    "id": "27c2f3ff",
+    "name": "Test Pyramids",
+    "cron_expression": "* * * * *",
+    "agent_type": "PlannerAgent",
+    "query": "Who built the pyramids? Save answer to Notes/test_pyramids.md",
+    "skill_id": null,
+    "enabled": true,
+    "last_run": "2026-01-30T22:09:00.403900",
+    "next_run": "2026-01-30T21:38:00+05:30",
+    "last_output": null
+  }
+]

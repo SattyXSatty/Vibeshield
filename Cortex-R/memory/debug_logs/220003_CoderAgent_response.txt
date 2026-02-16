@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "content_to_save = formatted_pyramids_answer_T003\nfile_path = 'data/Notes/test_pyramids.md'\n\nimport os\nos.makedirs(os.path.dirname(file_path), exist_ok=True)\n\nwith open(file_path, 'w') as f:\n    f.write(content_to_save)\n\nreturn { \"file_save_status_T004\": f\"Successfully saved to {file_path}\" }"
+  }
+}
+```

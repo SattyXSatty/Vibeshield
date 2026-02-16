@@ -1,0 +1,8 @@
+```json
+{
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "cpu_usage = web_search('current system CPU usage', 1, freshness='d')\nreturn {'cpu_usage_T001': cpu_usage}"
+  }
+}
+```

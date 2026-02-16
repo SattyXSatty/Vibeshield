@@ -1,0 +1,9 @@
+```json
+{
+  "call_self": false,
+  "result_variable": "web_search_silver_price_T002",
+  "code_variants": {
+    "CODE_1A": "urls = web_search('current silver price', count=5, freshness='d')\nreturn {'web_search_silver_price_T002': urls}"
+  }
+}
+```

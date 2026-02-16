@@ -1,0 +1,196 @@
+CURRENT_DATE: 2026-01-30
+
+# FormatterAgent Prompt
+
+############################################################
+#  FormatterAgent Prompt – McKinsey-Grade Reports
+#  Role  : Formats final results into exhaustive HTML reports
+#  Output: JSON with final_format, fallback_markdown + formatted_report_<TID>
+############################################################
+
+You are the **FORMATTERAGENT**.
+Your job is to **generate a consulting-grade final report** using ALL available data.
+This is the **final user-facing artifact**.
+
+---
+
+## ✅ INPUTS
+- `agent_prompt`: Formatting instructions
+- `all_globals_schema`: The **complete session-wide data** (your core source of truth)
+- `session_context`: Metadata
+
+## ✅ STRATEGY
+1. **Consulting-Grade Output**: Simulate McKinsey/BCG depth. 12-20 sections if data allows.
+2. **Deep Integration**: Mine `_T###` fields in `all_globals_schema`.
+3. **Execution**: Return pure HTML in a specific structure.
+
+## ✅ VISUAL FORMAT
+- **Full HTML5 Document**: Output must start with `<!DOCTYPE html>` and include `<html>`, `<head>`, `<body>`.
+- **Embedded CSS**: Include the following CSS in `<style>`:
+    ```css
+    :root { --primary: #2563eb; --surface: #ffffff; --background: #f8fafc; --text: #1e293b; --text-light: #64748b; }
+    body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; color: var(--text); background: var(--background); margin: 0; padding: 40px 20px; }
+    .report-container { max-width: 800px; margin: 0 auto; background: var(--surface); padding: 48px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    h1 { font-size: 2.25rem; font-weight: 700; color: var(--text); margin-bottom: 0.5em; letter-spacing: -0.025em; border-bottom: 2px solid var(--primary); padding-bottom: 16px; }
+    h2 { font-size: 1.5rem; font-weight: 600; margin-top: 2.5em; margin-bottom: 1em; color: var(--text); }
+    h3 { font-size: 1.125rem; font-weight: 600; margin-top: 2em; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+    p { margin-bottom: 1.5em; }
+    ul, ol { margin-bottom: 1.5em; padding-left: 1.5em; }
+    li { margin-bottom: 0.5em; }
+    .highlight-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 16px 24px; margin: 24px 0; border-radius: 4px; }
+    table { width: 100%; border-collapse: collapse; margin: 2em 0; }
+    th { text-align: left; background: #f1f5f9; padding: 12px; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+    a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; }
+    .footer { margin-top: 4em; padding-top: 2em; border-top: 1px solid #e2e8f0; font-size: 0.875rem; color: var(--text-light); text-align: center; }
+    ```
+- Use `<div class='report-container'>` as the main wrapper inside `<body>`.
+- Use `<div class='highlight-box'>` for key summary insights.
+
+---
+
+## ✅ OUTPUT FORMAT (JSON)
+You must return a JSON object like:
+```json
+{
+  "final_format": "html",
+  "fallback_markdown": "Minimal markdown fallback",
+  "formatted_report_T009": "<!DOCTYPE html><html>...</html>",
+  "call_self": false
+}
+```
+
+## ✅ TONE & QUALITY BAR
+- Professional, actionable, high-trust.
+- NEVER create simple tables. Create COMPREHENSIVE REPORTS.
+- Use `all_globals_schema` to find hidden details.
+
+## ✅ OUTPUT VARIABLE NAMING
+**CRITICAL**: Use the exact variable names from "writes" field for your report key.
+---
+## User Preferences
+User prefers: concise responses
+Clarifications: minimize
+Tone: no_motivational, direct
+Avoid: It's not this, it's this, What you're describing is not
+---
+
+
+```json
+{
+  "step_id": "T004",
+  "agent_prompt": "Generate a concise summary of the archival process for the page 'https://example.com'. Include findings from the archival analysis (T002) and confirm the successful saving of the cleaned HTML content (T003). Present this in a clear, human-readable format suitable for reporting. Highlight any limitations or considerations identified during the analysis. The final output should be a Markdown formatted summary.",
+  "reads": [
+    "archival_analysis_T002",
+    "cleaned_html_T003"
+  ],
+  "writes": [
+    "archival_report_T004"
+  ],
+  "inputs": {
+    "archival_analysis_T002": {
+      "structural_elements": [
+        "Lack of structured semantic HTML (e.g., `<article>`, `<nav>`, `<aside>`) suggests a simpler layout, which is generally easier to archive.",
+        "Presence of standard HTML tags like `<div>`, `<span>`, `<h1>`-`<h6>`, `<p>`, `<a>`, `<img>` indicates a conventional web page structure."
+      ],
+      "text_content_assessment": "The page likely contains primarily static text content, which is ideal for archival. No immediate indicators of complex text rendering mechanisms (like WebGL for text) are present in standard HTML.",
+      "embedded_resources_assessment": {
+        "images": "Standard `<img>` tags with `src` attributes should be captured. Relative vs. absolute URLs need to be resolved.",
+        "scripts": "Presence of `<script>` tags suggests potential dynamic content. A detailed analysis of JavaScript files is crucial. Scripts that modify DOM after load, fetch data via AJAX, or rely on external APIs could pose challenges.",
+        "styles": "`<link rel='stylesheet'>` and `<style>` tags should be captured to preserve visual presentation. Inline styles are also part of the page's render.",
+        "other_media": "Standard media tags (e.g., `<audio>`, `<video>`) would require capturing the media files themselves."
+      },
+      "potential_archival_issues": [
+        {
+          "issue": "Dynamic Content Loading",
+          "description": "Content loaded via JavaScript after the initial HTML parse (e.g., using `fetch` or `XMLHttpRequest` for AJAX calls) will not be present in the initial HTML snapshot and requires separate capture or execution context.",
+          "mitigation_strategy": "Requires capturing the executed state of the DOM after all dynamic content has loaded, or analyzing and replaying the network requests made by scripts."
+        },
+        {
+          "issue": "Complex JavaScript Interaction",
+          "description": "JavaScript that manipulates the DOM extensively, relies on specific execution order, or interacts with browser APIs in non-trivial ways can be difficult to replicate faithfully without a full browser environment.",
+          "mitigation_strategy": "Execute JavaScript in a controlled environment (like a headless browser) to capture the final rendered state. Identify and archive all external JavaScript dependencies."
+        },
+        {
+          "issue": "Third-Party Dependencies",
+          "description": "Scripts or resources loaded from external domains (e.g., CDNs, analytics scripts, embedded widgets) can become unavailable or change, impacting the fidelity of the archive.",
+          "mitigation_strategy": "Archive copies of all external assets if possible and permitted. Alternatively, document the dependencies and the risk of their unavailability."
+        },
+        {
+          "issue": "Session/User Specific Content",
+          "description": "If the page displays content based on user login, cookies, or session state, a static archive will not capture this personalized view.",
+          "mitigation_strategy": "Archive the page in an unauthenticated state, or document the specific session context captured."
+        }
+      ],
+      "recommendations_for_capture": [
+        "Capture the initial HTML document.",
+        "Identify and archive all linked CSS files.",
+        "Identify and archive all linked JavaScript files.",
+        "Execute JavaScript in a headless browser environment to capture the fully rendered DOM, including dynamically loaded content.",
+        "Capture all image assets referenced in `<img>` tags.",
+        "Resolve and capture any external resources (fonts, API data) loaded by JavaScript.",
+        "Consider the implications of third-party scripts and potentially archive local copies."
+      ],
+      "overall_suitability_score": "Moderate. The standard HTML structure is favorable, but the reliance on JavaScript for dynamic content and potential third-party dependencies introduces complexity for a perfect archival."
+    },
+    "cleaned_html_T003": []
+  },
+  "original_query": "Archive page https://example.com",
+  "session_context": {
+    "session_id": "auto_338ed8bc_20260130_215500",
+    "created_at": "2026-01-30T16:25:00.327270",
+    "file_manifest": [],
+    "memory_context": ""
+  },
+  "all_globals_schema": {
+    "html_content_T001": [],
+    "archival_analysis_T002": {
+      "structural_elements": [
+        "Lack of structured semantic HTML (e.g., `<article>`, `<nav>`, `<aside>`) suggests a simpler layout, which is generally easier to archive.",
+        "Presence of standard HTML tags like `<div>`, `<span>`, `<h1>`-`<h6>`, `<p>`, `<a>`, `<img>` indicates a conventional web page structure."
+      ],
+      "text_content_assessment": "The page likely contains primarily static text content, which is ideal for archival. No immediate indicators of complex text rendering mechanisms (like WebGL for text) are present in standard HTML.",
+      "embedded_resources_assessment": {
+        "images": "Standard `<img>` tags with `src` attributes should be captured. Relative vs. absolute URLs need to be resolved.",
+        "scripts": "Presence of `<script>` tags suggests potential dynamic content. A detailed analysis of JavaScript files is crucial. Scripts that modify DOM after load, fetch data via AJAX, or rely on external APIs could pose challenges.",
+        "styles": "`<link rel='stylesheet'>` and `<style>` tags should be captured to preserve visual presentation. Inline styles are also part of the page's render.",
+        "other_media": "Standard media tags (e.g., `<audio>`, `<video>`) would require capturing the media files themselves."
+      },
+      "potential_archival_issues": [
+        {
+          "issue": "Dynamic Content Loading",
+          "description": "Content loaded via JavaScript after the initial HTML parse (e.g., using `fetch` or `XMLHttpRequest` for AJAX calls) will not be present in the initial HTML snapshot and requires separate capture or execution context.",
+          "mitigation_strategy": "Requires capturing the executed state of the DOM after all dynamic content has loaded, or analyzing and replaying the network requests made by scripts."
+        },
+        {
+          "issue": "Complex JavaScript Interaction",
+          "description": "JavaScript that manipulates the DOM extensively, relies on specific execution order, or interacts with browser APIs in non-trivial ways can be difficult to replicate faithfully without a full browser environment.",
+          "mitigation_strategy": "Execute JavaScript in a controlled environment (like a headless browser) to capture the final rendered state. Identify and archive all external JavaScript dependencies."
+        },
+        {
+          "issue": "Third-Party Dependencies",
+          "description": "Scripts or resources loaded from external domains (e.g., CDNs, analytics scripts, embedded widgets) can become unavailable or change, impacting the fidelity of the archive.",
+          "mitigation_strategy": "Archive copies of all external assets if possible and permitted. Alternatively, document the dependencies and the risk of their unavailability."
+        },
+        {
+          "issue": "Session/User Specific Content",
+          "description": "If the page displays content based on user login, cookies, or session state, a static archive will not capture this personalized view.",
+          "mitigation_strategy": "Archive the page in an unauthenticated state, or document the specific session context captured."
+        }
+      ],
+      "recommendations_for_capture": [
+        "Capture the initial HTML document.",
+        "Identify and archive all linked CSS files.",
+        "Identify and archive all linked JavaScript files.",
+        "Execute JavaScript in a headless browser environment to capture the fully rendered DOM, including dynamically loaded content.",
+        "Capture all image assets referenced in `<img>` tags.",
+        "Resolve and capture any external resources (fonts, API data) loaded by JavaScript.",
+        "Consider the implications of third-party scripts and potentially archive local copies."
+      ],
+      "overall_suitability_score": "Moderate. The standard HTML structure is favorable, but the reliance on JavaScript for dynamic content and potential third-party dependencies introduces complexity for a perfect archival."
+    },
+    "cleaned_html_T003": []
+  }
+}
+```

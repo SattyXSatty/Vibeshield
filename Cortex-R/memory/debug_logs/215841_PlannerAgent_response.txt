@@ -1,0 +1,97 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get current stock price for Apple using yahoo_finance",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the yahoo_finance tool to get the current stock price for Apple (AAPL). The query is 'get_stock_price' with ticker symbol 'AAPL'.",
+        "reads": [],
+        "writes": [
+          "apple_stock_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Get recent company news for Apple using yahoo_finance",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the yahoo_finance tool to get recent company news for Apple (AAPL). The query is 'get_company_news' with ticker symbol 'AAPL'.",
+        "reads": [],
+        "writes": [
+          "apple_company_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Cross-reference stock price and news with web search if necessary",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for 'Apple stock price today' and 'Apple company news today' to cross-reference the information obtained from the yahoo_finance tool. Ensure freshness is set to 'd' for 'day'.",
+        "reads": [],
+        "writes": [
+          "web_search_stock_price_T003",
+          "web_search_news_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Synthesize stock price and news data into a concise brief",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Synthesize the following information into a concise, data-driven brief: Apple stock price from yahoo_finance (`apple_stock_price_T001`), company news from yahoo_finance (`apple_company_news_T002`), and cross-referenced web search results for stock price (`web_search_stock_price_T003`) and news (`web_search_news_T003`). Focus on key data points and recent developments.",
+        "reads": [
+          "apple_stock_price_T001",
+          "apple_company_news_T002",
+          "web_search_stock_price_T003",
+          "web_search_news_T003"
+        ],
+        "writes": [
+          "apple_brief_T004"
+        ]
+      },
+      {
+        "id": "T005",
+        "description": "Format the synthesized brief into a Markdown report for Notes/test_apple.md",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the following synthesized brief into a cohesive Markdown report. The final output should be suitable for saving to Notes/test_apple.md. Ensure the report is concise and data-driven, including the stock price and relevant news highlights. \n\nBrief:\n{{apple_brief_T004}}",
+        "reads": [
+          "apple_brief_T004"
+        ],
+        "writes": [
+          "apple_report_T005"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "ROOT",
+        "destination": "T002"
+      },
+      {
+        "source": "ROOT",
+        "destination": "T003"
+      },
+      {
+        "source": "T001",
+        "destination": "T004"
+      },
+      {
+        "source": "T002",
+        "destination": "T004"
+      },
+      {
+        "source": "T003",
+        "destination": "T004"
+      },
+      {
+        "source": "T004",
+        "destination": "T005"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

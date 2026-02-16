@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": [],
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "from economic_agent.tools.yahoo_finance import get_company_news\napple_company_news_T002 = get_company_news('AAPL')\nreturn {'apple_company_news_T002': apple_company_news_T002}"
+  }
+}
+```

@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import subprocess\n\ntry:\n    result = subprocess.run(['df', '-h'], capture_output=True, text=True, check=True)\n    disk_space_info = result.stdout\nexcept FileNotFoundError:\n    try:\n        # For Windows, this command is more complex and might not work directly in all sandbox environments.\n        # A simpler approach might be needed or a specific tool if available.\n        # As a fallback, attempting a basic PowerShell command.\n        result = subprocess.run(['powershell', 'Get-PSDrive C'], capture_output=True, text=True, check=True)\n        disk_space_info = result.stdout\n    except FileNotFoundError:\n        disk_space_info = \"Could not determine disk space. Neither 'df -h' nor 'powershell Get-PSDrive C' was found.\"\nexcept subprocess.CalledProcessError as e:\n    disk_space_info = f\"Error executing command: {e.stderr}\"\n\nreturn { \"disk_space_info_T001\": disk_space_info }"
+  }
+}
+```

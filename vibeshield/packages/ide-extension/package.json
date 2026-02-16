@@ -1,0 +1,136 @@
+{
+    "name": "vibeshield-vscode",
+    "displayName": "VibeShield AI Assistant",
+    "description": "Production-grade AI agent that lives in your editor.",
+    "version": "0.1.0",
+    "publisher": "vibeshield",
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./dist/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "vibeshield-activitybar",
+                    "title": "VibeShield",
+                    "icon": "media/icon.png"
+                }
+            ]
+        },
+        "views": {
+            "vibeshield-activitybar": [
+                {
+                    "type": "webview",
+                    "id": "vibeshield.chat",
+                    "name": "Chat with Agent"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "vibeshield.start",
+                "title": "VibeShield: Start Process"
+            },
+            {
+                "command": "vibeshield.stop",
+                "title": "VibeShield: Stop Process"
+            },
+            {
+                "command": "vibeshield.debugLogs",
+                "title": "VibeShield: Debug Selected Logs"
+            },
+            {
+                "command": "vibeshield.analyze",
+                "title": "VibeShield: Analyze Logs with Cortex-R"
+            },
+            {
+                "command": "vibeshield.shareChat",
+                "title": "VibeShield: Share Chat Context"
+            },
+            {
+                "command": "vibeshield.importChat",
+                "title": "VibeShield: Import Chat Export"
+            },
+            {
+                "command": "vibeshield.forceSync",
+                "title": "VibeShield: Force Sync Chat History"
+            }
+        ],
+        "configuration": {
+            "title": "VibeShield",
+            "properties": {
+                "vibeshield.apiKey": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Gemini API key for Cortex-R analysis. Get one at https://aistudio.google.com/apikey"
+                },
+                "vibeshield.enableAccessibilityScraper": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable experimental automated chat extraction using macOS Accessibility APIs. Requires system permissions."
+                }
+            }
+        },
+        "chatParticipants": [
+            {
+                "id": "vibeshield.watcher",
+                "name": "vibeshield",
+                "fullName": "VibeShield Watcher",
+                "description": "VibeShield monitors your chat for safety analysis. Mention @vibeshield to share context.",
+                "isSticky": false
+            }
+        ],
+        "keybindings": [
+            {
+                "command": "vibeshield.shareChat",
+                "key": "ctrl+shift+v",
+                "mac": "cmd+shift+v"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "npm run check-types && npm run lint && node esbuild.js",
+        "watch": "npm-run-all -p watch:*",
+        "watch:esbuild": "node esbuild.js --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+        "package": "npm run check-types && npm run lint && node esbuild.js --production",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "check-types": "tsc --noEmit",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "20.x",
+        "@types/vscode": "^1.85.0",
+        "@types/ws": "^8.5.10",
+        "@typescript-eslint/eslint-plugin": "^6.15.0",
+        "@typescript-eslint/parser": "^6.15.0",
+        "@vscode/test-electron": "^2.3.8",
+        "esbuild": "^0.19.11",
+        "eslint": "^8.56.0",
+        "glob": "^10.3.10",
+        "mocha": "^10.2.0",
+        "npm-run-all": "^4.1.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.24.1",
+        "@types/diff": "^8.0.0",
+        "@vibeshield/shared": "workspace:*",
+        "diff": "^8.0.3",
+        "ws": "^8.16.0"
+    }
+}

@@ -1,0 +1,53 @@
+.activity-feed {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-sm);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-sm);
+    font-family: 'Menlo', 'Monaco', monospace;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Custom Scrollbar */
+.activity-feed::-webkit-scrollbar {
+    width: 6px;
+}
+
+.activity-feed::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.activity-feed::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.log-entry {
+    display: flex;
+    gap: var(--space-xs);
+    line-height: 1.4;
+    word-break: break-all;
+}
+
+.log-time {
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+    white-space: nowrap;
+}
+
+.log-source {
+    color: var(--color-brand);
+    font-weight: bold;
+    opacity: 0.8;
+    white-space: nowrap;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--color-text-secondary);
+    padding: var(--space-lg);
+    font-style: italic;
+}

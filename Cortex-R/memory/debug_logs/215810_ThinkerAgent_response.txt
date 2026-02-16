@@ -1,0 +1,5 @@
+```json
+{
+  "joke_text_T001": "Why don't scientists trust atoms? Because they make up everything!"
+}
+```

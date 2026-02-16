@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "poem_text = poem_text_T001\nfile_path = 'Notes/test_poem.md'\nwith open(file_path, 'w') as f:\n    f.write(poem_text)\nreturn { \"file_save_status_T002\": f\"Successfully saved poem to {file_path}\" }"
+  }
+}
+```

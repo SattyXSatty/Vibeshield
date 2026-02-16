@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Access and retrieve content from the provided URL using BrowserAgent.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Access the URL 'https://www.google.com' and retrieve its content. Save the retrieved content as 'google_homepage_content'.",
+        "reads": [],
+        "writes": [
+          "google_homepage_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the retrieved URL content into a structured and readable format.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the content retrieved from 'https://www.google.com' (stored in 'google_homepage_content_T001') into a human-readable text summary. Include key elements of the page.",
+        "reads": [
+          "google_homepage_content_T001"
+        ],
+        "writes": [
+          "formatted_content_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "ROOT",
+        "to": "T001"
+      },
+      {
+        "from": "T001",
+        "to": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T003"
+}
+```

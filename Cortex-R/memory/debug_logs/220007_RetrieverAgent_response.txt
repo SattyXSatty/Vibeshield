@@ -1,0 +1,8 @@
+```json
+{
+  "call_self": false,
+  "code_variants": {
+    "CODE_1A": "additional_tesla_news_T002 = web_search('recent Tesla news', 5, 'd')\nreturn {'additional_tesla_news_T002': additional_tesla_news_T002}"
+  }
+}
+```

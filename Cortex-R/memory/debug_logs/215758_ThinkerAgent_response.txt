@@ -1,0 +1,5 @@
+```json
+{
+  "poem_text_T001": "A slow blush on iron's face,\nWhere sky and water interlace.\nFrom gleaming steel to ochre stain,\nA silent, patient, creeping bane.\n\nIt speaks of time, of touch, of tear,\nOf battles fought, of futures near\nTo dust and memory's soft embrace,\nTransforming strength to fragile grace.\n\nA fractal bloom, a painted art,\nUpon the world's forgotten heart.\nFrom sturdy beam to rusted chain,\nIt whispers stories of the rain.\n\nA metamorphosis untold,\nFrom heat of forge to bitter cold.\nNot death, but change, a fiery sigh,\nBeneath the unobserving sky.\n\nAnd in its dust, a lesson lies:\nAll things must fade before our eyes.\nYet in decay, a beauty sown,\nA history in rust, made known."
+}
+```

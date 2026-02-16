@@ -1,0 +1,9 @@
+```json
+{
+  "result_variable": [],
+  "call_self": false,
+  "code_variants": {
+    "CODE_2A": "import ast\nresults = []\n\n# Process stock price URLs\nstock_urls = web_search_stock_price_T003\nif isinstance(stock_urls, str):\n    if stock_urls.startswith('[') and stock_urls.endswith(']'):\n        try: stock_urls = ast.literal_eval(stock_urls)\n        except: stock_urls = [stock_urls]\n    else: stock_urls = [stock_urls]\nelif not isinstance(stock_urls, list):\n    stock_urls = [stock_urls] if stock_urls else []\n\nfor url in stock_urls:\n    if isinstance(url, str) and url.startswith('http'):\n        text = web_extract_text(url)\n        results.append({'type': 'stock_price', 'url': url, 'content': text})\n\n# Process news URLs\nnews_urls = web_search_news_T003\nif isinstance(news_urls, str):\n    if news_urls.startswith('[') and news_urls.endswith(']'):\n        try: news_urls = ast.literal_eval(news_urls)\n        except: news_urls = [news_urls]\n    else: news_urls = [news_urls]\nelif not isinstance(news_urls, list):\n    news_urls = [news_urls] if news_urls else []\n\nfor url in news_urls:\n    if isinstance(url, str) and url.startswith('http'):\n        text = web_extract_text(url)\n        results.append({'type': 'company_news', 'url': url, 'content': text})\n\nreturn {'result_variable': results}"
+  }
+}
+```

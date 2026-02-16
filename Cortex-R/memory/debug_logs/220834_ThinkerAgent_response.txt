@@ -1,0 +1,5 @@
+```json
+{
+  "generated_joke_T001": "Why did the bicycle fall over? Because it was two tired!"
+}
+```

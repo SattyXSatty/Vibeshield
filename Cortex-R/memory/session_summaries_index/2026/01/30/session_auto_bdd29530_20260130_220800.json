@@ -1,0 +1,137 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {
+    "session_id": "auto_bdd29530_20260130_220800",
+    "original_query": "Check system cpu usage",
+    "file_manifest": [],
+    "created_at": "2026-01-30T16:38:00.344872",
+    "status": "running",
+    "globals_schema": {}
+  },
+  "nodes": [
+    {
+      "description": "Initial Query",
+      "agent": "System",
+      "status": "completed",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0,
+      "id": "ROOT"
+    },
+    {
+      "id": "Query",
+      "description": "Formulate execution plan",
+      "agent": "PlannerAgent",
+      "status": "completed",
+      "reads": [
+        "original_query"
+      ],
+      "writes": [
+        "plan_graph"
+      ],
+      "output": {
+        "plan_graph": {
+          "nodes": [
+            {
+              "id": "T001",
+              "description": "Check current system CPU usage.",
+              "agent": "CoderAgent",
+              "agent_prompt": "Write and execute a Python script to get the current system CPU usage. The script should use the 'psutil' library. Return the CPU usage percentage.",
+              "reads": [],
+              "writes": [
+                "cpu_usage_percentage_T001"
+              ]
+            },
+            {
+              "id": "T002",
+              "description": "Format CPU usage report.",
+              "agent": "FormatterAgent",
+              "agent_prompt": "Format the CPU usage percentage into a human-readable report. The report should clearly state the current CPU usage. Input: `cpu_usage_percentage_T001`",
+              "reads": [
+                "cpu_usage_percentage_T001"
+              ],
+              "writes": [
+                "formatted_cpu_report_T002"
+              ]
+            }
+          ],
+          "edges": [
+            {
+              "source": "ROOT",
+              "target": "T001"
+            },
+            {
+              "source": "T001",
+              "target": "T002"
+            }
+          ]
+        },
+        "next_step_id": "T001",
+        "cost": 5.4199999999999996e-05,
+        "input_tokens": 22,
+        "output_tokens": 130,
+        "total_tokens": 152,
+        "executed_model": "gemini:gemini-2.5-flash-lite"
+      },
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": "2026-01-30T16:39:07.386329",
+      "execution_time": 0.0
+    },
+    {
+      "id": "T001",
+      "description": "Check current system CPU usage.",
+      "agent": "CoderAgent",
+      "agent_prompt": "Write and execute a Python script to get the current system CPU usage. The script should use the 'psutil' library. Return the CPU usage percentage.",
+      "reads": [],
+      "writes": [
+        "cpu_usage_percentage_T001"
+      ],
+      "status": "running",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": "2026-01-30T16:39:07.392916",
+      "end_time": null,
+      "execution_time": 0.0
+    },
+    {
+      "id": "T002",
+      "description": "Format CPU usage report.",
+      "agent": "FormatterAgent",
+      "agent_prompt": "Format the CPU usage percentage into a human-readable report. The report should clearly state the current CPU usage. Input: `cpu_usage_percentage_T001`",
+      "reads": [
+        "cpu_usage_percentage_T001"
+      ],
+      "writes": [
+        "formatted_cpu_report_T002"
+      ],
+      "status": "pending",
+      "output": null,
+      "error": null,
+      "cost": 0.0,
+      "start_time": null,
+      "end_time": null,
+      "execution_time": 0.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "ROOT",
+      "target": "Query"
+    },
+    {
+      "source": "Query",
+      "target": "T001"
+    },
+    {
+      "source": "T001",
+      "target": "T002"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+```json
+{
+  "extracted_tesla_news_summary_T002": [
+    "Tesla's Q4 2023 earnings report showed a slight miss on revenue, with $25.17 billion compared to analyst expectations of $25.62 billion.",
+    "Net income for Q4 2023 was $7.93 billion, significantly boosted by a one-time tax benefit.",
+    "Automotive gross margin for Q4 2023 was 18.3%, down from 20.6% in the prior year.",
+    "The company delivered 484,507 vehicles in Q4 2023, a record for the quarter.",
+    "For the full year 2023, Tesla delivered 1.81 million vehicles.",
+    "Elon Musk indicated that the company is not planning any new vehicle model launches in 2024, focusing instead on production scaling of existing models like the Cybertruck and the refreshed Model 3.",
+    "Tesla aims to produce over 2 million vehicles in 2024.",
+    "The company anticipates a notable slowdown in year-over-year growth in 2024 compared to 2023.",
+    "Production of the Cybertruck is expected to ramp up significantly in 2024."
+  ]
+}
+```

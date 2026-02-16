@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Check system CPU usage",
+        "agent": "CoderAgent",
+        "agent_prompt": "Write and execute a Python script to check the current system CPU usage. The script should output the CPU usage percentage. Save the output to a variable named `cpu_usage_percentage_T001`.",
+        "reads": [],
+        "writes": [
+          "cpu_usage_percentage_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the CPU usage information",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the CPU usage percentage into a human-readable string. The input is `cpu_usage_percentage_T001`. The output should be a string like 'Current CPU Usage: XX.X%'. Save this formatted string to `formatted_cpu_usage_T002`.",
+        "reads": [
+          "cpu_usage_percentage_T001"
+        ],
+        "writes": [
+          "formatted_cpu_usage_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T002"
+}
+```

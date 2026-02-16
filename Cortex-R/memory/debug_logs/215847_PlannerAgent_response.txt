@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Clip the content from the provided URL.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Access the URL https://www.google.com using a web browser and extract the main content. Save the extracted content to a file named 'google_com_content.txt' in the data directory.",
+        "reads": [],
+        "writes": [
+          "google_com_content.txt_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the clipped URL content for presentation.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Take the content from 'google_com_content.txt_T001' and format it into a clean, readable text output. Present it as a summary.",
+        "reads": [
+          "google_com_content.txt_T001"
+        ],
+        "writes": [
+          "formatted_content_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T003"
+}
+```

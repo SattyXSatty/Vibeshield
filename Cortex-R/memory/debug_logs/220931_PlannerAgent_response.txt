@@ -1,0 +1,72 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Search for information on who built the pyramids.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search to determine who built the pyramids. Focus on established historical and archaeological consensus. Use freshness parameter 'y' for recent academic findings if available, otherwise default.",
+        "reads": [],
+        "writes": [
+          "pyramids_builders_info_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Synthesize the information about pyramid builders.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Synthesize the provided information about the builders of the pyramids into a concise summary. Identify the primary groups or individuals credited and mention any significant debates or alternative theories if present in the source material.",
+        "reads": [
+          "pyramids_builders_info_T001"
+        ],
+        "writes": [
+          "synthesized_pyramids_builders_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the answer for saving to a markdown file.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the synthesized information about the pyramid builders into a clear and readable markdown document, suitable for saving to a file. The output should be titled 'Who Built the Pyramids?' and include the synthesized summary.",
+        "reads": [
+          "synthesized_pyramids_builders_T002"
+        ],
+        "writes": [
+          "formatted_pyramids_answer_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Save the formatted answer to the specified markdown file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the content of `formatted_pyramids_answer_T003` to a file named 'test_pyramids.md' within the 'Notes' directory. Ensure the file is created if it does not exist, and overwritten if it does.",
+        "reads": [
+          "formatted_pyramids_answer_T003"
+        ],
+        "writes": [
+          "save_status_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

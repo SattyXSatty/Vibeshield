@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Archive the specified web page.",
+        "agent": "BrowserAgent",
+        "agent_prompt": "Use the BrowserAgent to archive the web page at the following URL: https://example.com. Save the archived content to a file in the data directory.",
+        "reads": [],
+        "writes": [
+          "archived_page_content_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the archived web page content.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the archived web page content (`archived_page_content_T001`) into a readable HTML file.",
+        "reads": [
+          "archived_page_content_T001"
+        ],
+        "writes": [
+          "formatted_archived_page_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "ROOT",
+        "to": "T001"
+      },
+      {
+        "from": "T001",
+        "to": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T002"
+}
+```

@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import psutil\ncpu_usage = psutil.cpu_percent(interval=1)\nreturn {'cpu_usage_T001': cpu_usage}"
+  }
+}
+```

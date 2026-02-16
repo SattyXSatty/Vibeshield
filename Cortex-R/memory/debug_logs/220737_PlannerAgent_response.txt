@@ -1,0 +1,55 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get current silver price using yahoo_finance tool",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the 'yahoo_finance' tool to get the current price of silver. The ticker symbol for silver is 'XAGUSD=X'. Store the raw price data.",
+        "reads": [],
+        "writes": [
+          "raw_silver_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Cross-reference silver price with web search for confirmation",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for 'current silver price' to cross-reference the data obtained from yahoo_finance. Use a freshness filter of 'd' (day).",
+        "reads": [],
+        "writes": [
+          "web_silver_price_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Synthesize and format silver price data into a Markdown report",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Combine the raw silver price data ('raw_silver_price_T001') and the web-searched confirmation ('web_silver_price_T002'). Format this information into a concise Markdown report. The report should clearly state the current silver price, its source, and any corroborating details from the web search. Save the output to Notes/Scheduler/Silver_price.md.",
+        "reads": [
+          "raw_silver_price_T001",
+          "web_silver_price_T002"
+        ],
+        "writes": [
+          "formatted_report_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      },
+      {
+        "source": "T002",
+        "destination": "T003"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

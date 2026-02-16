@@ -1,0 +1,73 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Research who built the pyramids.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search to determine who built the pyramids. Focus on reliable historical sources. Use freshness='y' if applicable.",
+        "reads": [],
+        "writes": [
+          "pyramids_builders_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Synthesize the information on pyramid builders.",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Summarize the findings from `pyramids_builders_T001` regarding who built the pyramids. Provide a concise, factual answer.",
+        "reads": [
+          "pyramids_builders_T001"
+        ],
+        "writes": [
+          "pyramids_builders_summary_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Format the answer for saving to a markdown file.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the summary of pyramid builders from `pyramids_builders_summary_T002` into a markdown structure suitable for saving to a notes file. Ensure it's directly readable.",
+        "reads": [
+          "pyramids_builders_summary_T002"
+        ],
+        "writes": [
+          "formatted_pyramids_answer_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Save the formatted answer to the specified markdown file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Write and execute code to save the content in `formatted_pyramids_answer_T003` to the file `Notes/test_pyramids.md` in the data directory. Ensure the file is created if it doesn't exist and overwritten if it does.",
+        "reads": [
+          "formatted_pyramids_answer_T003"
+        ],
+        "writes": [
+          "file_save_status_T004"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

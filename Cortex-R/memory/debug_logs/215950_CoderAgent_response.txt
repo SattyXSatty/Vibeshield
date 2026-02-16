@@ -1,0 +1,7 @@
+```json
+{
+  "code_variants": {
+    "CODE_1A": "import subprocess\n\ntry:\n    result = subprocess.run(['df', '-h'], capture_output=True, text=True, check=True)\n    disk_usage_output = result.stdout\nexcept subprocess.CalledProcessError as e:\n    disk_usage_output = f\"Error executing command: {e}\\n{e.stderr}\"\n\nreturn { \"disk_usage_output_T001\": disk_usage_output }"
+  }
+}
+```

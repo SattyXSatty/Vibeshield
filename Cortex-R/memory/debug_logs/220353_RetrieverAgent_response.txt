@@ -1,0 +1,9 @@
+```json
+{
+  "call_self": true,
+  "next_instruction": "Extract text from the found URLs.",
+  "code_variants": {
+    "CODE_1A": "urls = web_search('Tesla recent news last week', 5)\nreturn {'found_urls': urls}"
+  }
+}
+```

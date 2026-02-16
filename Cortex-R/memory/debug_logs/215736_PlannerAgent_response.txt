@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a joke.",
+        "agent": "ThinkerAgent",
+        "agent_prompt": "Create a humorous joke. The joke should be original and appropriate for a general audience. Output the joke as plain text.",
+        "reads": [],
+        "writes": [
+          "joke_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the joke and save to a Markdown file.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Write Python code to save the joke text to a Markdown file. The file should be named 'test_joke.md' and located in the 'Notes' directory. The joke text to save is provided in the variable `joke_text_T001`. Ensure the file is created if it doesn't exist, or overwritten if it does. The full path for saving the file should be constructed relative to the data directory. The Python script should print 'Joke saved successfully to Notes/test_joke.md' upon completion.",
+        "reads": [
+          "joke_text_T001"
+        ],
+        "writes": [
+          "execution_result_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "T001",
+        "target": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

@@ -1,0 +1,7 @@
+I need to install the `browser-use` library to execute browser actions. Since I cannot directly install libraries, I will inform the user about this dependency.
+```json
+{
+  "thought": "The previous tool execution failed because the `browser-use` library is not installed. I cannot install this library myself. I need to inform the user about this dependency and ask them to install it.",
+  "call_tool": null
+}
+```

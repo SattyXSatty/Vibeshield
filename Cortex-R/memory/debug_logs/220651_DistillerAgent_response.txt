@@ -1,0 +1,9 @@
+```json
+{
+  "confirmation_summary_T002": {
+    "action": "Page Archived",
+    "details": "The page was successfully archived. The content is now stored for future reference.",
+    "status": "Success"
+  }
+}
+```

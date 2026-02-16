@@ -1,0 +1,48 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Research who built the pyramids.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search for 'who built the pyramids'. Focus on reliable historical sources and summarize the primary builders and any significant controversies or alternative theories.",
+        "reads": [],
+        "writes": [
+          "pyramids_builders_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the answer to 'Who built the pyramids?' into Markdown.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the provided information about who built the pyramids into a clear and concise Markdown document. Ensure the primary builders are clearly stated and any supporting details or nuances are included.",
+        "reads": [
+          "pyramids_builders_T001"
+        ],
+        "writes": [
+          "formatted_pyramids_answer_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Save the formatted answer to Notes/test_pyramids.md.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Write the content of `formatted_pyramids_answer_T002` to a file named 'Notes/test_pyramids.md'.",
+        "reads": [
+          "formatted_pyramids_answer_T002"
+        ],
+        "writes": [
+          "file_write_status_T003"
+        ]
+      }
+    ],
+    "edges": [
+      {"source": "ROOT", "destination": "T001"},
+      {"source": "T001", "destination": "T002"},
+      {"source": "T002", "destination": "T003"}
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

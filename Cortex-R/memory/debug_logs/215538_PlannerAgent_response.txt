@@ -1,0 +1,40 @@
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Generate a joke.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Generate a joke and output it as plain text. The joke should be original and suitable for a general audience.",
+        "reads": [],
+        "writes": [
+          "joke_text_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Save the generated joke to Notes/test_joke.md.",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the provided joke text to a file named `test_joke.md` in the `Notes` directory. The joke text is: `{{joke_text_T001}}`.",
+        "reads": [
+          "joke_text_T001"
+        ],
+        "writes": [
+          "save_status_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

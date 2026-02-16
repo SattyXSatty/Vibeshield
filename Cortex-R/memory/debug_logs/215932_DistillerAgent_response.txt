@@ -1,0 +1,12 @@
+```json
+{
+  "apple_brief_T004": {
+    "summary_bullets": [
+      "Apple's stock price is currently [insert current price and change].",
+      "Recent company news includes [summarize 1-2 key news items from yahoo_finance and web search].",
+      "Web search cross-references indicate [confirm or contrast stock price/news trends from web search].",
+      "Key recent developments impacting the stock include [mention any significant events or analyst ratings]."
+    ]
+  }
+}
+```

@@ -1,0 +1,7 @@
+```json
+{
+  "structured_disk_space_T002": {
+    "error": "Insufficient data available in search results to determine disk usage. The `disk_usage_output_T001` field was empty."
+  }
+}
+```

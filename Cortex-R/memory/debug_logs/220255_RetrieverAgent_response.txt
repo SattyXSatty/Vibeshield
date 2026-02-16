@@ -1,0 +1,9 @@
+```json
+{
+  "call_self": false,
+  "result_variable": "cpu_usage_percentage_T001",
+  "code_variants": {
+    "CODE_1A": "return {'error': 'No tool available to retrieve system CPU usage.'}"
+  }
+}
+```

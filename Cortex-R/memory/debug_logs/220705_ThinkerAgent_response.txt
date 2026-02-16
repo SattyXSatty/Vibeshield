@@ -1,0 +1,5 @@
+```json
+{
+  "poem_text_T001": "A blush of ochre on the iron's face,\nA slow surrender, time's own soft embrace.\nOnce sharp and gleaming, strength in every line,\nNow yields to softness, a consuming sign.\n\nEach fleck a whisper of forgotten days,\nOf sun and rain in patient, endless maze.\nThe metal groans, a sigh of ages past,\nAs structure weakens, beauty built to last.\n\nBut in the crumble, transformation lies,\nA deeper essence, seen by thoughtful eyes.\nFrom solid form to dust, a cycle spun,\nWhere endings bloom, and new beginnings run.\n\nThe rust, a painter, with a gentle hand,\nReshapes the solid, across the weary land.\nA testament to change, serene and deep,\nWhile sturdy forms in quiet slumber sleep."
+}
+```

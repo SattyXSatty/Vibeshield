@@ -1,0 +1,11 @@
+```json
+{
+  "result_variable": [
+    "pyramid_builders_info_T001"
+  ],
+  "call_self": false,
+  "code_variants": {
+    "CODE_2A": "import ast\nresults = []\nurls = found_urls\nif isinstance(urls, str):\n    if urls.startswith('[') and urls.endswith(']'):\n        try: urls = ast.literal_eval(urls)\n        except: urls = [urls]\n    else: urls = [urls]\nif isinstance(urls, list):\n    for url in urls:\n        if isinstance(url, str) and url.startswith('http'):\n            text = web_extract_text(url)\n            results.append({'url': url, 'content': text})\npyramid_builders_info_T001 = results\nreturn {'pyramid_builders_info_T001': pyramid_builders_info_T001}"
+  }
+}
+```

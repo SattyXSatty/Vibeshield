@@ -1,0 +1,41 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Retrieve current system CPU usage.",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Retrieve the current system CPU usage. Use a freshness filter of 'd' (day) as CPU usage is a real-time metric.",
+        "reads": [],
+        "writes": [
+          "cpu_usage_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Format the retrieved CPU usage data.",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the retrieved CPU usage data from `cpu_usage_T001` into a clear and concise summary. Present it as a human-readable string.",
+        "reads": [
+          "cpu_usage_T001"
+        ],
+        "writes": [
+          "formatted_cpu_usage_T002"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "destination": "T001"
+      },
+      {
+        "source": "T001",
+        "destination": "T002"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

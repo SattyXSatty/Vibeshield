@@ -1,0 +1,110 @@
+```json
+{
+  "plan_graph": {
+    "nodes": [
+      {
+        "id": "T001",
+        "description": "Get Apple stock price using yahoo_finance",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the `yahoo_finance` tool to get the current stock price for Apple (AAPL).",
+        "reads": [],
+        "writes": [
+          "apple_stock_price_T001"
+        ]
+      },
+      {
+        "id": "T002",
+        "description": "Get Apple company news using yahoo_finance",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Use the `yahoo_finance` tool to get recent company news for Apple (AAPL).",
+        "reads": [],
+        "writes": [
+          "apple_company_news_T002"
+        ]
+      },
+      {
+        "id": "T003",
+        "description": "Cross-reference stock price and news with web search if needed",
+        "agent": "RetrieverAgent",
+        "agent_prompt": "Perform a web search to cross-reference the current stock price and recent news for Apple (AAPL) obtained from `yahoo_finance`. Focus on any significant recent developments that might influence the stock price. Ensure the search is fresh for the current date.",
+        "reads": [
+          "apple_stock_price_T001",
+          "apple_company_news_T002"
+        ],
+        "writes": [
+          "web_cross_reference_T003"
+        ]
+      },
+      {
+        "id": "T004",
+        "description": "Synthesize findings into a brief",
+        "agent": "DistillerAgent",
+        "agent_prompt": "Synthesize the Apple stock price (`apple_stock_price_T001`), company news (`apple_company_news_T002`), and web cross-reference findings (`web_cross_reference_T003`) into a concise, data-driven brief.",
+        "reads": [
+          "apple_stock_price_T001",
+          "apple_company_news_T002",
+          "web_cross_reference_T003"
+        ],
+        "writes": [
+          "market_brief_T004"
+        ]
+      },
+      {
+        "id": "T005",
+        "description": "Format the market brief into Markdown",
+        "agent": "FormatterAgent",
+        "agent_prompt": "Format the synthesized market brief (`market_brief_T004`) into a cohesive Markdown report. Include the stock price, key news highlights, and any significant insights from the cross-reference search.",
+        "reads": [
+          "market_brief_T004"
+        ],
+        "writes": [
+          "formatted_report_T005"
+        ]
+      },
+      {
+        "id": "T006",
+        "description": "Save the formatted report to Notes/test_apple.md",
+        "agent": "CoderAgent",
+        "agent_prompt": "Save the formatted Markdown report (`formatted_report_T005`) to the specified file path: `Notes/test_apple.md`.",
+        "reads": [
+          "formatted_report_T005"
+        ],
+        "writes": [
+          "file_save_status_T006"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "source": "ROOT",
+        "target": "T001"
+      },
+      {
+        "source": "ROOT",
+        "target": "T002"
+      },
+      {
+        "source": "T001",
+        "target": "T003"
+      },
+      {
+        "source": "T002",
+        "target": "T003"
+      },
+      {
+        "source": "T003",
+        "target": "T004"
+      },
+      {
+        "source": "T004",
+        "target": "T005"
+      },
+      {
+        "source": "T005",
+        "target": "T006"
+      }
+    ]
+  },
+  "next_step_id": "T001"
+}
+```

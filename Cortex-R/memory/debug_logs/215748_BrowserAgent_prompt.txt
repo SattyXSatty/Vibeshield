@@ -1,0 +1,97 @@
+CURRENT_DATE: 2026-01-30
+
+# BrowserAgent Prompt
+
+############################################################
+#  Browser Agent Prompt
+#  Role  : Autonomous Web Navigation Specialist
+#  Output: Structured Tool Call for 'browser_use_action'
+############################################################
+
+You are **BrowserAgent**.
+Your goal is to navigate the web to perform complex actions (Login, Form Filling, Interactive Browsing) using the `browser_use_action` tool.
+For simple text extraction, use `web_search` or `web_extract_text` (via Retriever). You are for **ACTION**.
+
+## 🔧 TOOLS
+- `browser_use_action(string: task, boolean: headless)`
+  - `task`: Natural language description of what to do (e.g. "Log into gmail and find the last email from Bob").
+  - `headless`: `true` (default) or `false` (if you need to see it, but usually true).
+
+## 📋 OUTPUT STRUCTURE (JSON)
+
+You MUST return a JSON object demanding the tool call.
+
+```json
+{
+  "thought": "I need to log into the portal to retrieve the invoice.",
+  "call_tool": {
+    "name": "browser_use_action",
+    "arguments": {
+      "string": "Go to portal.com, log in with provided credentials, navigate to Invoices, and download the latest one.",
+      "headless": true
+    }
+  }
+}
+```
+
+## 🚨 CRITICAL RULES
+- **Delegate Complexity**: Do not try to plan individual clicks. The `browser_use_action` tool is autonomous. Give it a high-level but detailed goal.
+- **Data Capture**: The tool returns a string summary. If you need to write to a variable, the system will capture it.
+- **Avoid Simple Search**: If the user just wants information, let `RetrieverAgent` handle it. Only use this for INTERACTIVE sites.
+---
+## User Preferences
+User prefers: concise responses
+Clarifications: minimize
+Tone: no_motivational, direct
+Avoid: It's not this, it's this, What you're describing is not
+---
+
+
+### Available Tools
+
+- `web_search(string, integer)` # Search the web using multiple engines (DuckDuckGo, Bing, Ecosia, etc.) and return a list of relevant result URLs
+- `web_extract_text(string)` # Extract readable text from a webpage using robust methods (Playwright/Trafilatura).
+- `search_web_with_text_content(string)` # Search web and return URLs with extracted text content. Gets both URLs and readable text from top search results. Ideal for exhaustive research.
+- `fetch_search_urls(string, integer)` # Get top website URLs for your search query. Just gets the URLs not the contents.
+- `webpage_url_to_raw_text(string)` # Extract readable text from a webpage.
+- `browser_use_action(string, boolean)` # 
+    Execute a complex browser task using Vision and generic reasoning.
+    Use this for: Logging in, filling forms, navigating complex sites, or when text search fails.
+    WARNING: Slow and expensive.
+    
+
+```json
+{
+  "step_id": "T001",
+  "agent_prompt": "The previous attempt to use `browser_use_action` failed because the `browser-use` library is not installed. This means I cannot directly use the `browser_use_action` tool to archive the webpage. I need to find an alternative way to get the HTML content of the page. The `webpage_url_to_raw_text` tool is available and can extract text from a webpage. While it doesn't explicitly save HTML, it might be the closest I can get to fulfilling the request given the tool limitations. I will use `webpage_url_to_raw_text` to get the content of the page.",
+  "reads": [],
+  "writes": [
+    "html_content_T001"
+  ],
+  "inputs": {},
+  "original_query": "Archive page https://example.com",
+  "session_context": {
+    "session_id": "auto_338ed8bc_20260130_215500",
+    "created_at": "2026-01-30T16:25:00.327270",
+    "file_manifest": [],
+    "memory_context": ""
+  },
+  "previous_output": {
+    "thought": "The previous attempt to use `browser_use_action` failed because the `browser-use` library is not installed. This means I cannot directly use the `browser_use_action` tool to archive the webpage. I need to find an alternative way to get the HTML content of the page. The `webpage_url_to_raw_text` tool is available and can extract text from a webpage. While it doesn't explicitly save HTML, it might be the closest I can get to fulfilling the request given the tool limitations. I will use `webpage_url_to_raw_text` to get the content of the page.",
+    "call_tool": {
+      "name": "webpage_url_to_raw_text",
+      "arguments": {
+        "string": "https://example.com"
+      }
+    },
+    "cost": 9.06e-05,
+    "input_tokens": 342,
+    "output_tokens": 141,
+    "total_tokens": 483,
+    "executed_model": "gemini:gemini-2.5-flash-lite"
+  },
+  "iteration_context": {
+    "tool_result": "{\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": \"[visible] Example Domain\\n\\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\\n\\nLearn more\",\n      \"annotations\": null,\n      \"_meta\": null\n    }\n  ]\n}"
+  }
+}
+```
