@@ -31,8 +31,12 @@ export class ProcessManager {
         try {
             this.activeProcess = cp.spawn(cmd, args, {
                 cwd,
-                shell: true, // Use shell to support commands like 'npm run dev' easily
-                env: { ...process.env, FORCE_COLOR: 'true' } // improved DX
+                shell: process.platform === 'win32' ? true : '/bin/bash', // Explicit shell for better path inheritance
+                env: {
+                    ...process.env,
+                    FORCE_COLOR: 'true',
+                    PATH: process.env.PATH + (process.platform === 'darwin' ? ':/usr/local/bin:/opt/homebrew/bin' : '') // Helper for Mac
+                }
             });
 
             if (this.activeProcess.pid) {

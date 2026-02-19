@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { exec } from 'child_process';
 import { LogCapture } from './LogCapture';
 import { LogSelector } from './LogSelector';
 import { CortexBridge, LogAnalysisResult } from './CortexBridge';
@@ -283,7 +284,17 @@ export class AgentLoop {
             this.lastAnalysis = analysis;
 
             // Step 4: Route the feedback
-            if (analysis.hasError) {
+            // Step 4: Route the feedback
+            // Force error if exit code is non-zero, even if AI missed it
+            if (analysis.hasError || (exitCode !== 0 && exitCode !== null)) {
+                if (!analysis.hasError) {
+                    analysis.hasError = true;
+                    analysis.errorType = 'runtime';
+                    analysis.errorMessage = `Process exited with code ${exitCode}`;
+                    analysis.cause = 'Process crashed but specific error was not extracted by AI.';
+                    analysis.fix = 'Check raw logs for details.';
+                }
+
                 this.setPhase('error_detected');
                 this.sendAnalysisFeedback(analysis);
             } else {
@@ -294,7 +305,7 @@ export class AgentLoop {
                     timestamp: new Date().toISOString(),
                     source: 'cortex',
                     level: 'info',
-                    content: `Process exited (code ${exitCode}) but no errors detected by Cortex-R.`
+                    content: `Process exited (code ${exitCode}) cleanly.`
                 });
             }
         } catch (err: any) {
@@ -310,8 +321,17 @@ export class AgentLoop {
      * Formats the structured AI analysis into a human + AI readable message
      * and sends it to BOTH the overlay (for the user to see) AND the chat
      * (for the AI coding assistant to act on).
+     * 
+     * Task 1.6.2: Feedback Generation & Chat Delivery
+     * 1. Generate friendly chat response via Cortex-R
+     * 2. Format feedback for chat (clear, concise, actionable)
+     * 3. Check chat permission before sending
+     * 4. Send via IDE chat interface
+     * 5. Show "feedback sent" in overlay
+     * 6. Track delivery status
      */
-    private sendAnalysisFeedback(analysis: LogAnalysisResult) {
+    private async sendAnalysisFeedback(analysis: LogAnalysisResult) {
+        // Step 1: Format structured feedback for overlay
         const feedbackLines = [
             `🔴 **Error Detected** (Attempt ${this.attemptCount}/${this.MAX_RETRIES})`,
             ``,
@@ -322,8 +342,33 @@ export class AgentLoop {
             analysis.fix ? `**Suggested Fix:** ${analysis.fix}` : '',
         ].filter(Boolean).join('\n');
 
-        // Send to Chat UI
-        this.chatProvider.sendSystemMessage(feedbackLines, 'error');
+        // Step 2: Generate friendly chat response via Cortex-R
+        let chatMessage = feedbackLines; // Fallback to structured feedback
+        try {
+            const friendlyResponse = await this.cortexBridge.generateChatResponse(analysis);
+            if (friendlyResponse) {
+                chatMessage = `🔴 **Error Detected** (Attempt ${this.attemptCount}/${this.MAX_RETRIES})\n\n${friendlyResponse}`;
+            }
+        } catch (err) {
+            console.warn('[VibeShield Agent] Could not generate friendly chat response, using structured feedback.', err);
+        }
+
+        // Step 3: Check chat permission before sending
+        const autoPost = vscode.workspace.getConfiguration('vibeshield').get<boolean>('autoPostToChat', true);
+        let chatDelivered = false;
+
+        if (autoPost) {
+            // Step 4: Send via IDE chat interface & Step 6: Track delivery status
+            chatDelivered = this.chatProvider.sendSystemMessage(chatMessage, 'error');
+
+            if (chatDelivered) {
+                console.log('[VibeShield Agent] ✅ Chat message delivered successfully.');
+            } else {
+                console.warn('[VibeShield Agent] ⚠️ Chat panel not open. Message not delivered.');
+            }
+        } else {
+            console.log('[VibeShield Agent] Chat auto-post disabled by user configuration.');
+        }
 
         // Send to Overlay UI as a log entry 
         this.connector.sendLog({
@@ -346,13 +391,63 @@ export class AgentLoop {
             }
         });
 
+        // Step 5: Show "feedback sent" in overlay
+        this.setPhase('feedback_sent');
+
+        // Step 6: Forward to Native IDE Chat
+        // Multi-strategy: tries VS Code API first, falls back to AppleScript clipboard paste
+        const forwardToNative = vscode.workspace.getConfiguration('vibeshield').get<boolean>('forwardToNativeChat', true);
+
+        if (forwardToNative) {
+            const query = `Fix this ${analysis.errorType} error in ${analysis.affectedFile || 'the project'}: "${analysis.errorMessage}". ${analysis.fix ? `Suggested fix: ${analysis.fix}` : ''}`;
+
+            // Step B: Copy to clipboard
+            await vscode.env.clipboard.writeText(query);
+
+            // Step C+D: Focus Agent Chat (Cmd+L) then Paste (Cmd+V) then Submit (Enter)
+            // The Output panel steals focus after process exit.
+            // Cmd+L is the IDE's native shortcut to open/focus the Agent chat input.
+            let pasted = false;
+            if (process.platform === 'darwin') {
+                try {
+                    // Wait for IDE to settle (Output panel finishes rendering)
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    await new Promise<void>((resolve, reject) => {
+                        exec(`osascript -e 'tell application "System Events"
+    keystroke "l" using command down
+    delay 0.8
+    keystroke "v" using command down
+    delay 0.3
+    key code 36
+end tell'`, (error) => {
+                            if (error) { reject(error); } else { resolve(); }
+                        });
+                    });
+                    pasted = true;
+                    console.log('[VibeShield] Cmd+L → Cmd+V → Enter succeeded.');
+                } catch (err) {
+                    console.warn('[VibeShield] AppleScript paste failed:', err);
+                }
+            }
+
+            // Log result to overlay
+            this.connector.sendLog({
+                id: `native-forward-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: pasted ? 'info' : 'warn',
+                content: pasted
+                    ? '🤖 Error auto-forwarded to IDE Agent Chat.'
+                    : '📋 Error copied to clipboard. Paste into AI Chat (Cmd+V) to fix.'
+            });
+        }
+
         // Show VS Code notification
         vscode.window.showWarningMessage(
             `VibeShield: ${analysis.errorType || 'Error'} detected. ${analysis.fix ? 'Fix: ' + analysis.fix.substring(0, 80) : 'Check chat for details.'}`,
             'View Details'
         ).then((action) => {
             if (action === 'View Details') {
-                // Open a document with the full analysis
                 vscode.workspace.openTextDocument({
                     content: feedbackLines,
                     language: 'markdown'
@@ -360,8 +455,89 @@ export class AgentLoop {
             }
         });
 
-        this.setPhase('feedback_sent');
-        console.log('[VibeShield Agent] Feedback sent to overlay and chat.');
+        console.log('[VibeShield Agent] Feedback pipeline complete.');
+    }
+
+    /**
+     * Fallback: Uses AppleScript to simulate Cmd+V (paste) and Enter (submit)
+     * in the native chat panel. Only used when VS Code Chat API commands fail.
+     */
+    private async simulatePasteViaAppleScript(): Promise<void> {
+        // 1. Wait for IDE to fully settle
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // DIAGNOSTIC: Log all available chat commands so we can pick the right one
+        try {
+            const allCommands = await vscode.commands.getCommands(true);
+            const chatCommands = allCommands.filter((c: string) => c.toLowerCase().includes('chat'));
+            console.log('[VibeShield] Available chat commands:', JSON.stringify(chatCommands));
+            this.connector.sendLog({
+                id: `diag-${Date.now()}`,
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'info',
+                content: `🔍 Chat commands found: ${chatCommands.join(', ')}`
+            });
+        } catch { /* ignore diagnostic errors */ }
+
+        // 2. Focus chat via AVAILABLE API commands (found in diagnostics)
+        const focusCommands = [
+            'antigravity.toggleChatFocus',             // Current User Env (confirmed exists)
+            'workbench.panel.chat.view.copilot.focus', // Copilot
+            'vibeshield.chat.focus',                   // VibeShield Self
+            'workbench.action.chat.open'               // Standard (fallback)
+        ];
+
+        let focused = false;
+        for (const cmd of focusCommands) {
+            try {
+                await vscode.commands.executeCommand(cmd);
+                console.log(`[VibeShield] Focus command succeeded: ${cmd}`);
+                focused = true;
+                break;
+            } catch { /* try next */ }
+        }
+
+        if (!focused) console.warn('[VibeShield] No chat focus command succeeded.');
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // 3. Strategy A: Try VS Code 'type' command (types into focused editor widget)
+        //    This works if the chat input has focus (it's a Monaco editor widget)
+        const query = await vscode.env.clipboard.readText();
+        try {
+            await vscode.commands.executeCommand('type', { text: query });
+            console.log('[VibeShield] type command succeeded. Submitting...');
+
+            // Try to submit via Enter key simulation
+            await new Promise(resolve => setTimeout(resolve, 200));
+            return new Promise((resolve, reject) => {
+                exec(`osascript -e 'tell application "System Events" to key code 36'`, (error) => {
+                    if (error) { reject(error); } else { resolve(); }
+                });
+            });
+        } catch (typeErr) {
+            console.log('[VibeShield] type command failed:', typeErr);
+        }
+
+        // 4. Strategy B: AppleScript paste + submit (fallback)
+        return new Promise((resolve, reject) => {
+            const script = `tell application "System Events"
+    keystroke "v" using command down
+    delay 0.3
+    key code 36
+end tell`;
+
+            exec(`osascript -e '${script}'`, (error, _stdout, stderr) => {
+                if (error) {
+                    console.warn('[VibeShield] AppleScript failed:', stderr);
+                    reject(error);
+                } else {
+                    console.log('[VibeShield] AppleScript paste+submit succeeded.');
+                    resolve();
+                }
+            });
+        });
     }
 
     /**

@@ -1,5 +1,5 @@
 export type LogLevel = 'info' | 'warn' | 'error' | 'debug';
-export type LogSource = 'stdout' | 'stderr' | 'system' | 'cortex';
+export type LogSource = 'stdout' | 'stderr' | 'system' | 'cortex' | 'ide-extension';
 /**
  * A single log entry captured from the terminal or system.
  */

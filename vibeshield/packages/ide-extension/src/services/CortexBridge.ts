@@ -51,7 +51,10 @@ export class CortexBridge {
         const prompt = `
 Analyze the following terminal output and determine:
 1. Are there any errors? (Yes/No)
-2. If yes, what type of error? (module_not_found, syntax, type, runtime, build, other)
+   - logic errors, syntax errors, type errors
+   - "command not found", "module not found", "ENOENT"
+   - unexpected non-zero exit codes indicated in logs
+2. If yes, what type of error? (module_not_found, syntax, type, runtime, build, configuration, other)
 3. What is the error message?
 4. What file/line is affected?
 5. What is the likely cause?
@@ -73,16 +76,28 @@ Terminal output:
 ${logs}
 `;
 
+        // Create Debug Channel (don't auto-show to avoid stealing focus from chat automation)
+        const debugChannel = vscode.window.createOutputChannel("VibeShield Debug");
+        // debugChannel.show(true); // Disabled: was stealing focus from native chat paste
+        debugChannel.appendLine('\n--- CORTEX-R INPUT PROMPT ---');
+        debugChannel.appendLine(prompt);
+        debugChannel.appendLine('-----------------------------\n');
+
         try {
             const result = await this.model.generateContent(prompt);
             const response = await result.response;
             const text = response.text();
+
+            debugChannel.appendLine('\n--- CORTEX-R RAW OUTPUT ---');
+            debugChannel.appendLine(text);
+            debugChannel.appendLine('---------------------------\n');
 
             // Clean up potentially dirty JSON (Gemini sometimes adds markdown)
             const cleanJson = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
             return JSON.parse(cleanJson) as LogAnalysisResult;
         } catch (error: any) {
+            debugChannel.appendLine(`[Error] Cortex-R Analysis Failed: ${error}`);
             console.error(`[VibeShield] Cortex-R Analysis Failed (Attempt ${attempt}):`, error);
 
             if (attempt < 3) {
@@ -101,6 +116,35 @@ ${logs}
 
     public async extractIntent(_diff: string) {
         // TODO: Implement for Epic 2.1
+    }
+
+    public async generateChatResponse(analysis: LogAnalysisResult): Promise<string> {
+        if (!this.model) {
+            this.updateConfig();
+        }
+        if (!this.model) {
+            return "I noticed an error but couldn't analyze the details (Cortex-R unavailable). Please check the logs.";
+        }
+
+        const prompt = `
+You are a helpful coding assistant. A process just failed with the following error analysis:
+${JSON.stringify(analysis, null, 2)}
+
+Write a short, friendly, and actionable message to the developer explaining what went wrong and how to fix it.
+Keep it under 3 sentences. Do not use complex markdown headers, but you can use *bold* or \`code\`.
+Reply directly with the message.
+`;
+
+        try {
+            const result = await this.model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text().trim();
+            return text;
+        } catch (error) {
+            console.error('[VibeShield] Failed to generate chat response:', error);
+            // Fallback to structured message if generation fails
+            return `🔴 **Error**: ${analysis.errorMessage}. **Fix**: ${analysis.fix}`;
+        }
     }
 
     public async checkServerReadiness(logs: string): Promise<ServerReadinessResult> {

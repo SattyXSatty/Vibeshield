@@ -13,9 +13,9 @@ function App() {
     useEffect(() => {
         let cleanup: (() => void) | undefined;
 
-        if (window.electronAPI) {
+        if ((window as any).electronAPI) {
             // onMessage now returns a cleanup function from preload.ts
-            cleanup = (window.electronAPI.onMessage as any)((msg: IPCMessage) => {
+            cleanup = ((window as any).electronAPI.onMessage as any)((msg: IPCMessage) => {
                 if (msg.type === 'state_update') {
                     setPhase(msg.payload.phase);
                 } else if (msg.type === 'log_entry') {
@@ -106,8 +106,8 @@ function App() {
 
     const handleStart = () => {
         // Send command back to Extension via WebSocket
-        if (window.electronAPI) {
-            window.electronAPI.sendMessage({
+        if ((window as any).electronAPI) {
+            (window as any).electronAPI.sendMessage({
                 type: 'command',
                 timestamp: new Date().toISOString(),
                 payload: { action: 'start' }

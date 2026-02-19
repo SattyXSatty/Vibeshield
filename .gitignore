@@ -8,3 +8,10 @@ coverage/
 .DS_Store
 *.tsbuildinfo
 *.log
+
+# Compiled TS output
+**/*.js
+**/*.js.map
+**/*.d.ts
+!src/vite-env.d.ts
+!vite-env.d.ts
