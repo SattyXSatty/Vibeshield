@@ -828,9 +828,17 @@ export class ChatContextExtractor {
 
     // ─── Conversation Directory Watcher (new chat = new .pb file) ─────
 
+    private retryTimers: NodeJS.Timeout[] = [];
+    private lastConvChangeId = 0;
+
     /**
      * Watch ~/.gemini/antigravity/conversations/ for new .pb files.
      * A new .pb file means a new chat session was started.
+     * 
+     * Important: The IDE writes chat content to encrypted .pb files immediately,
+     * but the global state DB (trajectory summaries) is updated ASYNCHRONOUSLY.
+     * We use staggered retries (3s, 15s, 45s) to capture the data when it
+     * becomes available in the DB.
      */
     private startConversationWatcher() {
         const convDir = path.join(os.homedir(), '.gemini', 'antigravity', 'conversations');
@@ -839,34 +847,77 @@ export class ChatContextExtractor {
             return;
         }
 
-        // Snapshot existing conversations
+        // Snapshot existing conversations with their sizes
         try {
             const existing = fs.readdirSync(convDir).filter(f => f.endsWith('.pb'));
             for (const f of existing) this.knownConversations.add(f);
             this.diagnostics.push(`Indexed ${existing.length} existing conversations.`);
         } catch (_e) { /* ignore */ }
 
-        // Watch for new files
+        // Watch for new files AND changes to existing files
         this.conversationWatcher = fs.watch(convDir, (eventType, filename) => {
             if (!filename || !filename.endsWith('.pb')) return;
+            // Skip .tmp files (atomic write intermediates)
+            if (filename.includes('.tmp')) return;
+
+            const convId = filename.replace('.pb', '');
 
             if (eventType === 'rename' && !this.knownConversations.has(filename)) {
                 // New conversation detected!
                 this.knownConversations.add(filename);
-                const convId = filename.replace('.pb', '');
                 this.diagnostics.push(`🆕 New conversation detected: ${convId}`);
                 console.log(`[VibeShield] New chat session: ${convId}`);
-
-                // Trigger full extraction
-                this.triggerPersist(`new-conversation:${convId}`);
+                this.scheduleStaggeredExtraction(`new-conversation:${convId}`);
             } else if (eventType === 'change') {
-                // Existing conversation updated (new messages)
-                this.triggerPersist(`conversation-update:${filename.replace('.pb', '')}`);
+                // Existing conversation updated (new messages added)
+                this.scheduleStaggeredExtraction(`conversation-update:${convId}`);
             }
         });
 
+        // Also watch the implicit directory (updated during active conversations)
+        const implicitDir = path.join(os.homedir(), '.gemini', 'antigravity', 'implicit');
+        if (fs.existsSync(implicitDir)) {
+            const implicitWatcher = fs.watch(implicitDir, (_eventType, filename) => {
+                if (filename && filename.endsWith('.pb')) {
+                    this.triggerPersist(`implicit-update:${filename.replace('.pb', '')}`);
+                }
+            });
+            this.context.subscriptions.push({ dispose: () => implicitWatcher.close() });
+            this.diagnostics.push('Watching implicit directory for conversation updates.');
+        }
+
         this.context.subscriptions.push({ dispose: () => this.conversationWatcher?.close() });
         this.diagnostics.push(`Watching conversations directory for new chat sessions.`);
+    }
+
+    /**
+     * Schedule staggered extraction retries at 3s, 15s, and 45s.
+     * The global DB trajectory data is written asynchronously by the IDE,
+     * so we retry multiple times to catch the data when it becomes available.
+     * Each new conversation change cancels previous retry chains.
+     */
+    private scheduleStaggeredExtraction(reason: string) {
+        // Cancel any previous staggered retries
+        this.lastConvChangeId++;
+        const changeId = this.lastConvChangeId;
+
+        // Clear existing retry timers
+        for (const t of this.retryTimers) clearTimeout(t);
+        this.retryTimers = [];
+
+        const delays = [3000, 15000, 45000]; // 3s, 15s, 45s
+        for (const delay of delays) {
+            const timer = setTimeout(() => {
+                // Only run if no newer change has superseded this one
+                if (this.lastConvChangeId === changeId) {
+                    this.persistChatHistory(`${reason}@${delay / 1000}s`);
+                }
+            }, delay);
+            this.retryTimers.push(timer);
+        }
+
+        this.diagnostics.push(`Scheduled staggered extraction for: ${reason} (3s/15s/45s)`);
+        console.log(`[VibeShield] Chat change detected: ${reason} — extracting at 3s/15s/45s`);
     }
 
     public dispose() {
@@ -882,5 +933,7 @@ export class ChatContextExtractor {
             this.conversationWatcher.close();
             this.conversationWatcher = undefined;
         }
+        for (const t of this.retryTimers) clearTimeout(t);
+        this.retryTimers = [];
     }
 }
