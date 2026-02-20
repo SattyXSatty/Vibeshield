@@ -742,6 +742,14 @@ export class ChatContextExtractor {
     /**
      * Extract all chat data from known sources and save to
      * ~/.vibeshield/chat_history.json for Cortex-R consumption.
+     * 
+     * Data sources:
+     * 1. In-memory captured messages (Chat Participant API, manual push)
+     * 2. Global DB trajectory summaries (updated asynchronously by IDE)
+     * 3. Brain artifacts (task.md, implementation_plan.md)
+     * 4. Code tracker (file diffs from agent activity — REAL-TIME)
+     * 5. Conversation metadata (sizes/timestamps as activity signals)
+     * 6. ALL workspace DBs (not just current workspace)
      */
     private async persistChatHistory(trigger: string) {
         const outputDir = path.join(os.homedir(), '.vibeshield');
@@ -750,7 +758,6 @@ export class ChatContextExtractor {
         try {
             if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
-            // Gather messages from all sources
             const allMessages: { role: string; text: string; source: string; timestamp: number }[] = [];
 
             // 1. In-memory captured messages
@@ -769,30 +776,126 @@ export class ChatContextExtractor {
             // 3. Brain artifacts
             const brainDir = path.join(os.homedir(), '.gemini', 'antigravity', 'brain');
             if (fs.existsSync(brainDir)) {
-                const convDirs = fs.readdirSync(brainDir, { withFileTypes: true })
-                    .filter(d => d.isDirectory() && !d.name.startsWith('.') && d.name !== 'tempmediaStorage')
-                    .map(d => ({ name: d.name, path: path.join(brainDir, d.name), mtime: fs.statSync(path.join(brainDir, d.name)).mtimeMs }))
-                    .sort((a, b) => b.mtime - a.mtime)
-                    .slice(0, 10);
+                try {
+                    const convDirs = fs.readdirSync(brainDir, { withFileTypes: true })
+                        .filter(d => d.isDirectory() && !d.name.startsWith('.') && d.name !== 'tempmediaStorage')
+                        .map(d => ({ name: d.name, path: path.join(brainDir, d.name), mtime: fs.statSync(path.join(brainDir, d.name)).mtimeMs }))
+                        .sort((a, b) => b.mtime - a.mtime)
+                        .slice(0, 10);
 
-                for (const conv of convDirs) {
-                    for (const af of ['task.md', 'implementation_plan.md', 'walkthrough.md']) {
-                        const afPath = path.join(conv.path, af);
-                        if (fs.existsSync(afPath)) {
+                    for (const conv of convDirs) {
+                        for (const af of ['task.md', 'implementation_plan.md', 'walkthrough.md']) {
+                            const afPath = path.join(conv.path, af);
+                            if (fs.existsSync(afPath)) {
+                                try {
+                                    const content = fs.readFileSync(afPath, 'utf-8');
+                                    if (content.length > 20) {
+                                        allMessages.push({
+                                            role: 'brain_artifact',
+                                            text: `[${af}] ${content.substring(0, 2000)}`,
+                                            source: `brain:${conv.name}`,
+                                            timestamp: conv.mtime
+                                        });
+                                    }
+                                } catch (_e) { /* skip */ }
+                            }
+                        }
+                    }
+                } catch (_e) { /* skip brain errors */ }
+            }
+
+            // 4. Code Tracker — file diffs from agent activity (REAL-TIME!)
+            // This captures what the IDE agent modified, across ALL workspaces.
+            const codeTrackerDir = path.join(os.homedir(), '.gemini', 'antigravity', 'code_tracker', 'active');
+            if (fs.existsSync(codeTrackerDir)) {
+                try {
+                    const repoDirs = fs.readdirSync(codeTrackerDir, { withFileTypes: true })
+                        .filter(d => d.isDirectory());
+
+                    for (const repoDir of repoDirs) {
+                        const repoDirPath = path.join(codeTrackerDir, repoDir.name);
+                        const trackedFiles = fs.readdirSync(repoDirPath)
+                            .map(f => ({
+                                name: f,
+                                fullPath: path.join(repoDirPath, f),
+                                mtime: fs.statSync(path.join(repoDirPath, f)).mtimeMs
+                            }))
+                            .sort((a, b) => b.mtime - a.mtime)
+                            .slice(0, 20); // Last 20 modified files
+
+                        for (const tf of trackedFiles) {
+                            // Only include files modified in the last 2 hours
+                            if (Date.now() - tf.mtime > 2 * 60 * 60 * 1000) continue;
                             try {
-                                const content = fs.readFileSync(afPath, 'utf-8');
-                                if (content.length > 20) {
+                                const content = fs.readFileSync(tf.fullPath, 'utf-8');
+                                // Extract the original filename from the hash_filename format
+                                const origName = tf.name.replace(/^[a-f0-9]+_/, '');
+                                // Get first meaningful lines (skip binary prefixes)
+                                let startIdx = 0;
+                                while (startIdx < content.length && content.charCodeAt(startIdx) < 32) startIdx++;
+                                const cleanContent = content.substring(startIdx, startIdx + 1500);
+                                if (cleanContent.length > 20) {
                                     allMessages.push({
-                                        role: 'brain_artifact',
-                                        text: `[${af}] ${content.substring(0, 2000)}`,
-                                        source: `brain:${conv.name}`,
-                                        timestamp: conv.mtime
+                                        role: 'agent_edit',
+                                        text: `[File: ${origName} in ${repoDir.name}] ${cleanContent}`,
+                                        source: 'code-tracker',
+                                        timestamp: tf.mtime
                                     });
                                 }
                             } catch (_e) { /* skip */ }
                         }
                     }
-                }
+                } catch (_e) { /* skip */ }
+            }
+
+            // 5. Conversation metadata (activity signals)
+            const convDir = path.join(os.homedir(), '.gemini', 'antigravity', 'conversations');
+            const conversations: { id: string; size: number; modified: string }[] = [];
+            if (fs.existsSync(convDir)) {
+                try {
+                    const pbFiles = fs.readdirSync(convDir)
+                        .filter(f => f.endsWith('.pb') && !f.includes('.tmp'))
+                        .map(f => {
+                            const stat = fs.statSync(path.join(convDir, f));
+                            return { id: f.replace('.pb', ''), size: stat.size, modified: new Date(stat.mtimeMs).toISOString() };
+                        })
+                        .sort((a, b) => b.modified.localeCompare(a.modified))
+                        .slice(0, 10);
+                    conversations.push(...pbFiles);
+                } catch (_e) { /* skip */ }
+            }
+
+            // 6. Scan ALL workspace DBs (not just current workspace)
+            const wsBase = path.join(os.homedir(), 'Library', 'Application Support', 'Antigravity', 'User', 'workspaceStorage');
+            if (fs.existsSync(wsBase)) {
+                try {
+                    const wsDirs = fs.readdirSync(wsBase, { withFileTypes: true })
+                        .filter(d => d.isDirectory())
+                        .map(d => ({
+                            name: d.name,
+                            dbPath: path.join(wsBase, d.name, 'state.vscdb'),
+                            mtime: fs.statSync(path.join(wsBase, d.name)).mtimeMs
+                        }))
+                        .filter(d => fs.existsSync(d.dbPath))
+                        .sort((a, b) => b.mtime - a.mtime)
+                        .slice(0, 5); // Top 5 most recent workspaces
+
+                    for (const ws of wsDirs) {
+                        // Only scan workspaces modified in the last hour
+                        if (Date.now() - ws.mtime > 60 * 60 * 1000) continue;
+                        try {
+                            const dbResults = await this.performDeepDbScan(ws.dbPath, 5);
+                            for (const item of dbResults) {
+                                allMessages.push({
+                                    role: 'workspace_context',
+                                    text: `[WS:${ws.name.substring(0, 8)}] ${item}`,
+                                    source: `workspace:${ws.name}`,
+                                    timestamp: ws.mtime
+                                });
+                            }
+                        } catch (_e) { /* skip */ }
+                    }
+                } catch (_e) { /* skip */ }
             }
 
             // De-duplicate by text prefix
@@ -809,6 +912,7 @@ export class ChatContextExtractor {
                 extracted_at: new Date().toISOString(),
                 trigger,
                 total_messages: unique.length,
+                active_conversations: conversations,
                 messages: unique.map(m => ({
                     role: m.role,
                     text: m.text,
