@@ -650,7 +650,9 @@ export class ChatContextExtractor {
         this.diagnostics.push('Watching Downloads folder for chat exports.');
     }
 
-    // ─── Strategy 6: Accessibility Scraper (Experimental) ────────
+    // ─── Strategy 6: Native Accessibility Scraper (macOS) ────────
+    // Uses compiled Swift binary that accesses AXUIElement API directly.
+    // This bypasses osascript/JXA which can't see Electron windows.
 
     public startAccessibilityScraper() {
         if (this.scraperInterval) {
@@ -663,65 +665,62 @@ export class ChatContextExtractor {
             return;
         }
 
-        // Try to find the script in common locations
+        // Look for the compiled Swift binary
         const possiblePaths = [
-            path.join(this.context.extensionPath, 'src', 'scripts', 'scraper.js'),
-            path.join(this.context.extensionPath, 'scripts', 'scraper.js'),
-            path.join(this.context.extensionPath, 'dist', 'scripts', 'scraper.js')
+            path.join(this.context.extensionPath, 'src', 'scripts', 'ax_scraper'),
+            path.join(this.context.extensionPath, 'scripts', 'ax_scraper'),
+            path.join(this.context.extensionPath, 'dist', 'scripts', 'ax_scraper')
         ];
 
-        const scriptPath = possiblePaths.find(p => fs.existsSync(p));
+        const binaryPath = possiblePaths.find(p => fs.existsSync(p));
 
-        if (!scriptPath) {
-            this.diagnostics.push(`Scraper script not found. Looked in: ${possiblePaths.join(', ')}`);
+        if (!binaryPath) {
+            this.diagnostics.push(`Native scraper binary not found. Looked in: ${possiblePaths.join(', ')}`);
             return;
         }
 
-        this.diagnostics.push('Starting Accessibility Scraper loop (5s interval)...');
+        this.diagnostics.push('Starting Native Accessibility Scraper (10s interval)...');
 
         // Run immediately, then interval
-        this.runScraper(scriptPath);
-        this.scraperInterval = setInterval(() => this.runScraper(scriptPath), 5000);
+        this.runNativeScraper(binaryPath);
+        this.scraperInterval = setInterval(() => this.runNativeScraper(binaryPath), 10000);
     }
 
-    private runScraper(scriptPath: string) {
-        // osascript -l JavaScript src/scripts/scraper.js
-        cp.exec(`osascript -l JavaScript "${scriptPath}"`, (err, stdout, stderr) => {
+    private runNativeScraper(binaryPath: string) {
+        cp.exec(`"${binaryPath}"`, { timeout: 15000 }, (err, stdout, _stderr) => {
             if (err) {
-                // Determine if it's a permission error
-                if (stderr.includes('Not authorized to send Apple events')) {
-                    this.diagnostics.push('Scraper Error: Permission denied. User must grant Accessibility access.');
-                }
+                this.diagnostics.push(`Scraper error: ${err.message.substring(0, 100)}`);
                 return;
             }
 
             try {
                 const data = JSON.parse(stdout);
-                if (data.messages && Array.isArray(data.messages)) {
-                    let newCount = 0;
-                    for (const msg of data.messages) {
-                        // msg = { role: string, value: string }
-                        const text = msg.value;
-                        if (!text || text.length < 10) continue;
+                if (data.status !== 'ok' || !data.messages) return;
 
-                        // Deduplicate
-                        const exists = this.capturedMessages.some(m => m.text === text);
-                        if (!exists) {
-                            this.capturedMessages.push({
-                                role: 'user', // Heuristic: Assume most long text in sidebar is user context
-                                text: text,
-                                timestamp: Date.now(),
-                                source: 'scraper'
-                            });
-                            newCount++;
-                        }
-                    }
-                    if (newCount > 0) {
-                        this.diagnostics.push(`Scraper found ${newCount} new messages from ${data.app}`);
+                let newCount = 0;
+                for (const msg of data.messages) {
+                    const text = msg.text;
+                    if (!text || text.length < 8) continue;
+
+                    // Deduplicate against in-memory store
+                    const exists = this.capturedMessages.some(m => m.text === text);
+                    if (!exists) {
+                        this.capturedMessages.push({
+                            role: 'chat',
+                            text: text,
+                            timestamp: Date.now(),
+                            source: 'ax-scraper'
+                        });
+                        newCount++;
                     }
                 }
-            } catch (e) {
-                // JSON parse error (maybe script returned non-JSON)
+                if (newCount > 0) {
+                    this.diagnostics.push(`Native scraper found ${newCount} new messages from ${data.app}`);
+                    // Trigger persist so chat text appears in chat_history.json
+                    this.triggerPersist('scraper-new-messages');
+                }
+            } catch (_e) {
+                // JSON parse error
             }
         });
     }
