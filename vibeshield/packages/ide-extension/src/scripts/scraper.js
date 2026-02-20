@@ -1,126 +1,173 @@
 #!/usr/bin/env osascript -l JavaScript
 
 /**
- * Robust Scraper for Antigravity/Electron Apps
+ * VibeShield Chat Scraper — JXA (JavaScript for Automation)
+ * 
+ * Extracts visible chat text from the IDE's right panel (Agent Chat)
+ * using macOS Accessibility API.
+ * 
+ * Designed to run via: osascript -l JavaScript scraper.js
+ * Returns JSON: { app, status, messages: [{role, text}], debug }
+ * 
+ * Also saves results to ~/.vibeshield/chat_history.json for Cortex-R.
  */
-function run(argv) {
+function run() {
     var se = Application("System Events");
-    var targetApp = null;
-    var targetName = "";
     var debugLog = [];
+    var targetProc = null;
+    var targetName = "";
+    var mainWin = null;
+    var maxArea = 0;
 
-    // Candidates to look for
-    var precursors = ["Antigravity", "Electron", "Cursor", "Code", "Comet"];
-    var candidates = [];
-
-    var procs = se.processes;
-    var procCount = procs.length;
+    // Step 1: Find ALL foreground processes, pick the IDE (largest window)
+    var candidates = ["Electron", "Cursor", "Code", "Antigravity", "Comet"];
+    var allProcs = se.processes;
+    var procCount = allProcs.length;
 
     for (var i = 0; i < procCount; i++) {
         try {
-            var p = procs[i];
+            var p = allProcs[i];
             var pName = p.name();
 
-            // Check if name matches any precursor
-            var matches = false;
-            for (var j = 0; j < precursors.length; j++) {
-                if (pName.indexOf(precursors[j]) > -1) {
-                    matches = true;
+            // Check if process name matches any candidate
+            var isCandidate = false;
+            for (var c = 0; c < candidates.length; c++) {
+                if (pName.indexOf(candidates[c]) > -1) {
+                    isCandidate = true;
                     break;
                 }
             }
-            if (!matches) continue;
+            if (!isCandidate) continue;
 
-            // Check for windows
-            // Some apps hide windows in Helper processes
-            var wins = p.windows;
-            if (wins.length > 0) {
-                candidates.push({
-                    p: p,
-                    name: pName,
-                    count: wins.length,
-                    front: p.frontmost()
-                });
+            // Check all windows of this process
+            var wins;
+            try { wins = p.windows(); } catch (e) { continue; }
+
+            for (var w = 0; w < wins.length; w++) {
+                try {
+                    var win = wins[w];
+                    var sz = win.size();
+                    var area = sz[0] * sz[1];
+
+                    // Skip tiny windows (menu bars, popups)
+                    if (sz[1] < 100) continue;
+
+                    if (area > maxArea) {
+                        maxArea = area;
+                        mainWin = win;
+                        targetProc = p;
+                        targetName = pName;
+                    }
+                } catch (e) { /* skip inaccessible windows */ }
             }
         } catch (e) {
-            debugLog.push("Err(" + i + "): " + e.message);
+            debugLog.push("ProcErr(" + i + "): " + e.message);
         }
     }
 
-    if (candidates.length === 0) {
+    if (!mainWin) {
         return JSON.stringify({
-            error: "No matching processes with windows found",
-            searched: precursors,
-            debug: debugLog.slice(0, 5) // Limit debug output
+            error: "No IDE window found",
+            debug: debugLog.slice(0, 10),
+            searched: candidates
         });
     }
 
-    // Sort: Frontmost first, then most windows
-    candidates.sort(function (a, b) {
-        if (a.front && !b.front) return -1;
-        if (!a.front && b.front) return 1;
-        return b.count - a.count;
-    });
+    // Step 2: Get window geometry, calculate chat panel boundary
+    var winPos, winSize;
+    try {
+        winPos = mainWin.position();
+        winSize = mainWin.size();
+    } catch (e) {
+        return JSON.stringify({ error: "Cannot read window geometry", details: e.message });
+    }
 
-    targetApp = candidates[0].p;
-    targetName = candidates[0].name;
+    // Chat panel is on the RIGHT side (typically right 40-45%)
+    var chatLeftX = winPos[0] + winSize[0] * 0.50;
+    debugLog.push("Window: " + winSize[0] + "x" + winSize[1] + " at (" + winPos[0] + "," + winPos[1] + ")");
+    debugLog.push("Chat boundary: x > " + Math.round(chatLeftX));
 
-    // Scrape Logic
+    // Step 3: Recursive extraction — ONLY from the right panel
     var results = [];
     var seen = {};
+    var scanned = 0;
+    var MAX_SCAN = 6000;
 
     var scan = function (el, depth) {
-        if (depth > 25) return; // Prevent infinite recursion in deep DOMs
+        if (depth > 30 || scanned > MAX_SCAN) return;
+        scanned++;
+
         try {
             var role = el.role();
-            var val = el.value();
-            var desc = el.description();
 
-            // Heuristic for chat messages: Long text in static text or text area
-            // Also buttons/links sometimes contain text
-            var text = "";
-            if (typeof val === 'string') text = val;
-            else if (typeof desc === 'string') text = desc;
-
-            if (text && typeof text === 'string' && text.trim().length > 3) { // Min length filter 
-                if (!seen[text]) {
-                    results.push({ role: role, text: text });
-                    seen[text] = true;
-                }
+            // Check position — skip elements on the left (editor area)
+            if (depth > 2) {
+                try {
+                    var pos = el.position();
+                    if (pos[0] < chatLeftX) return; // LEFT of chat boundary → skip
+                } catch (e) { /* no position info, continue scanning */ }
             }
 
-            // Recurse
-            var children = el.uiElements;
-            // Only recurse if container-like role to save time?
-            // "AXGroup", "AXScrollArea", "AXWebArea", "AXWindow", "AXSplitGroup"
-            // But sometimes generic groups.
-            // Just scan all for now, depth limiting saves us.
-            var childCount = children.length;
-            // Limit children width processing to avoid massive trees?
-            if (childCount > 500) childCount = 500;
+            // Extract text from text elements
+            if (role === "AXStaticText" || role === "AXTextField" || role === "AXTextArea") {
+                try {
+                    var val = el.value();
+                    if (val && typeof val === 'string') {
+                        var text = val.trim();
+                        // Skip very short text (UI labels: ×, ▶, etc.)
+                        if (text.length > 4 && !seen[text]) {
+                            seen[text] = true;
+                            results.push({ role: role, text: text });
+                        }
+                    }
+                } catch (e) { /* no value */ }
+            }
 
+            // Also capture descriptions on groups (section headers, etc.)
+            if (role === "AXGroup" || role === "AXWebArea" || role === "AXSection") {
+                try {
+                    var desc = el.description();
+                    if (desc && typeof desc === 'string' && desc.length > 8 && !seen[desc]) {
+                        seen[desc] = true;
+                        results.push({ role: "section", text: "[" + desc + "]" });
+                    }
+                } catch (e) { }
+            }
+        } catch (e) { return; }
+
+        // Recurse into children
+        try {
+            var children = el.uiElements();
+            var childCount = Math.min(children.length, 300); // Cap to prevent explosion
             for (var k = 0; k < childCount; k++) {
-                scan(children[k], depth + 1);
+                if (scanned > MAX_SCAN) break;
+                try { scan(children[k], depth + 1); } catch (e) { }
             }
-        } catch (e) {
-            // Ignore element access errors
-        }
+        } catch (e) { /* no children */ }
     };
 
-    try {
-        var win = targetApp.windows[0];
-        scan(win, 0);
-    } catch (e) {
-        return JSON.stringify({
-            error: "Window scan failed",
-            app: targetName,
-            details: e.message
-        });
+    // Start from the main window
+    scan(mainWin, 0);
+
+    debugLog.push("Scanned " + scanned + " elements, found " + results.length + " text blocks");
+
+    // Step 4: Filter results (keep only meaningful chat content)
+    var chatMessages = [];
+    for (var r = 0; r < results.length; r++) {
+        var msg = results[r];
+        // Skip UI noise
+        if (msg.text.match(/^[×▶▼▲►◄⌘⇧⌥\s]+$/)) continue;
+        if (msg.text.length < 5) continue;
+        chatMessages.push({ role: msg.role, value: msg.text });
     }
 
     return JSON.stringify({
         app: targetName,
-        status: "Success",
-        messages: results
+        status: "ok",
+        windowTitle: (function () { try { return mainWin.name(); } catch (e) { return ""; } })(),
+        windowSize: winSize[0] + "x" + winSize[1],
+        elementsScanned: scanned,
+        messages: chatMessages,
+        debug: debugLog
     });
 }

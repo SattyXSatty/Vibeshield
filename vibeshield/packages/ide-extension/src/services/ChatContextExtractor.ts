@@ -24,6 +24,9 @@ export class ChatContextExtractor {
     // In-memory store for captured messages (Strategy 1 & 4 & 6)
     private capturedMessages: { role: string; text: string; timestamp: number; source?: string }[] = [];
     private scraperInterval: NodeJS.Timeout | undefined;
+    private persistTimeout: NodeJS.Timeout | undefined;
+    private conversationWatcher: fs.FSWatcher | undefined;
+    private knownConversations = new Set<string>();
     private _onChatMessageFound = new vscode.EventEmitter<{ role: string; text: string; source: string; timestamp: number }>();
     public readonly onChatMessageFound = this._onChatMessageFound.event;
 
@@ -43,6 +46,10 @@ export class ChatContextExtractor {
         this.registerChatParticipant();
         this.startBrainWatcher();
         this.startDatabaseWatcher();
+        this.startConversationWatcher();
+
+        // Initial extraction on startup (5s delay to let IDE settle)
+        setTimeout(() => this.triggerPersist('startup'), 5000);
     }
 
     // ─── IDE Detection ───────────────────────────────────────────
@@ -306,6 +313,8 @@ export class ChatContextExtractor {
 
                             // Use unified emitter
                             this.emitMessage('user', text, 'brain-watcher');
+                            // Trigger persist on brain change
+                            this.triggerPersist('brain-change');
                         }
                     }
                 } catch (_e) { /* skip busy files */ }
@@ -326,9 +335,9 @@ export class ChatContextExtractor {
                     this.dbWatcherTimeout = setTimeout(async () => {
                         const newItems = await this.performDeepDbScan(this.workspaceStoragePath!, 3);
                         for (const item of newItems) {
-                            // clean up and emit
                             this.emitMessage('user', item, 'database-watcher');
                         }
+                        this.triggerPersist('workspace-db-change');
                     }, 2000); // 2s debounce
                 });
                 this.context.subscriptions.push({ dispose: () => wsWatcher.close() });
@@ -347,6 +356,7 @@ export class ChatContextExtractor {
                         for (const item of newItems) {
                             this.emitMessage('user', item, 'global-db-watcher');
                         }
+                        this.triggerPersist('global-db-change');
                     }, 3000); // 3s debounce (larger file)
                 });
                 this.context.subscriptions.push({ dispose: () => gWatcher.close() });
@@ -716,10 +726,161 @@ export class ChatContextExtractor {
         });
     }
 
+    // ─── Trigger-Based Persist (saves chat history for Cortex-R) ─────
+
+    /**
+     * Debounced trigger: schedule persistChatHistory() after a short delay.
+     * Multiple rapid triggers (burst activity) collapse into a single write.
+     */
+    private triggerPersist(reason: string) {
+        if (this.persistTimeout) clearTimeout(this.persistTimeout);
+        this.persistTimeout = setTimeout(() => {
+            this.persistChatHistory(reason);
+        }, 3000); // 3s debounce
+    }
+
+    /**
+     * Extract all chat data from known sources and save to
+     * ~/.vibeshield/chat_history.json for Cortex-R consumption.
+     */
+    private async persistChatHistory(trigger: string) {
+        const outputDir = path.join(os.homedir(), '.vibeshield');
+        const outputFile = path.join(outputDir, 'chat_history.json');
+
+        try {
+            if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+
+            // Gather messages from all sources
+            const allMessages: { role: string; text: string; source: string; timestamp: number }[] = [];
+
+            // 1. In-memory captured messages
+            for (const m of this.capturedMessages) {
+                allMessages.push({ role: m.role, text: m.text, source: m.source || 'memory', timestamp: m.timestamp });
+            }
+
+            // 2. Global DB extraction (trajectory summaries)
+            try {
+                const globalItems = await this.extractFromGlobalStateDb(50);
+                for (const item of globalItems) {
+                    allMessages.push({ role: 'context', text: item, source: 'global-db', timestamp: Date.now() });
+                }
+            } catch (_e) { /* ignore */ }
+
+            // 3. Brain artifacts
+            const brainDir = path.join(os.homedir(), '.gemini', 'antigravity', 'brain');
+            if (fs.existsSync(brainDir)) {
+                const convDirs = fs.readdirSync(brainDir, { withFileTypes: true })
+                    .filter(d => d.isDirectory() && !d.name.startsWith('.') && d.name !== 'tempmediaStorage')
+                    .map(d => ({ name: d.name, path: path.join(brainDir, d.name), mtime: fs.statSync(path.join(brainDir, d.name)).mtimeMs }))
+                    .sort((a, b) => b.mtime - a.mtime)
+                    .slice(0, 10);
+
+                for (const conv of convDirs) {
+                    for (const af of ['task.md', 'implementation_plan.md', 'walkthrough.md']) {
+                        const afPath = path.join(conv.path, af);
+                        if (fs.existsSync(afPath)) {
+                            try {
+                                const content = fs.readFileSync(afPath, 'utf-8');
+                                if (content.length > 20) {
+                                    allMessages.push({
+                                        role: 'brain_artifact',
+                                        text: `[${af}] ${content.substring(0, 2000)}`,
+                                        source: `brain:${conv.name}`,
+                                        timestamp: conv.mtime
+                                    });
+                                }
+                            } catch (_e) { /* skip */ }
+                        }
+                    }
+                }
+            }
+
+            // De-duplicate by text prefix
+            const seen = new Set<string>();
+            const unique = allMessages.filter(m => {
+                const key = m.text.substring(0, 80);
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+
+            // Build output
+            const output = {
+                extracted_at: new Date().toISOString(),
+                trigger,
+                total_messages: unique.length,
+                messages: unique.map(m => ({
+                    role: m.role,
+                    text: m.text,
+                    source: m.source,
+                    timestamp: new Date(m.timestamp).toISOString()
+                }))
+            };
+
+            fs.writeFileSync(outputFile, JSON.stringify(output, null, 2), 'utf-8');
+            this.diagnostics.push(`[Persist] Saved ${unique.length} messages to ${outputFile} (trigger: ${trigger})`);
+            console.log(`[VibeShield] Chat history persisted: ${unique.length} messages (trigger: ${trigger})`);
+
+        } catch (err) {
+            console.warn('[VibeShield] Failed to persist chat history:', err);
+        }
+    }
+
+    // ─── Conversation Directory Watcher (new chat = new .pb file) ─────
+
+    /**
+     * Watch ~/.gemini/antigravity/conversations/ for new .pb files.
+     * A new .pb file means a new chat session was started.
+     */
+    private startConversationWatcher() {
+        const convDir = path.join(os.homedir(), '.gemini', 'antigravity', 'conversations');
+        if (!fs.existsSync(convDir)) {
+            this.diagnostics.push('Conversations directory not found.');
+            return;
+        }
+
+        // Snapshot existing conversations
+        try {
+            const existing = fs.readdirSync(convDir).filter(f => f.endsWith('.pb'));
+            for (const f of existing) this.knownConversations.add(f);
+            this.diagnostics.push(`Indexed ${existing.length} existing conversations.`);
+        } catch (_e) { /* ignore */ }
+
+        // Watch for new files
+        this.conversationWatcher = fs.watch(convDir, (eventType, filename) => {
+            if (!filename || !filename.endsWith('.pb')) return;
+
+            if (eventType === 'rename' && !this.knownConversations.has(filename)) {
+                // New conversation detected!
+                this.knownConversations.add(filename);
+                const convId = filename.replace('.pb', '');
+                this.diagnostics.push(`🆕 New conversation detected: ${convId}`);
+                console.log(`[VibeShield] New chat session: ${convId}`);
+
+                // Trigger full extraction
+                this.triggerPersist(`new-conversation:${convId}`);
+            } else if (eventType === 'change') {
+                // Existing conversation updated (new messages)
+                this.triggerPersist(`conversation-update:${filename.replace('.pb', '')}`);
+            }
+        });
+
+        this.context.subscriptions.push({ dispose: () => this.conversationWatcher?.close() });
+        this.diagnostics.push(`Watching conversations directory for new chat sessions.`);
+    }
+
     public dispose() {
         if (this.scraperInterval) {
             clearInterval(this.scraperInterval);
             this.scraperInterval = undefined;
+        }
+        if (this.persistTimeout) {
+            clearTimeout(this.persistTimeout);
+            this.persistTimeout = undefined;
+        }
+        if (this.conversationWatcher) {
+            this.conversationWatcher.close();
+            this.conversationWatcher = undefined;
         }
     }
 }
