@@ -10,7 +10,10 @@ export type IPCMessageType =
     | 'chat_message'
     | 'file_change'
     | 'log_batch'
-    | 'cortex_analysis';
+    | 'cortex_analysis'
+    | 'intent_extracted'
+    | 'test_plan_generated'
+    | 'test_execution_report';
 
 export interface BaseIPCMessage {
     type: IPCMessageType;
@@ -30,7 +33,7 @@ export interface LogEntryMessage extends BaseIPCMessage {
 export interface CommandMessage extends BaseIPCMessage {
     type: 'command';
     payload: {
-        action: 'start' | 'stop' | 'restart' | 'clear_logs';
+        action: 'start' | 'stop' | 'restart' | 'clear_logs' | 'extract_intent' | 'generate_test_plan' | 'execute_test_plan';
         args?: any;
     };
 }
@@ -89,6 +92,61 @@ export interface CortexAnalysisMessage extends BaseIPCMessage {
     };
 }
 
+export interface IntentExtractedMessage extends BaseIPCMessage {
+    type: 'intent_extracted';
+    payload: {
+        developerIntent: string;
+        testingType: 'e2e' | 'api' | 'ui' | 'unit' | 'none';
+        scenariosToTest: string[];
+        edgeCases: string[];
+        isUnclear: boolean;
+    };
+}
+
+export interface TestPlanGeneratedMessage extends BaseIPCMessage {
+    type: 'test_plan_generated';
+    payload: {
+        testType: 'e2e' | 'api' | 'ui' | 'unit' | 'none';
+        planName: string;
+        description: string;
+        steps: Array<{
+            stepName: string;
+            action: string;
+            cliCommand?: string;
+            apiRequest?: {
+                method: string;
+                url: string;
+                headers?: Record<string, string>;
+                body?: any;
+            };
+            expectedResult: string;
+        }>;
+    };
+}
+
+export interface TestExecutionReportMessage extends BaseIPCMessage {
+    type: 'test_execution_report';
+    payload: {
+        testType: 'e2e' | 'api' | 'ui' | 'unit' | 'none';
+        planName: string;
+        totalSteps: number;
+        passedSteps: number;
+        failedSteps: number;
+        durationMs: number;
+        allPassed: boolean;
+        results: Array<{
+            stepName: string;
+            action: string;
+            passed: boolean;
+            analysis: string;
+            rootCause?: string;
+            durationMs: number;
+            testType: 'cli' | 'api' | 'manual';
+        }>;
+        aiFeedback?: string;
+    };
+}
+
 export type IPCMessage =
     | StateUpdateMessage
     | LogEntryMessage
@@ -97,4 +155,7 @@ export type IPCMessage =
     | IDEEventMessage
     | ChatMessage
     | FileChangeMessage
-    | CortexAnalysisMessage;
+    | CortexAnalysisMessage
+    | IntentExtractedMessage
+    | TestPlanGeneratedMessage
+    | TestExecutionReportMessage;

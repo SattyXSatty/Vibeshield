@@ -29,9 +29,31 @@ export interface LogAnalysisResult {
  * Intent extracted from chat/diff.
  */
 export interface IntentAnalysis {
-    featureName: string;
-    testType: 'cli' | 'api' | 'ui' | 'none';
-    testCases: string[];
+    developerIntent: string;
+    testingType: 'e2e' | 'api' | 'ui' | 'unit' | 'none';
+    scenariosToTest: string[];
+    edgeCases: string[];
+    isUnclear: boolean;
+}
+
+export interface TestStep {
+    stepName: string;
+    action: string;
+    cliCommand?: string;
+    apiRequest?: {
+        method: string;
+        url: string;
+        headers?: Record<string, string>;
+        body?: any;
+    };
+    expectedResult: string;
+}
+
+export interface TestPlan {
+    testType: 'e2e' | 'api' | 'ui' | 'unit' | 'none';
+    planName: string;
+    description: string;
+    steps: TestStep[];
 }
 
 /**
@@ -40,5 +62,6 @@ export interface IntentAnalysis {
 export interface ICortexBridge {
     analyzeLog(logs: LogEntry[]): Promise<CortexAgentResponse<LogAnalysisResult>>;
     extractIntent(chatHistory: string, diff: string): Promise<CortexAgentResponse<IntentAnalysis>>;
+    generateTestPlan(intent: any, projectContext: string): Promise<TestPlan>;
     checkServerReady(logs: LogEntry[]): Promise<CortexAgentResponse<{ ready: boolean; url?: string }>>;
 }

@@ -3,11 +3,12 @@ import { LogEntry, IPCMessage } from '@vibeshield/shared';
 import { StatusIndicator } from './components/StatusIndicator/StatusIndicator';
 import { ActivityFeed } from './components/ActivityFeed/ActivityFeed';
 import { ActionBar } from './components/ActionBar/ActionBar';
+import { TestResultsPanel } from './components/TestResultsPanel/TestResultsPanel';
 import { useAgentStore } from './store/useAgentStore';
 import './styles/theme.css';
 
 function App() {
-    const { phase, logs, setPhase, addLog, clearLogs } = useAgentStore();
+    const { phase, logs, currentReport, lastReport, setPhase, addLog, clearLogs, setReport } = useAgentStore();
 
     // Listen for IPC messages from Main Process (via WebSocket/IPC)
     useEffect(() => {
@@ -15,7 +16,7 @@ function App() {
 
         if ((window as any).electronAPI) {
             // onMessage now returns a cleanup function from preload.ts
-            cleanup = ((window as any).electronAPI.onMessage as any)((msg: IPCMessage) => {
+            cleanup = ((window as any).electronAPI.onMessage as any)((msg: IPCMessage | any) => {
                 if (msg.type === 'state_update') {
                     setPhase(msg.payload.phase);
                 } else if (msg.type === 'log_entry') {
@@ -92,7 +93,42 @@ function App() {
                         content: `File Changed: ${file} [${reason}] ${preview}`
                     });
                 } else if (msg.type === 'log_batch') {
-                    msg.payload.forEach(log => addLog(log));
+                    msg.payload.forEach((log: LogEntry) => addLog(log));
+                } else if (msg.type === 'intent_extracted') {
+                    const intent = msg.payload as any;
+                    const content = `Intent Extracted:
+• Intent: ${intent.developerIntent}
+• Testing Strategy: ${intent.testingType}
+• Scenarios to Test: ${intent.scenariosToTest?.join(', ')}
+• Edge Cases: ${intent.edgeCases?.join(', ')}
+• Unclear: ${intent.isUnclear ? 'YES' : 'NO'}`;
+
+                    addLog({
+                        id: Math.random().toString(36).substr(2, 9),
+                        timestamp: new Date().toISOString(),
+                        source: 'cortex',
+                        level: intent.isUnclear ? 'warn' : 'info',
+                        content: content
+                    });
+                } else if (msg.type === 'test_plan_generated') {
+                    const plan = msg.payload as any;
+                    const stepsText = plan.steps?.map((s: any, i: number) => `  ${i + 1}. [${s.stepName}] ${s.action} -> ${s.expectedResult}`).join('\n') || 'None';
+                    const content = `Test Plan Generated:
+• Name: ${plan.planName}
+• Target: ${plan.testType}
+• Desc: ${plan.description}
+• Steps:
+${stepsText}`;
+
+                    addLog({
+                        id: Math.random().toString(36).substr(2, 9),
+                        timestamp: new Date().toISOString(),
+                        source: 'cortex',
+                        level: 'info',
+                        content: content
+                    });
+                } else if (msg.type === 'test_execution_report') {
+                    setReport(msg.payload);
                 }
             });
         }
@@ -134,9 +170,50 @@ function App() {
         addLog(createLog('system', 'Agent stopped by user.', 'warn'));
     };
 
+    const handleExtractIntent = () => {
+        if ((window as any).electronAPI) {
+            (window as any).electronAPI.sendMessage({
+                type: 'command',
+                timestamp: new Date().toISOString(),
+                payload: { action: 'extract_intent' }
+            } as any);
+        }
+        addLog(createLog('cortex', 'Requested Intent Extraction from IDE...', 'info'));
+    };
+
+    const handleGenerateTestPlan = () => {
+        if ((window as any).electronAPI) {
+            (window as any).electronAPI.sendMessage({
+                type: 'command',
+                timestamp: new Date().toISOString(),
+                payload: { action: 'generate_test_plan' }
+            } as any);
+        }
+        addLog(createLog('cortex', 'Requested Test Plan Generation...', 'info'));
+    };
+
+    const handleExecuteTestPlan = () => {
+        if ((window as any).electronAPI) {
+            (window as any).electronAPI.sendMessage({
+                type: 'command',
+                timestamp: new Date().toISOString(),
+                payload: { action: 'execute_test_plan' }
+            } as any);
+        }
+        addLog(createLog('system', 'Starting execution of generated Test Plan...', 'info'));
+    };
+
     const handleClear = () => {
+        if ((window as any).electronAPI) {
+            (window as any).electronAPI.sendMessage({
+                type: 'command',
+                timestamp: new Date().toISOString(),
+                payload: { action: 'clear_memory' }
+            } as any);
+        }
         clearLogs();
         setPhase('idle');
+        addLog(createLog('system', 'Cleared logs & reset smart memory.', 'info'));
     };
 
     const createLog = (source: LogEntry['source'], content: string, level: LogEntry['level']): LogEntry => {
@@ -178,8 +255,20 @@ function App() {
                 onStart={handleStart}
                 onStop={handleStop}
                 onClear={handleClear}
+                onExtractIntent={handleExtractIntent}
+                onGenerateTestPlan={handleGenerateTestPlan}
+                onExecuteTestPlan={handleExecuteTestPlan}
+                onViewLastReport={() => setReport(lastReport)}
+                hasLastReport={!!lastReport}
                 isRunning={phase !== 'idle' && phase !== 'stopped' && phase !== 'completed' && phase !== 'error'}
             />
+
+            {currentReport && (
+                <TestResultsPanel
+                    report={currentReport}
+                    onClose={() => setReport(null)}
+                />
+            )}
         </div>
     );
 }

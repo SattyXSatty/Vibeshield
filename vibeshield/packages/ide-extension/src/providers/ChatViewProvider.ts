@@ -1,17 +1,22 @@
 import * as vscode from 'vscode';
 import { OverlayConnector } from '../services/OverlayConnector';
-
 import { ContextExtractor } from '../services/ContextExtractor';
+import { ChatContextExtractor } from '../services/ChatContextExtractor';
 
 export class ChatViewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'vibeshield.chat';
 
     private _view?: vscode.WebviewView;
 
+    // Add EventEmitter to notify extension.ts when the user sends a message
+    private _onMessageReceived = new vscode.EventEmitter<{ text: string, context?: any }>();
+    public readonly onMessageReceived = this._onMessageReceived.event;
+
     constructor(
         private readonly _extensionUri: vscode.Uri,
         private connector: OverlayConnector,
-        private contextExtractor: ContextExtractor
+        private contextExtractor: ContextExtractor,
+        private chatExtractor: ChatContextExtractor
     ) { }
 
     public resolveWebviewView(
@@ -33,6 +38,8 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
                 case 'sendMessage': {
                     const extractedContext = this.contextExtractor.getCurrentContext();
 
+                    this.chatExtractor.pushMessage('user', data.value);
+
                     vscode.window.showInformationMessage(
                         'VibeShield: Thinking about ' +
                         (extractedContext ? extractedContext.fileName : 'global context') +
@@ -50,6 +57,12 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
                             context: extractedContext || undefined
                         }
                     } as any);
+
+                    // Notify the extension to process it
+                    this._onMessageReceived.fire({
+                        text: data.value,
+                        context: extractedContext || undefined
+                    });
                     break;
                 }
             }
@@ -65,6 +78,16 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
             this._view.webview.postMessage({ type: 'systemMessage', content, level: type });
             return true;
         }
+        return false;
+    }
+
+    public sendAIMessage(content: string): boolean {
+        if (this._view) {
+            console.log('[VibeShield] Sending AI message to chat sidebar webview:', content.substring(0, 50));
+            this._view.webview.postMessage({ type: 'aiMessage', content });
+            return true;
+        }
+        console.warn('[VibeShield] Chat view is not ready or open. Could not send message.');
         return false;
     }
 
@@ -102,6 +125,13 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
             '      margin: 5px 0;',
             '      font-weight: bold;',
             '    }',
+            '    .msg-ai {',
+            '      margin: 5px 0;',
+            '      color: var(--vscode-editor-foreground);',
+            '      padding: 8px;',
+            '      background: var(--vscode-editorHoverWidget-background);',
+            '      border-radius: 4px;',
+            '    }',
             '    .msg-info {',
             '      border-left-color: var(--vscode-charts-blue);',
             '      color: var(--vscode-editor-foreground);',
@@ -126,10 +156,13 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
             '',
             '    function addMessage(text, className) {',
             '      const msgDiv = document.createElement("div");',
-            '      // Simple markdown: **bold** and *italic*',
-            '      var html = text;',
-            '      html = html.replace(/\\*\\*([^*]+)\\*\\*/g, "<b>$1</b>");',
-            '      html = html.replace(/\\*([^*]+)\\*/g, "<i>$1</i>");',
+            '      // Safely escape HTML to prevent breaking injection',
+            '      var html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");',
+            '      // Bold parsing',
+            '      html = html.replace(/\\*\\*(.*?)\\*\\*/g, "<b>$1</b>");',
+            '      // Bullet point detection (turn leading * into HTML bullets)',
+            '      html = html.replace(/^\\s*\\*\\s+(.*)$/gm, "<li>$1</li>");',
+            '      // Basic newlines',
             '      html = html.replace(/\\n/g, "<br>");',
             '      msgDiv.innerHTML = html;',
             '      if (className) msgDiv.className = className;',
@@ -142,6 +175,8 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
             '      if (message.type === "systemMessage") {',
             '        var cls = message.level === "error" ? "msg-system msg-error" : "msg-system msg-info";',
             '        addMessage(message.content, cls);',
+            '      } else if (message.type === "aiMessage") {',
+            '        addMessage(message.content, "msg-ai");',
             '      }',
             '    });',
             '',

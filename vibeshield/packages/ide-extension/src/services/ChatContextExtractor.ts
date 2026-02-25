@@ -157,58 +157,65 @@ export class ChatContextExtractor {
         return this.ideType;
     }
 
-    public async getRecentChatHistory(limit: number = 8): Promise<string[]> {
+    public async getRecentChatHistory(limit: number = 8, includeGlobal: boolean = false): Promise<string[]> {
         try {
             const allMessages: { text: string; timestamp: number; importance: number }[] = [];
 
             // 1. In-memory captured messages
             for (const m of this.capturedMessages) {
+                const isGlobalSourced = m.source?.includes('global') || m.source?.includes('brain');
+                if (!includeGlobal && isGlobalSourced) {
+                    continue; // Skip global pollution unless explicitly requested
+                }
+
                 allMessages.push({
                     text: m.text,
                     timestamp: m.timestamp,
-                    importance: m.role === 'user' ? 2 : 1
+                    importance: m.role === 'user' ? 3 : 2
                 });
             }
 
-            // 2. Brain Artifacts (Antigravity only)
-            if (this.ideType === 'antigravity') {
-                const brainHistory = await this.getAntigravityBrainHistory(limit);
-                for (const text of brainHistory) {
-                    allMessages.push({
-                        text,
-                        timestamp: Date.now() - 5000, // Heuristic: brain is historical
-                        importance: 3 // Artifacts are very important for context
-                    });
+            // 2. Add Global/Brain data ONLY if explicitly requested, to avoid cross-project pollution
+            if (includeGlobal) {
+                if (this.ideType === 'antigravity') {
+                    const brainHistory = await this.getAntigravityBrainHistory(limit);
+                    for (const text of brainHistory) {
+                        allMessages.push({
+                            text,
+                            timestamp: Date.now(), // Give brain artifacts current timestamp
+                            importance: 3 // Artifacts are very important for context
+                        });
+                    }
+
+                    // 2.5 Global State (Chat trajectory)
+                    const globalResults = await this.extractFromGlobalStateDb(limit);
+                    for (const text of globalResults) {
+                        allMessages.push({
+                            text,
+                            timestamp: Date.now() - 5000,
+                            importance: 2
+                        });
+                    }
                 }
 
-                // 2.5 Global State (Chat trajectory)
-                const globalResults = await this.extractFromGlobalStateDb(limit);
-                for (const text of globalResults) {
-                    allMessages.push({
-                        text,
-                        timestamp: Date.now() - 2000,
-                        importance: 2
-                    });
+                if (this.ideType === 'cursor') {
+                    const cursorHistory = await this.getCursorGlobalFallback(limit);
+                    for (const text of cursorHistory) {
+                        allMessages.push({ text: `[Cursor] ${text}`, timestamp: Date.now() - 1000, importance: 1 });
+                    }
                 }
             }
 
-            // 3. Database Scans (Workspace History - likely recent manual inputs)
+            // 3. Database Scans (Workspace History - guaranteed local to project)
             if (this.workspaceStoragePath) {
                 const dbResults = await this.performDeepDbScan(this.workspaceStoragePath, limit);
                 for (const text of dbResults) {
-                    // FORCE to top with future timestamp
+                    // Lower priority so fresh Brain/In-Memory chat takes precedence over stale DB logs
                     allMessages.push({
                         text: `[DB] ${text}`,
-                        timestamp: Date.now() + 10000,
-                        importance: 2
+                        timestamp: Date.now() - 10000,
+                        importance: 1
                     });
-                }
-            }
-
-            if (this.ideType === 'cursor') {
-                const cursorHistory = await this.getCursorGlobalFallback(limit);
-                for (const text of cursorHistory) {
-                    allMessages.push({ text: `[Cursor] ${text}`, timestamp: Date.now() - 1000, importance: 1 });
                 }
             }
 

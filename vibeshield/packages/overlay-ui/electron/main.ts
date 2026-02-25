@@ -47,24 +47,24 @@ const createOverlayWindow = () => {
     // Development vs Production loading
     if (process.env.VITE_DEV_SERVER_URL) {
         console.log('Loading Dev URL:', process.env.VITE_DEV_SERVER_URL);
-        win.loadURL(process.env.VITE_DEV_SERVER_URL);
+        win?.loadURL(process.env.VITE_DEV_SERVER_URL);
     } else {
         console.log('Loading Production File:', path.join(RENDERER_DIST, 'index.html'));
-        win.loadFile(path.join(RENDERER_DIST, 'index.html'));
+        win?.loadFile(path.join(RENDERER_DIST, 'index.html'));
     }
 
     // macOS: Allow the window to float over full-screen apps
     if (process.platform === 'darwin') {
-        win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-        win.setAlwaysOnTop(true, 'floating');
+        win?.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+        win?.setAlwaysOnTop(true, 'floating');
     } else {
-        win.setAlwaysOnTop(true);
+        win?.setAlwaysOnTop(true);
     }
 
-    win.setIgnoreMouseEvents(false);
+    win?.setIgnoreMouseEvents(false);
 
     // Log failures
-    win.webContents.on('did-fail-load', (_e, _code, desc) => {
+    win?.webContents.on('did-fail-load', (_e: any, _code: any, desc: any) => {
         console.error('Failed to load window:', desc);
     });
 };
@@ -107,7 +107,7 @@ const startIpcServer = () => {
 };
 
 /* Handle IPC from Renderer (e.g. User clicks Stop) */
-ipcMain.handle('send-message', async (_event, msg) => {
+ipcMain.handle('send-message', async (_event: any, msg: any) => {
     // Broadcast to all WS clients (VS Code Extension)
     if (wss) {
         const payload = JSON.stringify(msg);
