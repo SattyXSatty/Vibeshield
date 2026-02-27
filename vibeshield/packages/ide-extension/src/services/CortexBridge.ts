@@ -217,26 +217,36 @@ ${projectContext || '(None provided)'}
 Generate a clear, ordered test plan with specific steps.
 - For CLI: include exact commands and expected terminal output.
 - For API: include endpoints, HTTP methods, and expected JSON shapes/status codes.
-- For UI: include pages to visit, specific elements to interact with, and expected visual/state changes.
+- For UI (including end-to-end browser tests): YOU MUST GENERATE EXTREMELY GRANULAR, ATOMIC MICRO-STEPS. 
+    - DO NOT group multiple actions into one step. EACH step object in the JSON array MUST represent exactly ONE atomic action (e.g., ONE click, ONE type sequence, ONE wait).
+    - Example of CORRECT step breakdown: 
+      [
+        {"stepName": "Click 5", "action": "Click the '5' button."},
+        {"stepName": "Click Plus", "action": "Click the '+' button."},
+        {"stepName": "Click 3", "action": "Click the '3' button."},
+        {"stepName": "Click Equals", "action": "Click the '=' button."},
+        {"stepName": "Verify Result", "action": "Verify display is 8.", "expectedResult": "Display shows 8"}
+      ]
+    - If interacting with a browser, always use "ui" as the testType.
 
 Return strictly valid JSON. Do not include markdown formatting.
 Format:
 {
-  "testType": "e2e" | "api" | "ui" | "unit" | "none",
+  "testType": "ui" | "api" | "cli" | "unit" | "none",
   "planName": "string",
   "description": "string",
   "steps": [
     {
-      "stepName": "string",
-      "action": "string",
-      "cliCommand": "string", // OPTIONAL. ONLY provide this if an exact, fully automatable bash/terminal command can execute this step.
-      "apiRequest": { // OPTIONAL. ONLY provide this if the step is an HTTP request.
+      "stepName": "string", // Short descriptive name
+      "action": "string", // CRITICAL: This MUST be a SINGLE, ATOMIC action (e.g., "Click 'Submit'", NOT a numbered list).
+      "cliCommand": "string", // OPTIONAL
+      "apiRequest": { // OPTIONAL
         "method": "GET | POST | PUT | DELETE",
         "url": "string",
         "headers": { "key": "value" }, 
-        "body": {} // Object or string
+        "body": {}
       },
-      "expectedResult": "string"
+      "expectedResult": "string" // Expected state AFTER this atomic action
     }
   ]
 }
@@ -258,13 +268,46 @@ Format:
 
             const jsonMatch = text.match(/\{[\s\S]*\}/);
             const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(cleanJson);
-        } catch (error) {
+            let parsed = JSON.parse(cleanJson);
+
+            // Helper to recursively unwrap any weird keys the LLM puts the plan inside
+            const unwrapPlan = (obj: any): any => {
+                if (!obj || typeof obj !== 'object') return obj;
+                if (obj.planName || obj.steps || obj.testType) return obj;
+                for (const key in obj) {
+                    const nested = unwrapPlan(obj[key]);
+                    if (nested && typeof nested === 'object' && (nested.planName || nested.steps || nested.testType)) {
+                        return nested;
+                    }
+                }
+                return obj;
+            };
+
+            parsed = unwrapPlan(parsed);
+
+            // If it still doesn't look like a valid test plan, fallback with a detailed error indicating the LLM hallucinaton 
+            if (!parsed.testType && !parsed.steps) {
+                return {
+                    testType: 'none',
+                    planName: 'Malformed AI Response',
+                    description: 'The AI returned an invalid structure. Raw payload: ' + text.substring(0, 200),
+                    steps: []
+                };
+            }
+
+            return {
+                testType: parsed.testType || 'none',
+                planName: parsed.planName || parsed.name || 'Unnamed Test Plan',
+                description: parsed.description || parsed.desc || 'No description provided.',
+                steps: Array.isArray(parsed.steps) ? parsed.steps : (parsed.testSteps ? parsed.testSteps : [])
+            };
+        } catch (error: any) {
             console.error('[VibeShield] Cortex-R Test Plan Generation Failed:', error);
+            // We want to pass up exactly what broke it
             return {
                 testType: 'none',
                 planName: 'Generation Failed',
-                description: 'An error occurred while calling Cortex-R.',
+                description: `Parse Error: ${error.message}`,
                 steps: []
             };
         }
@@ -416,6 +459,94 @@ Format:
         }
     }
 
+    public async analyzeUIState(
+        screenshotBase64: string,
+        expectedResult: string,
+        diffBase64?: string
+    ): Promise<any> {
+        if (!this.model) {
+            this.updateConfig();
+        }
+
+        if (!this.model) {
+            return {
+                passed: false,
+                analysis: 'Cortex-R Unavailable',
+                rootCause: 'Cannot reach Cortex-R',
+            };
+        }
+
+        let prompt = `
+You are a senior QA Automation Engineer analyzing a UI test state.
+Expected Result: ${expectedResult || 'The UI should be in the correct state.'}
+
+Analyze the provided screenshot(s) and determine:
+1. Does the UI show the expected state based on the expected result?
+2. Are there any visible errors on the screen?
+3. If it failed, what is the root cause? Provide a short specific reason based on what you see.
+`;
+
+        if (diffBase64) {
+            prompt += `\nAdditionally, you have been provided with a visual diff image showing the differences between the baseline and the current state. Red pixels indicate differences. Is this a regression or an intentional change based on the expected result?\n`;
+        }
+
+        prompt += `
+Return strictly valid JSON. Do not include markdown formatting.
+Format:
+{
+  "passed": boolean,
+  "analysis": "string",
+  "rootCause": "string"
+}
+`;
+
+        const debugChannel = vscode.window.createOutputChannel("VibeShield Debug");
+        const logPrompt = '\n=== CORTEX-R UI STATE ANALYSIS PROMPT ===\n' + prompt + '\n=========================================\n';
+        debugChannel.appendLine(logPrompt);
+        console.log(logPrompt);
+
+        try {
+            const parts: any[] = [prompt];
+
+            // Current screenshot
+            parts.push({
+                inlineData: {
+                    data: screenshotBase64,
+                    mimeType: "image/png"
+                }
+            });
+
+            // Diff screenshot if available
+            if (diffBase64) {
+                parts.push({
+                    inlineData: {
+                        data: diffBase64,
+                        mimeType: "image/png"
+                    }
+                });
+            }
+
+            const result = await this.model.generateContent(parts);
+            const response = await result.response;
+            const text = response.text();
+
+            const logOut = '\n=== CORTEX-R UI STATE ANALYSIS OUTPUT ===\n' + text + '\n=========================================\n';
+            debugChannel.appendLine(logOut);
+            console.log(logOut);
+
+            const jsonMatch = text.match(/\{[\s\S]*\}/);
+            const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(cleanJson);
+        } catch (error: any) {
+            console.error('[VibeShield] Cortex-R UI State Analysis Failed:', error);
+            return {
+                passed: false,
+                analysis: 'Analysis failed due to Cortex-R error: ' + error.message,
+                rootCause: 'Unknown'
+            };
+        }
+    }
+
     public async updateSmartMemory(currentMemory: string, newChatHistory: string): Promise<string> {
         if (!this.model) {
             this.updateConfig();
@@ -475,6 +606,7 @@ Include:
 - What specifically failed in plain English.
 - Why it likely failed based on the logs/analysis.
 - A concrete suggested fix (code, configuration, or structural).
+- IF the failure was due to a visual regression or unexpected UI state, explicitly mention that the UI does not match the expected state.
 
 Keep it concise and format the output cleanly (using basic markdown for readability). Do NOT wrap the entire response in a \`\`\`markdown JSON block, just output the plain text.
 `;

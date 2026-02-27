@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as cp from 'child_process';
+import * as net from 'net';
 import { OverlayConnector } from './services/OverlayConnector';
 import { ActivityTracker } from './services/ActivityTracker';
 import { ChatViewProvider } from './providers/ChatViewProvider';
@@ -15,6 +16,8 @@ import { SmartMemoryManager } from './services/SmartMemoryManager';
 
 import { CLIExecutor } from './services/CLIExecutor';
 import { HTTPExecutor } from './services/HTTPExecutor';
+import { BrowserAgent } from '@vibeshield/browser-agent';
+import { VisualRegressionTracker } from './services/VisualRegressionTracker';
 
 let connector: OverlayConnector;
 let chatProvider: ChatViewProvider;
@@ -26,6 +29,7 @@ let agentLoop: AgentLoop;
 let smartMemoryManager: SmartMemoryManager;
 let cliExecutor: CLIExecutor;
 let httpExecutor: HTTPExecutor;
+let visualRegressionTracker: VisualRegressionTracker;
 let latestExtractedIntent: any = null;
 let latestTestPlan: any = null;
 
@@ -36,6 +40,8 @@ export function activate(context: vscode.ExtensionContext) {
     if (folders && folders.length > 0) {
         smartMemoryManager = new SmartMemoryManager(folders[0].uri.fsPath);
     }
+
+    visualRegressionTracker = new VisualRegressionTracker();
 
     // ─── Layer 1: Communication ───────────────────────────────────
     // WHY: OverlayConnector is the WebSocket bridge to the Electron Overlay UI.
@@ -179,6 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // ─── Wiring: Overlay Commands → AgentLoop ────────────────────
     connector.onCommand(async (cmd) => {
+        console.log('[VibeShield] Running command handler for action:', cmd.action);
         if (cmd.action === 'start') {
             const folders = vscode.workspace.workspaceFolders;
             if (folders) {
@@ -212,6 +219,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     const extractIntentLogic = async () => {
         if (!cortexBridge.isReady()) {
+            connector.sendLog({
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'error',
+                content: 'Failed to extract intent: No API key configured. Go to Settings > VibeShield.'
+            });
             vscode.window.showErrorMessage('VibeShield: No API key configured. Setting needed for Cortex-R.');
             return;
         }
@@ -220,6 +234,14 @@ export function activate(context: vscode.ExtensionContext) {
             { location: vscode.ProgressLocation.Notification, title: 'Extracting Intent via Cortex-R...' },
             async () => {
                 try {
+                    connector.sendLog({
+                        id: Date.now().toString(),
+                        timestamp: new Date().toISOString(),
+                        source: 'cortex',
+                        level: 'info',
+                        content: 'Beginning Intent Extraction in IDE Context...'
+                    });
+
                     // Extract chat history
                     const chatContext = await contextExtractor.getIntentContext();
 
@@ -355,139 +377,382 @@ export function activate(context: vscode.ExtensionContext) {
                 const stepResults: any[] = [];
                 let failedLogBuffer = '';
 
-                for (let i = 0; i < steps.length; i++) {
-                    const step = steps[i];
-                    const stepStartTime = Date.now();
+                let sharedBrowserAgent: BrowserAgent | null = null;
+                const apiKey = vscode.workspace.getConfiguration('vibeshield').get<string>('apiKey');
 
-                    connector.sendLog({
-                        id: Date.now().toString(),
-                        timestamp: new Date().toISOString(),
-                        source: 'system',
-                        level: 'info',
-                        content: `--- Step ${i + 1}: ${step.stepName} ---`
-                    });
-
-                    let stepPassed = false;
-                    let stepAnalysis = '';
-                    let stepRootCause = '';
-                    let stepType: 'api' | 'cli' | 'manual' = 'manual';
-
-                    if (step.apiRequest) {
-                        stepType = 'api';
-                        const result = await httpExecutor.executeRequest(step.apiRequest);
-
-                        connector.sendLog({
-                            id: Date.now().toString(),
-                            timestamp: new Date().toISOString(),
-                            source: 'cortex',
-                            level: 'info',
-                            content: `Analyzing API result for step ${i + 1} via Cortex-R...`
+                if ((latestTestPlan.testType === 'ui' || latestTestPlan.testType === 'e2e') && apiKey) {
+                    try {
+                        sharedBrowserAgent = new BrowserAgent({
+                            apiKey,
+                            headless: false,
+                            artifactsPath: `${folders[0].uri.fsPath}/.vibeshield/artifacts`
                         });
+                        await sharedBrowserAgent.start();
+                    } catch (e: any) {
+                        vscode.window.showErrorMessage('Failed to start BrowserAgent: ' + e.message);
+                        if (sharedBrowserAgent) await sharedBrowserAgent.close();
+                        return;
+                    }
+                }
 
-                        const analysis = await cortexBridge.analyzeAPIResult(
-                            step.apiRequest.url,
-                            step.apiRequest.method,
-                            step.apiRequest.headers,
-                            step.apiRequest.body,
-                            step.expectedResult,
-                            result.status,
-                            result.headers,
-                            result.data,
-                            result.responseTimeMs
-                        );
+                try {
+                    for (let i = 0; i < steps.length; i++) {
+                        const step = steps[i];
+                        const stepStartTime = Date.now();
 
-                        stepPassed = analysis.passed;
-                        stepAnalysis = analysis.analysis;
-                        stepRootCause = analysis.rootCause || '';
-
-                        if (analysis.passed) {
-                            connector.sendLog({
-                                id: Date.now().toString(),
-                                timestamp: new Date().toISOString(),
-                                source: 'cortex',
-                                level: 'info',
-                                content: `✅ Step Passed! Analysis: ${analysis.analysis}`
-                            });
-                        } else {
-                            allPassed = false;
-                            connector.sendLog({
-                                id: Date.now().toString(),
-                                timestamp: new Date().toISOString(),
-                                source: 'cortex',
-                                level: 'error',
-                                content: `❌ Step Failed!\nAnalysis: ${analysis.analysis}\nRoot Cause: ${analysis.rootCause}`
-                            });
-                            failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${analysis.rootCause || analysis.analysis}\n`;
-                            // We don't break anymore, so we can aggregate all failures!
-                        }
-                    } else if (step.cliCommand && step.cliCommand.trim() !== '') {
-                        stepType = 'cli';
-                        const result = await cliExecutor.executeCommand(step.cliCommand, { cwd: folders[0].uri.fsPath });
-
-                        connector.sendLog({
-                            id: Date.now().toString(),
-                            timestamp: new Date().toISOString(),
-                            source: 'cortex',
-                            level: 'info',
-                            content: `Analyzing result for step ${i + 1} via Cortex-R...`
-                        });
-
-                        const analysis = await cortexBridge.analyzeTestResult(
-                            step.cliCommand,
-                            step.expectedResult,
-                            result.stdout,
-                            result.stderr,
-                            result.exitCode
-                        );
-
-                        stepPassed = analysis.passed;
-                        stepAnalysis = analysis.analysis;
-                        stepRootCause = analysis.rootCause || '';
-
-                        if (analysis.passed) {
-                            connector.sendLog({
-                                id: Date.now().toString(),
-                                timestamp: new Date().toISOString(),
-                                source: 'cortex',
-                                level: 'info',
-                                content: `✅ Step Passed! Analysis: ${analysis.analysis}`
-                            });
-                        } else {
-                            allPassed = false;
-                            connector.sendLog({
-                                id: Date.now().toString(),
-                                timestamp: new Date().toISOString(),
-                                source: 'cortex',
-                                level: 'error',
-                                content: `❌ Step Failed!\nAnalysis: ${analysis.analysis}\nRoot Cause: ${analysis.rootCause}`
-                            });
-                            failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${analysis.rootCause || analysis.analysis}\n`;
-                        }
-                    } else {
-                        stepType = 'manual';
-                        stepPassed = true; // Mark as passed logically so it doesn't fail the suite
-                        stepAnalysis = 'Skipped automated execution (Manual Step).';
                         connector.sendLog({
                             id: Date.now().toString(),
                             timestamp: new Date().toISOString(),
                             source: 'system',
-                            level: 'warn',
-                            content: `Manual Test Step: ${step.action}\n(No automated CLI/API command available. Skipping execution.)`
+                            level: 'info',
+                            content: `--- Step ${i + 1}: ${step.stepName} ---`
                         });
+
+                        let stepPassed = false;
+                        let stepAnalysis = '';
+                        let stepRootCause = '';
+                        let stepType: 'api' | 'cli' | 'manual' = 'manual';
+                        let visualData: any = undefined;
+
+                        if (latestTestPlan.testType === 'ui' || latestTestPlan.testType === 'e2e') {
+                            stepType = 'manual'; // Treat it somewhat like manual but we will try running UI logic
+
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'cortex',
+                                level: 'info',
+                                content: `Booting up BrowserAgent for UI Step ${i + 1}...`
+                            });
+
+                            // ===== PRODUCTION-GRADE TARGET URL RESOLUTION =====
+                            // Works on any OS, any project structure, for any user installing VibeShield
+                            let targetUrl = '';
+
+                            // TIER 1: Explicit URL from test plan action, description, or name
+                            const urlMatchInAction = step.action.match(/(https?|file):\/\/[^\s]+/);
+                            if (urlMatchInAction) {
+                                targetUrl = urlMatchInAction[0];
+                            } else if (latestTestPlan.description && latestTestPlan.description.match(/(https?|file):\/\/[^\s]+/)) {
+                                targetUrl = latestTestPlan.description.match(/(https?|file):\/\/[^\s]+/)[0];
+                            } else if (latestTestPlan.planName && latestTestPlan.planName.match(/(https?|file):\/\/[^\s]+/)) {
+                                targetUrl = latestTestPlan.planName.match(/(https?|file):\/\/[^\s]+/)[0];
+                            }
+
+                            // TIER 2: VS Code configuration setting (user-defined)
+                            if (!targetUrl) {
+                                targetUrl = vscode.workspace.getConfiguration('vibeshield').get<string>('defaultTestUrl') || '';
+                            }
+
+                            // TIER 3: Detect running dev server via cross-platform TCP probe (Node.js net module)
+                            if (!targetUrl) {
+                                const commonPorts = [3000, 3001, 4200, 5173, 5174, 8080, 4000, 9000];
+                                for (const port of commonPorts) {
+                                    try {
+                                        await new Promise<void>((resolve, reject) => {
+                                            const socket = new net.Socket();
+                                            socket.setTimeout(300);
+                                            socket.on('connect', () => {
+                                                socket.destroy();
+                                                resolve();
+                                            });
+                                            socket.on('timeout', () => { socket.destroy(); reject(new Error('timeout')); });
+                                            socket.on('error', (err: any) => { reject(err); });
+                                            socket.connect(port, '127.0.0.1');
+                                        });
+                                        // Port is open! Use it.
+                                        targetUrl = `http://localhost:${port}`;
+                                        connector.sendLog({
+                                            id: Date.now().toString(),
+                                            timestamp: new Date().toISOString(),
+                                            source: 'system',
+                                            level: 'info',
+                                            content: `🎯 Live Dev Server Detected: ${targetUrl}`
+                                        });
+                                        break;
+                                    } catch (e) {
+                                        // Port not open, try next
+                                    }
+                                }
+                            }
+
+                            // TIER 4: Detect framework from workspace package.json (cross-platform via VS Code API)
+                            if (!targetUrl) {
+                                try {
+                                    const pkgFiles = await vscode.workspace.findFiles('**/package.json', '**/node_modules/**', 15);
+                                    for (const file of pkgFiles) {
+                                        try {
+                                            const content = Buffer.from(await vscode.workspace.fs.readFile(file)).toString('utf8');
+                                            const pkg = JSON.parse(content);
+                                            const deps = { ...pkg.dependencies, ...pkg.devDependencies };
+                                            if (deps['vite']) { targetUrl = 'http://localhost:5173'; break; }
+                                            if (deps['next'] || deps['react-scripts']) { targetUrl = 'http://localhost:3000'; break; }
+                                            if (deps['@angular/cli']) { targetUrl = 'http://localhost:4200'; break; }
+                                            if (deps['nuxt'] || deps['@vue/cli-service']) { targetUrl = 'http://localhost:8080'; break; }
+                                        } catch (e) { /* skip unreadable package.json */ }
+                                    }
+                                    if (targetUrl) {
+                                        connector.sendLog({
+                                            id: Date.now().toString(),
+                                            timestamp: new Date().toISOString(),
+                                            source: 'system',
+                                            level: 'info',
+                                            content: `🎯 Framework Detected → Default dev URL: ${targetUrl} (make sure your dev server is running!)`
+                                        });
+                                    }
+                                } catch (e) { /* findFiles failed */ }
+                            }
+
+                            // TIER 5: Static HTML app — find index.html in workspace (cross-platform)
+                            if (!targetUrl) {
+                                try {
+                                    const htmlFiles = await vscode.workspace.findFiles('**/index.html', '{**/node_modules/**,**/dist/**}', 10);
+                                    if (htmlFiles.length > 0) {
+                                        targetUrl = vscode.Uri.file(htmlFiles[0].fsPath).toString();
+                                        connector.sendLog({
+                                            id: Date.now().toString(),
+                                            timestamp: new Date().toISOString(),
+                                            source: 'system',
+                                            level: 'info',
+                                            content: `🎯 Static HTML App Found: ${targetUrl}`
+                                        });
+                                    }
+                                } catch (e) { /* findFiles failed */ }
+                            }
+
+
+                            if (!targetUrl) {
+                                stepPassed = false;
+                                stepAnalysis = "Failed because no target URL was provided in the intent, and 'vibeshield.defaultTestUrl' is not set in VS Code settings.";
+                                allPassed = false;
+                                vscode.window.showErrorMessage("VibeShield Error: Missing Target URL. Please set 'vibeshield.defaultTestUrl' in your VS Code settings.");
+                                connector.sendLog({
+                                    id: Date.now().toString(),
+                                    timestamp: new Date().toISOString(),
+                                    source: 'system',
+                                    level: 'error',
+                                    content: `❌ UI Step Failed! No Target URL could be determined. Please specify a URL in your intent or configure 'vibeshield.defaultTestUrl' in your workspace settings.`
+                                });
+                            } else if (apiKey && sharedBrowserAgent) {
+                                try {
+                                    // Navigate first (only on step 0 or if URL is in the action)
+                                    if (i === 0 || urlMatchInAction) {
+                                        await sharedBrowserAgent.execute(`Navigate to ${targetUrl}`, 3);
+                                    }
+                                    // Then execute the actual action as a clean, focused goal
+                                    const success = await sharedBrowserAgent.execute(step.action, 5);
+                                    const finalScreenshot = await sharedBrowserAgent.getLastScreenshot();
+
+                                    let diffBase64: string | undefined = undefined;
+                                    let isRegression = false;
+
+                                    if (finalScreenshot) {
+                                        // Visual Regression check
+                                        const diffResult = await visualRegressionTracker.compare(latestTestPlan.planName + '_' + step.stepName, finalScreenshot);
+
+                                        visualData = {
+                                            screenshotBase64: finalScreenshot,
+                                            baselineBase64: diffResult.baselineBase64,
+                                            diffBase64: diffResult.diffBase64,
+                                            matchPercentage: diffResult.mismatchPercentage
+                                        };
+
+                                        diffBase64 = diffResult.diffBase64;
+                                        isRegression = diffResult.isRegression;
+
+                                        if (isRegression) {
+                                            connector.sendLog({
+                                                id: Date.now().toString(),
+                                                timestamp: new Date().toISOString(),
+                                                source: 'system',
+                                                level: 'warn',
+                                                content: `⚠️ Visual Regression Detected (${diffResult.mismatchPercentage?.toFixed(2)}% difference)! Passing diff to Cortex-R for analysis...`
+                                            });
+                                        }
+                                    }
+
+                                    connector.sendLog({
+                                        id: Date.now().toString(),
+                                        timestamp: new Date().toISOString(),
+                                        source: 'cortex',
+                                        level: 'info',
+                                        content: `Analyzing final UI state via Cortex-R...`
+                                    });
+
+                                    const uiAnalysis = await cortexBridge.analyzeUIState(
+                                        finalScreenshot || '',
+                                        step.expectedResult,
+                                        diffBase64
+                                    );
+
+                                    // If Cortex says it passed even WITH a visual diff, we should update the baseline
+                                    if (uiAnalysis.passed && finalScreenshot) {
+                                        visualRegressionTracker.updateBaseline(latestTestPlan.planName + '_' + step.stepName, finalScreenshot);
+                                    }
+
+                                    stepPassed = success && uiAnalysis.passed;
+                                    stepAnalysis = uiAnalysis.analysis;
+                                    stepRootCause = uiAnalysis.rootCause || '';
+
+                                    if (stepPassed) {
+                                        connector.sendLog({
+                                            id: Date.now().toString(),
+                                            timestamp: new Date().toISOString(),
+                                            source: 'cortex',
+                                            level: 'info',
+                                            content: `✅ UI Step Passed! Analysis: ${uiAnalysis.analysis}`
+                                        });
+                                    } else {
+                                        allPassed = false;
+                                        connector.sendLog({
+                                            id: Date.now().toString(),
+                                            timestamp: new Date().toISOString(),
+                                            source: 'cortex',
+                                            level: 'error',
+                                            content: `❌ UI Step Failed!\nAnalysis: ${uiAnalysis.analysis}\nRoot Cause: ${uiAnalysis.rootCause}`
+                                        });
+                                        failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${uiAnalysis.rootCause || uiAnalysis.analysis}\n`;
+                                    }
+                                } catch (err: any) {
+                                    stepPassed = false;
+                                    stepAnalysis = "Error during UI execution: " + err.message;
+                                    allPassed = false;
+                                    connector.sendLog({
+                                        id: Date.now().toString(),
+                                        timestamp: new Date().toISOString(),
+                                        source: 'cortex',
+                                        level: 'error',
+                                        content: `❌ UI Step Error!\n${err.message}`
+                                    });
+                                }
+                            } else {
+                                stepPassed = false;
+                                stepAnalysis = "Failed because API key is not configured for BrowserAgent.";
+                                allPassed = false;
+                            }
+
+                        } else if (step.apiRequest) {
+                            stepType = 'api';
+                            const result = await httpExecutor.executeRequest(step.apiRequest);
+
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'cortex',
+                                level: 'info',
+                                content: `Analyzing API result for step ${i + 1} via Cortex-R...`
+                            });
+
+                            const analysis = await cortexBridge.analyzeAPIResult(
+                                step.apiRequest.url,
+                                step.apiRequest.method,
+                                step.apiRequest.headers,
+                                step.apiRequest.body,
+                                step.expectedResult,
+                                result.status,
+                                result.headers,
+                                result.data,
+                                result.responseTimeMs
+                            );
+
+                            stepPassed = analysis.passed;
+                            stepAnalysis = analysis.analysis;
+                            stepRootCause = analysis.rootCause || '';
+
+                            if (analysis.passed) {
+                                connector.sendLog({
+                                    id: Date.now().toString(),
+                                    timestamp: new Date().toISOString(),
+                                    source: 'cortex',
+                                    level: 'info',
+                                    content: `✅ Step Passed! Analysis: ${analysis.analysis}`
+                                });
+                            } else {
+                                allPassed = false;
+                                connector.sendLog({
+                                    id: Date.now().toString(),
+                                    timestamp: new Date().toISOString(),
+                                    source: 'cortex',
+                                    level: 'error',
+                                    content: `❌ Step Failed!\nAnalysis: ${analysis.analysis}\nRoot Cause: ${analysis.rootCause}`
+                                });
+                                failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${analysis.rootCause || analysis.analysis}\n`;
+                                // We don't break anymore, so we can aggregate all failures!
+                            }
+                        } else if (step.cliCommand && step.cliCommand.trim() !== '') {
+                            stepType = 'cli';
+                            const result = await cliExecutor.executeCommand(step.cliCommand, { cwd: folders[0].uri.fsPath });
+
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'cortex',
+                                level: 'info',
+                                content: `Analyzing result for step ${i + 1} via Cortex-R...`
+                            });
+
+                            const analysis = await cortexBridge.analyzeTestResult(
+                                step.cliCommand,
+                                step.expectedResult,
+                                result.stdout,
+                                result.stderr,
+                                result.exitCode
+                            );
+
+                            stepPassed = analysis.passed;
+                            stepAnalysis = analysis.analysis;
+                            stepRootCause = analysis.rootCause || '';
+
+                            if (analysis.passed) {
+                                connector.sendLog({
+                                    id: Date.now().toString(),
+                                    timestamp: new Date().toISOString(),
+                                    source: 'cortex',
+                                    level: 'info',
+                                    content: `✅ Step Passed! Analysis: ${analysis.analysis}`
+                                });
+                            } else {
+                                allPassed = false;
+                                connector.sendLog({
+                                    id: Date.now().toString(),
+                                    timestamp: new Date().toISOString(),
+                                    source: 'cortex',
+                                    level: 'error',
+                                    content: `❌ Step Failed!\nAnalysis: ${analysis.analysis}\nRoot Cause: ${analysis.rootCause}`
+                                });
+                                failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${analysis.rootCause || analysis.analysis}\n`;
+                            }
+                        } else {
+                            stepType = 'manual';
+                            stepPassed = true; // Mark as passed logically so it doesn't fail the suite
+                            stepAnalysis = 'Skipped automated execution (Manual Step).';
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'system',
+                                level: 'warn',
+                                content: `Manual Test Step: ${step.action}\n(No automated CLI/API command available. Skipping execution.)`
+                            });
+                        }
+
+                        // Store Result
+                        stepResults.push({
+                            stepName: step.stepName,
+                            action: step.action,
+                            passed: stepPassed,
+                            analysis: stepAnalysis,
+                            rootCause: stepRootCause,
+                            durationMs: Date.now() - stepStartTime,
+                            testType: stepType,
+                            visualData: visualData
+                        });
+
+                        if (!allPassed) break; // Still stop on first failure to save tokens
                     }
-
-                    // Store Result
-                    stepResults.push({
-                        stepName: step.stepName,
-                        action: step.action,
-                        passed: stepPassed,
-                        analysis: stepAnalysis,
-                        rootCause: stepRootCause,
-                        durationMs: Date.now() - stepStartTime,
-                        testType: stepType
-                    });
-
-                    if (!allPassed) break; // Still stop on first failure to save tokens
+                } finally {
+                    if (sharedBrowserAgent) {
+                        await sharedBrowserAgent.close();
+                    }
                 }
 
                 const totalDuration = Date.now() - startTime;
@@ -534,32 +799,12 @@ export function activate(context: vscode.ExtensionContext) {
                         }
                     }
 
-                    // Forward to Native IDE Chat (Copilot/etc) so the agent can fix it
-                    const forwardToNative = vscode.workspace.getConfiguration('vibeshield').get<boolean>('forwardToNativeChat', true);
+                    // Forward to Native IDE Chat (Copilot/etc) via clipboard, but NO dangerous AppleScript
+                    const forwardToNative = vscode.workspace.getConfiguration('vibeshield').get<boolean>('forwardToNativeChat', false);
                     if (forwardToNative && aiFeedback) {
                         const query = `Fix this test failure:\n${aiFeedback}`;
                         await vscode.env.clipboard.writeText(query);
-
-                        if (process.platform === 'darwin') {
-                            try {
-                                // Wait for UI to settle
-                                await new Promise(resolve => setTimeout(resolve, 1000));
-                                await new Promise<void>((resolve, reject) => {
-                                    cp.exec(`osascript -e 'tell application "System Events"
-                                        keystroke "l" using command down
-                                        delay 0.8
-                                        keystroke "v" using command down
-                                        delay 0.3
-                                        key code 36
-                                    end tell'`, (error) => {
-                                        if (error) { reject(error); } else { resolve(); }
-                                    });
-                                });
-                                console.log('[VibeShield] Cmd+L → Cmd+V → Enter succeeded for test failure.');
-                            } catch (err) {
-                                console.warn('[VibeShield] AppleScript paste failed:', err);
-                            }
-                        }
+                        vscode.window.showInformationMessage('VibeShield: Copied AI failure analysis to clipboard. Paste it in your chat to resolve!');
                     }
                 }
 

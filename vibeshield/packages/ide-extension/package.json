@@ -51,6 +51,18 @@
                 "title": "VibeShield: Analyze Logs with Cortex-R"
             },
             {
+                "command": "vibeshield.extractIntent",
+                "title": "VibeShield: Extract Context Intent"
+            },
+            {
+                "command": "vibeshield.generateTestPlan",
+                "title": "VibeShield: Generate Test Plan"
+            },
+            {
+                "command": "vibeshield.executeTestPlan",
+                "title": "VibeShield: Execute Test Plan"
+            },
+            {
                 "command": "vibeshield.shareChat",
                 "title": "VibeShield: Share Chat Context"
             },
@@ -85,6 +97,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Automatically open the Native IDE Chat (Copilot/Cursor) with the error details and fix suggestion."
+                },
+                "vibeshield.defaultTestUrl": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Default target URL for UI/E2E tests (e.g., http://localhost:3000) when not explicitly provided by the test plan."
                 }
             }
         },
@@ -140,8 +157,14 @@
     "dependencies": {
         "@google/generative-ai": "^0.24.1",
         "@types/diff": "^8.0.0",
+        "@types/pixelmatch": "^5.2.6",
+        "@types/pngjs": "^6.0.5",
+        "@vibeshield/browser-agent": "workspace:*",
         "@vibeshield/shared": "workspace:*",
         "diff": "^8.0.3",
+        "pixelmatch": "^7.1.0",
+        "playwright": "^1.58.2",
+        "pngjs": "^7.0.0",
         "ws": "^8.16.0"
     }
 }

@@ -8,7 +8,13 @@ interface TestStepResult {
     analysis: string;
     rootCause?: string;
     durationMs: number;
-    testType: 'cli' | 'api' | 'manual';
+    testType: 'cli' | 'api' | 'manual' | 'ui';
+    visualData?: {
+        screenshotBase64?: string;
+        baselineBase64?: string;
+        diffBase64?: string;
+        matchPercentage?: number;
+    };
 }
 
 interface TestReportProps {
@@ -96,6 +102,32 @@ export const TestResultsPanel: React.FC<TestReportProps> = ({ report, onClose })
                                     {!step.passed && step.rootCause && (
                                         <div className="detail-row error-row">
                                             <strong>Root Cause:</strong> <span>{step.rootCause}</span>
+                                        </div>
+                                    )}
+                                    {step.visualData && step.visualData.screenshotBase64 && (
+                                        <div className="detail-row visual-row">
+                                            <strong>Final UI State:</strong>
+                                            <div className="screenshot-container">
+                                                <img
+                                                    src={`data:image/png;base64,${step.visualData.screenshotBase64}`}
+                                                    alt="Final UI State"
+                                                    className="screenshot-img"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                    {step.visualData && step.visualData.diffBase64 && (
+                                        <div className="detail-row visual-row">
+                                            <strong className="text-warning" style={{ color: 'var(--color-warning, #f59e0b)' }}>
+                                                ⚠️ Visual Regression Detected ({step.visualData.matchPercentage?.toFixed(1)}% diff):
+                                            </strong>
+                                            <div className="screenshot-container">
+                                                <img
+                                                    src={`data:image/png;base64,${step.visualData.diffBase64}`}
+                                                    alt="Visual Diff"
+                                                    className="screenshot-img"
+                                                />
+                                            </div>
                                         </div>
                                     )}
                                 </div>

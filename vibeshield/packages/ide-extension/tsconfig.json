@@ -9,11 +9,18 @@
             "es2020"
         ],
         "sourceMap": true,
-        "rootDir": "src",
-        "strict": true,
+        "strict": true
     },
     "include": [
         "src"
+    ],
+    "references": [
+        {
+            "path": "../../shared"
+        },
+        {
+            "path": "../browser-agent"
+        }
     ],
     "exclude": [
         "node_modules",
