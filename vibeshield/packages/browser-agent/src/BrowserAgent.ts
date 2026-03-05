@@ -33,6 +33,29 @@ export class BrowserAgent {
 
         if (!fs.existsSync(this.config.artifactsPath!)) {
             fs.mkdirSync(this.config.artifactsPath!, { recursive: true });
+        } else {
+            this.cleanupOldArtifacts();
+        }
+    }
+
+    /**
+     * Keep only the latest 5 execution folders/files to save disk space
+     */
+    private cleanupOldArtifacts() {
+        if (!this.config.artifactsPath) return;
+        try {
+            const files = fs.readdirSync(this.config.artifactsPath)
+                .map(name => ({ name, time: fs.statSync(path.join(this.config.artifactsPath!, name)).mtime.getTime() }))
+                .sort((a, b) => b.time - a.time); // newest first
+
+            // Keep the newest 5 items
+            const toDelete = files.slice(5);
+            for (const file of toDelete) {
+                const fullPath = path.join(this.config.artifactsPath, file.name);
+                fs.rmSync(fullPath, { recursive: true, force: true });
+            }
+        } catch (e) {
+            console.warn(`[BrowserAgent] Failed to cleanup old artifacts:`, e);
         }
     }
 
@@ -155,6 +178,7 @@ ${domSummary}
         fs.appendFileSync(logFile, `=== START EXECUTION ===\nGoal: ${goal}\n`);
 
         const previousActions: string[] = [];
+        let consecutiveErrors = 0;
 
         for (let step = 1; step <= maxSteps; step++) {
             console.log(`[BrowserAgent] Step ${step}: Capturing state...`);
@@ -202,7 +226,12 @@ ${domSummary}
 
             try {
                 console.log(`[BrowserAgent] Cortex-R analyzing UI...`);
-                const result = await model.generateContent([
+                // Add explicit timeout to prevent infinite hanging
+                const timeoutPromise = new Promise<never>((_, reject) => {
+                    setTimeout(() => reject(new Error('LLM Generation Timeout (30s)')), 30000);
+                });
+
+                const apiCall = model.generateContent([
                     prompt,
                     {
                         inlineData: {
@@ -211,6 +240,8 @@ ${domSummary}
                         }
                     }
                 ]);
+
+                const result = await Promise.race([apiCall, timeoutPromise]) as any;
 
                 let responseText = result.response.text();
                 responseText = responseText.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
@@ -232,11 +263,19 @@ ${domSummary}
                     return false;
                 }
 
-            } catch (error) {
+                // Reset consecutive errors on success
+                consecutiveErrors = 0;
+
+            } catch (error: any) {
                 console.error(`[BrowserAgent] Error during Cortex-R generation or JSON parsing:`, error);
-                fs.appendFileSync(logFile, `Error at step ${step}: ${error}\n`);
-                // Don't return false immediately — try the next step
-                previousActions.push(`ERROR: ${error}`);
+                fs.appendFileSync(logFile, `Error at step ${step}: ${error.message || error}\n`);
+                previousActions.push(`ERROR: ${error.message || error}`);
+
+                consecutiveErrors++;
+                if (consecutiveErrors >= 3) {
+                    console.error(`[BrowserAgent] Exceeded max consecutive errors (3). Forcing failure to prevent infinite loop.`);
+                    return false;
+                }
             }
 
             // Brief delay between actions

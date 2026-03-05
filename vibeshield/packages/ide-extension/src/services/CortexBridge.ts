@@ -36,6 +36,40 @@ export class CortexBridge {
         return !!this.model;
     }
 
+    /**
+     * Convert raw API errors into clean, user-friendly messages.
+     * Hides internal URLs, error codes, and API jargon.
+     */
+    private friendlyError(error: any): string {
+        const msg = error?.message || String(error);
+
+        // Handle explicit internet dropouts
+        if (msg.includes('fetch failed') || msg.includes('Failed to fetch')) {
+            return 'Network error: Connection lost. Please check your internet connection and try again.';
+        }
+
+        if (msg.includes('429') || msg.includes('Resource exhausted')) {
+            return 'API rate limit reached. The free-tier Gemini API has usage limits — please wait a minute and try again, or upgrade to a paid API key for uninterrupted usage.';
+        }
+        if (msg.includes('403') || msg.includes('PERMISSION_DENIED')) {
+            return 'API key does not have permission. Please check your Gemini API key in Settings.';
+        }
+        if (msg.includes('401') || msg.includes('UNAUTHENTICATED')) {
+            return 'Invalid API key. Please update your Gemini API key in VibeShield Settings.';
+        }
+        if (msg.includes('Timeout') || msg.includes('ETIMEDOUT') || msg.includes('ECONNREFUSED')) {
+            return 'Network timeout — could not reach the AI service. Check your internet connection and try again.';
+        }
+        // Generic fallback — strip URLs and keep it short
+        return msg.replace(/https?:\/\/[^\s]+/g, '[API]').substring(0, 200);
+    }
+
+    /** Compute delay for retries. 429 errors get longer cooldowns. */
+    private retryDelay(attempt: number, error?: any): number {
+        const is429 = error?.message?.includes('429') || error?.message?.includes('Resource exhausted');
+        return is429 ? attempt * 12000 : attempt * 4000; // 12s/24s/36s for 429; 4s/8s/12s for others
+    }
+
     public async analyzeLogs(logs: string, attempt = 1): Promise<LogAnalysisResult> {
         if (!this.model) {
             this.updateConfig(); // Try to load config again (maybe user added key recently)
@@ -100,21 +134,22 @@ ${logs}
             debugChannel.appendLine(`[Error] Cortex-R Analysis Failed: ${error}`);
             console.error(`[VibeShield] Cortex-R Analysis Failed (Attempt ${attempt}):`, error);
 
-            if (attempt < 3) {
-                // Exponential backoff
-                await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+            if (attempt < 3 && !error?.message?.includes('fetch failed') && !error?.message?.includes('Failed to fetch')) {
+                const delay = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delay}ms before retrying log analysis...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
                 return this.analyzeLogs(logs, attempt + 1);
             }
 
             // Fallback result
             return {
                 hasError: false,
-                errorMessage: 'Failed to analyze logs via Cortex-R after retries.'
+                errorMessage: this.friendlyError(error)
             };
         }
     }
 
-    public async extractIntent(chatHistory: string, diffSummary: string, smartMemory: string): Promise<any> {
+    public async extractIntent(chatHistory: string, diffSummary: string, smartMemory: string, fileContext: any): Promise<any> {
         if (!this.model) {
             this.updateConfig();
         }
@@ -138,10 +173,16 @@ ${smartMemory || '(None provided)'}
 
 2. Recent chat conversation (IDE/Developer activity):
 ${chatHistory || '(None provided)'}
-CRITICAL INSTRUCTION: If the developer provides an explicit command or explicitly asks to test a specific thing in the recent chat conversation (e.g. "Call the PokeAPI..." or "Test the login button"), THAT is the PRIMARY intent. You MUST ignore older background context if it distracts from the user's explicit request!
+CRITICAL INSTRUCTION: If the developer provides an explicit command or explicitly asks to test a specific thing in the recent chat conversation (e.g. "Call the PokeAPI..." or "Test the login button"), THAT is the PRIMARY intent. You MUST ignore older background context if it distracts from the user's explicit request! Keep in mind background logs might contain internal commands like "forceFile", ignore them.
 
 3. Code changes (Git Diff summary):
 ${diffSummary || '(None provided)'}
+
+4. Active IDE File (The file the developer is looking at right now):
+File Name: ${fileContext?.fileName || 'None'}
+Content Snippet (max 3000 chars): ${fileContext?.content?.substring(0, 3000) || 'None'}
+
+CRITICAL INSTRUCTION: If there is no specific chat request and no git diffs, but there is an Active IDE File, ASSUME the developer simply wants to test the Active IDE File and generate test cases for whatever logical functions/UI you see in that file. DO NOT return "intent is unclear" if you have a valid active file.
 
 Determine:
 - What is the primary "Developer Intent"? (Briefly summarize what exactly they are trying to build/fix).
@@ -166,27 +207,35 @@ Format:
         debugChannel.appendLine(logPrompt);
         console.log(logPrompt); // Print to terminal
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
+        const maxRetries = 5;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
 
-            const logOut = '\n=== CORTEX-R INTENT OUTPUT ===\n' + text + '\n==============================\n';
-            debugChannel.appendLine(logOut);
-            console.log(logOut); // Print to terminal
+                const logOut = '\n=== CORTEX-R INTENT OUTPUT (Attempt ' + attempt + ') ===\n' + text + '\n==============================\n';
+                debugChannel.appendLine(logOut);
+                console.log(logOut); // Print to terminal
 
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(cleanJson);
-        } catch (error) {
-            console.error('[VibeShield] Cortex-R Intent Extraction Failed:', error);
-            return {
-                developerIntent: 'Extraction Failed',
-                testingType: 'none',
-                scenariosToTest: [],
-                edgeCases: [],
-                isUnclear: true
-            };
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleanJson);
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R Intent Extraction Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return {
+                        developerIntent: this.friendlyError(error),
+                        testingType: 'none',
+                        scenariosToTest: [],
+                        edgeCases: [],
+                        isUnclear: true
+                    };
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying intent extraction...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
     }
 
@@ -252,65 +301,88 @@ Format:
 }
 `;
 
-        const debugChannel = vscode.window.createOutputChannel("VibeShield Debug");
-        const logPrompt = '\n=== CORTEX-R TEST PLAN PROMPT ===\n' + prompt + '\n=================================\n';
-        debugChannel.appendLine(logPrompt);
-        console.log(logPrompt); // Print to terminal
+        const maxRetries = 5;
+        let lastError: any = null;
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
-
-            const logOut = '\n=== CORTEX-R TEST PLAN OUTPUT ===\n' + text + '\n=================================\n';
-            debugChannel.appendLine(logOut);
-            console.log(logOut); // Print to terminal
-
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
-            let parsed = JSON.parse(cleanJson);
-
-            // Helper to recursively unwrap any weird keys the LLM puts the plan inside
-            const unwrapPlan = (obj: any): any => {
-                if (!obj || typeof obj !== 'object') return obj;
-                if (obj.planName || obj.steps || obj.testType) return obj;
-                for (const key in obj) {
-                    const nested = unwrapPlan(obj[key]);
-                    if (nested && typeof nested === 'object' && (nested.planName || nested.steps || nested.testType)) {
-                        return nested;
-                    }
-                }
-                return obj;
-            };
-
-            parsed = unwrapPlan(parsed);
-
-            // If it still doesn't look like a valid test plan, fallback with a detailed error indicating the LLM hallucinaton 
-            if (!parsed.testType && !parsed.steps) {
-                return {
-                    testType: 'none',
-                    planName: 'Malformed AI Response',
-                    description: 'The AI returned an invalid structure. Raw payload: ' + text.substring(0, 200),
-                    steps: []
-                };
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            let currentPrompt = prompt;
+            if (attempt > 1) {
+                currentPrompt += `\n\n[SYSTEM ERROR IN PREVIOUS ATTEMPT]: The previous JSON generation failed to parse. Error: ${lastError?.message || 'Invalid JSON format'}.\nCRITICAL: Please ensure output is STRICTLY valid JSON, with all keys and string values properly double-quoted. Do not include markdown \`\`\`json wrappers.`;
             }
 
-            return {
-                testType: parsed.testType || 'none',
-                planName: parsed.planName || parsed.name || 'Unnamed Test Plan',
-                description: parsed.description || parsed.desc || 'No description provided.',
-                steps: Array.isArray(parsed.steps) ? parsed.steps : (parsed.testSteps ? parsed.testSteps : [])
-            };
-        } catch (error: any) {
-            console.error('[VibeShield] Cortex-R Test Plan Generation Failed:', error);
-            // We want to pass up exactly what broke it
-            return {
-                testType: 'none',
-                planName: 'Generation Failed',
-                description: `Parse Error: ${error.message}`,
-                steps: []
-            };
+            const debugChannel = vscode.window.createOutputChannel("VibeShield Debug");
+            const logPrompt = `\n=== CORTEX-R TEST PLAN PROMPT (Attempt ${attempt}/${maxRetries}) ===\n` + currentPrompt + '\n=================================\n';
+            debugChannel.appendLine(logPrompt);
+            console.log(logPrompt);
+
+            try {
+                // Add explicit timeout to the fetch call inside Gemini SDK if possible, or wrap in a timeout promise
+                const timeoutPromise = new Promise<never>((_, reject) => {
+                    setTimeout(() => reject(new Error('LLM Generation Timeout (30s)')), 30000);
+                });
+
+                const apiCall = this.model.generateContent(currentPrompt);
+                const result = await Promise.race([apiCall, timeoutPromise]) as any;
+
+                const response = await result.response;
+                const text = response.text();
+
+                const logOut = `\n=== CORTEX-R TEST PLAN OUTPUT (Attempt ${attempt}) ===\n` + text + '\n=================================\n';
+                debugChannel.appendLine(logOut);
+                console.log(logOut);
+
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
+                let parsed = JSON.parse(cleanJson);
+
+                // Helper to recursively unwrap any weird keys the LLM puts the plan inside
+                const unwrapPlan = (obj: any): any => {
+                    if (!obj || typeof obj !== 'object') return obj;
+                    if (obj.planName || obj.steps || obj.testType) return obj;
+                    for (const key in obj) {
+                        const nested = unwrapPlan(obj[key]);
+                        if (nested && typeof nested === 'object' && (nested.planName || nested.steps || nested.testType)) {
+                            return nested;
+                        }
+                    }
+                    return obj;
+                };
+
+                parsed = unwrapPlan(parsed);
+
+                // If it STILL doesn't look like a valid test plan, throw so the retry loop catches it
+                if (!parsed.testType && !parsed.steps) {
+                    throw new Error('AI returned a structured JSON object, but it missed the required testType and steps fields.');
+                }
+
+                // SUCCESS
+                return {
+                    testType: parsed.testType || 'none',
+                    planName: parsed.planName || parsed.name || 'Unnamed Test Plan',
+                    description: parsed.description || parsed.desc || 'No description provided.',
+                    steps: Array.isArray(parsed.steps) ? parsed.steps : (parsed.testSteps ? parsed.testSteps : [])
+                };
+
+            } catch (error: any) {
+                lastError = error;
+                console.warn(`[VibeShield] Cortex-R Test Plan Attempt ${attempt} Failed:`, error.message);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    console.error('[VibeShield] Cortex-R Exhausted all retries.');
+                    break;
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying test plan generation...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
+
+        // ONLY reachable if all retries failed
+        return {
+            testType: 'none',
+            planName: 'Generation Failed',
+            description: this.friendlyError(lastError),
+            steps: []
+        };
     }
 
     public async analyzeTestResult(command: string, expectedOutput: string, stdout: string, stderr: string, exitCode: number | null): Promise<any> {
@@ -361,25 +433,33 @@ Format:
         debugChannel.appendLine(logPrompt);
         console.log(logPrompt); // Print to terminal
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
 
-            const logOut = '\n=== CORTEX-R TEST ANALYSIS OUTPUT ===\n' + text + '\n=====================================\n';
-            debugChannel.appendLine(logOut);
-            console.log(logOut); // Print to terminal
+                const logOut = '\n=== CORTEX-R TEST ANALYSIS OUTPUT (Attempt ' + attempt + ') ===\n' + text + '\n=====================================\n';
+                debugChannel.appendLine(logOut);
+                console.log(logOut); // Print to terminal
 
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(cleanJson);
-        } catch (error: any) {
-            console.error('[VibeShield] Cortex-R Test Analysis Failed:', error);
-            return {
-                passed: false,
-                analysis: 'Analysis failed due to Cortex-R error: ' + error.message,
-                rootCause: 'Unknown'
-            };
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleanJson);
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R Test Analysis Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return {
+                        passed: false,
+                        analysis: this.friendlyError(error),
+                        rootCause: 'Cortex-R analysis unavailable'
+                    };
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying CLI analysis...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
     }
 
@@ -437,25 +517,33 @@ Format:
         debugChannel.appendLine(logPrompt);
         console.log(logPrompt); // Print to terminal
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text();
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
 
-            const logOut = '\n=== CORTEX-R API TEST ANALYSIS OUTPUT ===\n' + text + '\n=========================================\n';
-            debugChannel.appendLine(logOut);
-            console.log(logOut); // Print to terminal
+                const logOut = '\n=== CORTEX-R API TEST ANALYSIS OUTPUT (Attempt ' + attempt + ') ===\n' + text + '\n=========================================\n';
+                debugChannel.appendLine(logOut);
+                console.log(logOut); // Print to terminal
 
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(cleanJson);
-        } catch (error: any) {
-            console.error('[VibeShield] Cortex-R API Test Analysis Failed:', error);
-            return {
-                passed: false,
-                analysis: 'Analysis failed due to Cortex-R error: ' + error.message,
-                rootCause: 'Unknown'
-            };
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleanJson);
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R API Test Analysis Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return {
+                        passed: false,
+                        analysis: this.friendlyError(error),
+                        rootCause: 'Cortex-R analysis unavailable'
+                    };
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying API analysis...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
     }
 
@@ -505,45 +593,53 @@ Format:
         debugChannel.appendLine(logPrompt);
         console.log(logPrompt);
 
-        try {
-            const parts: any[] = [prompt];
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const parts: any[] = [prompt];
 
-            // Current screenshot
-            parts.push({
-                inlineData: {
-                    data: screenshotBase64,
-                    mimeType: "image/png"
-                }
-            });
-
-            // Diff screenshot if available
-            if (diffBase64) {
+                // Current screenshot
                 parts.push({
                     inlineData: {
-                        data: diffBase64,
+                        data: screenshotBase64,
                         mimeType: "image/png"
                     }
                 });
+
+                // Diff screenshot if available
+                if (diffBase64) {
+                    parts.push({
+                        inlineData: {
+                            data: diffBase64,
+                            mimeType: "image/png"
+                        }
+                    });
+                }
+
+                const result = await this.model.generateContent(parts);
+                const response = await result.response;
+                const text = response.text();
+
+                const logOut = '\n=== CORTEX-R UI STATE ANALYSIS OUTPUT (Attempt ' + attempt + ') ===\n' + text + '\n=========================================\n';
+                debugChannel.appendLine(logOut);
+                console.log(logOut);
+
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
+                return JSON.parse(cleanJson);
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R UI State Analysis Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return {
+                        passed: false,
+                        analysis: this.friendlyError(error),
+                        rootCause: 'Cortex-R analysis unavailable'
+                    };
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying UI analysis...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
             }
-
-            const result = await this.model.generateContent(parts);
-            const response = await result.response;
-            const text = response.text();
-
-            const logOut = '\n=== CORTEX-R UI STATE ANALYSIS OUTPUT ===\n' + text + '\n=========================================\n';
-            debugChannel.appendLine(logOut);
-            console.log(logOut);
-
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
-            return JSON.parse(cleanJson);
-        } catch (error: any) {
-            console.error('[VibeShield] Cortex-R UI State Analysis Failed:', error);
-            return {
-                passed: false,
-                analysis: 'Analysis failed due to Cortex-R error: ' + error.message,
-                rootCause: 'Unknown'
-            };
         }
     }
 
@@ -573,20 +669,28 @@ Respond ONLY with the completely updated new memory content. DO NOT include any 
         debugChannel.appendLine(logPrompt);
         console.log(logPrompt); // Print to terminal
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            const updatedMemoryText = response.text().trim();
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                const updatedMemoryText = response.text().trim();
 
-            const logOut = '\n=== CORTEX-R SMART MEMORY OUTPUT ===\n' + updatedMemoryText + '\n====================================\n';
-            debugChannel.appendLine(logOut);
-            console.log(logOut); // Print to terminal
+                const logOut = '\n=== CORTEX-R SMART MEMORY OUTPUT (Attempt ' + attempt + ') ===\n' + updatedMemoryText + '\n====================================\n';
+                debugChannel.appendLine(logOut);
+                console.log(logOut); // Print to terminal
 
-            return updatedMemoryText;
-        } catch (error) {
-            console.error('[VibeShield] Cortex-R Smart Memory Update Failed:', error);
-            return currentMemory; // Fallback to current memory if update fails
+                return updatedMemoryText;
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R Smart Memory Update Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) return currentMemory;
+
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying Smart Memory update...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
+        return currentMemory;
     }
 
     public async generateFailureFeedback(failedTestsLog: string): Promise<string> {
@@ -615,14 +719,23 @@ Keep it concise and format the output cleanly (using basic markdown for readabil
         debugChannel.appendLine(logPrompt);
         console.log(logPrompt);
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            return response.text().trim();
-        } catch (error: any) {
-            console.error('[VibeShield] Cortex-R Failure Feedback Generation Failed:', error);
-            return 'Failed to generate feedback due to an API error: ' + error.message;
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                return response.text().trim();
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R Failure Feedback Generation Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return '⚠️ ' + this.friendlyError(error);
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                console.log(`[VibeShield] Waiting ${delayMs}ms before retrying feedback generation...`);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
+        return '⚠️ Could not generate AI feedback after multiple attempts.';
     }
 
     public async generateChatResponse(analysis: LogAnalysisResult): Promise<string> {
@@ -642,16 +755,23 @@ Keep it under 3 sentences. Do not use complex markdown headers, but you can use 
 Reply directly with the message.
 `;
 
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            const text = response.text().trim();
-            return text;
-        } catch (error) {
-            console.error('[VibeShield] Failed to generate chat response:', error);
-            // Fallback to structured message if generation fails
-            return `🔴 **Error**: ${analysis.errorMessage}. **Fix**: ${analysis.fix}`;
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text().trim();
+                return text;
+            } catch (error: any) {
+                console.error(`[VibeShield] Failed to generate chat response (Attempt ${attempt}):`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return `🔴 **Error**: ${analysis.errorMessage}. **Fix**: ${analysis.fix}`;
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
+        return `🔴 **Error**: ${analysis.errorMessage}. **Fix**: ${analysis.fix}`;
     }
 
     public async respondToChat(userMessage: string, chatHistory: string, context?: any): Promise<string> {
@@ -678,14 +798,22 @@ ${userMessage}
 
 Respond naturally, concisely, and helpfully. You can use markdown for formatting.
 `;
-        try {
-            const result = await this.model.generateContent(prompt);
-            const response = await result.response;
-            return response.text().trim();
-        } catch (error) {
-            console.error('[VibeShield] Failed to respond to chat:', error);
-            return "Sorry, I had trouble processing your request.";
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                return response.text().trim();
+            } catch (error: any) {
+                console.error(`[VibeShield] Failed to respond to chat (Attempt ${attempt}):`, error);
+                if (attempt === maxRetries || error?.message?.includes('fetch failed') || error?.message?.includes('Failed to fetch')) {
+                    return `Sorry, I'm having trouble right now. ${this.friendlyError(error)}`;
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
         }
+        return "Sorry, I'm having trouble analyzing that request right now.";
     }
 
     public async checkServerReadiness(logs: string): Promise<ServerReadinessResult> {

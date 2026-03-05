@@ -1,98 +1,67 @@
-# VibeShield
+# 🛡️ VibeShield
+**The AI-Native E2E Test & Debug Agent for VS Code**
 
-VibeShield is a production-grade AI agent that integrates directly into your editor workflow. It consists of a VS Code extension for tracking and analysis, and a floating Overlay UI for real-time feedback and interaction.
+VibeShield is an autonomous, context-aware AI agent that lives directly inside your IDE. Unlike traditional testing frameworks where you write brittle scripts, VibeShield *watches* you code, understands your intent, and autonomously executes UI/API tests to ensure you haven't broken anything.
 
-## 📂 Project Structure
+## ✨ Key Features
+- **🧠 IDE Native Intelligence:** Monitors your terminal, active file edits, and git diffs to automatically build deep context about your work.
+- **👁️ Autonomous UI Testing (Playwright):** Translates high-level goals ("Test the login page") into atomic browser clicks, form fills, and navigation events using a vision-capable LLM.
+- **🖼️ Visual Regression Tracking:** Automatically captures UI state baselines and detects visual changes pixel-by-pixel across test runs. 
+- **🖥️ Floating Overlay UI:** A heads-up Electron dashboard that overlays your code, showing live execution logs, AI reasoning, and test results without cluttering your workspace.
+- **🔄 Self-Healing Test Execution:** When the UI changes, VibeShield doesn't crash. It looks at the new DOM, figures out where the element moved to, and keeps going.
+- **💾 Smart Memory:** Remembers important project architecture and context across sessions.
 
-This project is a monorepo managed with `pnpm`.
-
-- **`packages/ide-extension`**: The VS Code Extension. Handles file tracking, terminal monitoring, log capture, and communication with the overlay.
-- **`packages/overlay-ui`**: A standalone Electron + React application that provides a "Heads Up Display" for the AI agent.
-- **`packages/shared`**: Shared TypeScript types, utilities, and interfaces used by both the extension and the UI.
-- **`packages/core`** (Internal): Core logic and configuration management.
+## 📂 Architecture Overview
+VibeShield is built as a monorepo utilizing `pnpm`:
+- **`@vibeshield/ide-extension`**: The VS Code Extension. The nervous system that tracks IDE activity, spawns the local dev server, and handles context extraction.
+- **`@vibeshield/overlay-ui`**: The Electron + React application. The Heads Up Display showing live test results, agent logic, and visual diffs.
+- **`@vibeshield/browser-agent`**: The Playwright automation core. Uses Google Gemini 2.5 Pro Vision to dynamically interact with web pages.
+- **`@vibeshield/shared`**: Shared TypeScript types and IPC structures.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - **Node.js**: >= 18.0.0
 - **pnpm**: >= 8.0.0
+- **Google Gemini API Key** (Required for the `Cortex-R` reasoning engine)
 
 ### Installation
+1. Clone the repository and install dependencies:
+   ```bash
+   git clone https://github.com/your-org/vibeshield-monorepo.git
+   cd vibeshield-monorepo
+   pnpm install
+   ```
+2. Build the shared packages:
+   ```bash
+   pnpm run build
+   ```
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-org/vibeshield-monorepo.git
-    cd vibeshield-monorepo
-    ```
+### Running Locally
+You need to run the Overlay UI and the VS Code Extension simultaneously.
 
-2.  **Install dependencies:**
-    ```bash
-    pnpm install
-    ```
+1. **Start the Overlay UI**
+   ```bash
+   cd packages/overlay-ui
+   pnpm run dev
+   ```
+2. **Start the VS Code Extension**
+   Open the repository in VS Code, go to the Run and Debug panel (`Cmd+Shift+D`), and launch the **"Extension"** configuration.
 
-3.  **Build shared packages:**
-    It is recommended to build the shared packages first to ensure types are generated.
-    ```bash
-    pnpm --filter @vibeshield/shared run build
-    # Or simply build everything:
-    pnpm run build
-    ```
+3. **Configure Settings**
+   Once the Extension Development Host window opens, click the ⚙️ gear icon in the VibeShield Overlay (or go to VS Code Settings) and enter your `Gemini API Key` and the `Default Test URL` of the application you are building.
 
-## 🛠️ Development Workflow
-
-To develop VibeShield effectively, you typically need to run two processes: the Overlay UI (to see whats happening) and the VS Code Extension (to trigger events).
-
-### 1. Start the Overlay UI
-This runs the Electron application with Vite hot-module replacement.
-
-```bash
-cd packages/overlay-ui
-pnpm run dev
-```
-*   **Output:** You should see `IPC Server started on port 54321`. This means the UI is ready to receive data from VS Code.
-
-### 2. Run the VS Code Extension
-You can run the extension in debug mode to see logs and hit breakpoints.
-
-1.  Open the project in VS Code:
-    ```bash
-    code .
-    ```
-2.  Go to the **Run and Debug** view (Ctrl+Shift+D).
-3.  Select **"Run Extension"** (or similar) from the dropdown.
-4.  Press **F5**.
-
-A new **Extension Development Host** window will open. In this window, VibeShield is active.
-*   **Verify Connection:** Check the Debug Console in the primary VS Code window. You should see `[VibeShield] Connected to Overlay`.
-
-### Manual Compilation (Optional)
-If you need to verify the extension build without launching the debugger:
-
-```bash
-cd packages/ide-extension
-npm run compile
-```
-
-## ⚙️ Configuration
-
-VibeShield has customizable settings in VS Code (`Cmd+,`):
-
-*   **`vibeshield.apiKey`**: Your Google Gemini API Key for Cortex-R log analysis.
-*   **`vibeshield.enableAccessibilityScraper`**: (Experimental) Enables advanced context gathering via macOS accessibility APIs.
+## 🛠️ Usage Workflow
+VibeShield acts as a pair programmer:
+1. **Build your app:** Make code changes, run your Next.js/Vite server, and chat with the AI in the VibeShield sidebar about what you're trying to build.
+2. **Extract Intent:** Click `Extract Intent` in the Overlay. VibeShield reads your chat history and git diffs to figure out what you just did.
+3. **Generate Plan:** Click `Gen TestPlan`. VibeShield creates a robust testing strategy (API or UI) to validate your work.
+4. **Execute:** Click `Run Tests`. Watch the browser agent boot up, navigate your app, and visually verify the success of your implementation.
 
 ## 🤝 Contributing
-
-1.  **Branching:** Create a feature branch for your changes.
-2.  **Linting:** Run `pnpm run lint` to ensure code quality.
-3.  **Formatting:** Run `pnpm run format` to auto-format code with Prettier.
-
-### Important Dependencies
-*   **Electron**: Used for the Overlay UI.
-*   **esbuild**: Used to bundle the VS Code extension.
-*   **React + Vite**: Used for the Overlay frontend.
-*   **ws**: WebSocket library for IPC between Extension and Overlay.
+- Follow the overarching architecture laid out in [`ARCHITECTURE.md`](ARCHITECTURE.md).
+- Create a feature branch and submit a PR. 
+- Run tests (once added) via `pnpm test`.
 
 ## 📜 License
-
-[Add License Here]
+MIT

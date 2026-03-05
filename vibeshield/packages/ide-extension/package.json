@@ -114,6 +114,39 @@
                 "isSticky": false
             }
         ],
+        "walkthroughs": [
+            {
+                "id": "vibeshield.welcome",
+                "title": "Welcome to VibeShield",
+                "description": "Set up your AI-Native E2E Agent.",
+                "steps": [
+                    {
+                        "id": "vibeshield.setupApiKey",
+                        "title": "Configure Cortex-R API Key",
+                        "description": "VibeShield relies on Google Gemini (Cortex-R) for reasoning. [Open Settings](command:workbench.action.openSettings?%22vibeshield.apiKey%22) to add your API key.",
+                        "media": {
+                            "markdown": "media/walkthrough-apikey.md"
+                        }
+                    },
+                    {
+                        "id": "vibeshield.openChat",
+                        "title": "Open the AI Sidebar",
+                        "description": "VibeShield lives in the Activity Bar. Open it to start extracting intent and generating test plans.",
+                        "media": {
+                            "markdown": "media/walkthrough-chat.md"
+                        }
+                    },
+                    {
+                        "id": "vibeshield.setTargetUrl",
+                        "title": "Set Default Test Target",
+                        "description": "Tell VibeShield where your app runs (e.g., http://localhost:3000). [Set Default URL](command:workbench.action.openSettings?%22vibeshield.defaultTestUrl%22).",
+                        "media": {
+                            "markdown": "media/walkthrough-url.md"
+                        }
+                    }
+                ]
+            }
+        ],
         "keybindings": [
             {
                 "command": "vibeshield.shareChat",
@@ -135,7 +168,7 @@
         "pretest": "npm run compile-tests && npm run compile && npm run lint",
         "check-types": "tsc --noEmit",
         "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
+        "test": "node ./out/src/test/runTest.js"
     },
     "devDependencies": {
         "@types/glob": "^8.1.0",

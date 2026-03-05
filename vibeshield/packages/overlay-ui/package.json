@@ -10,16 +10,17 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@vibeshield/shared": "workspace:*",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "zustand": "^4.5.0",
+        "react-hot-toast": "^2.6.0",
         "ws": "^8.16.0",
-        "@vibeshield/shared": "workspace:*"
+        "zustand": "^4.5.0"
     },
     "devDependencies": {
-        "@types/ws": "^8.5.10",
         "@types/react": "^18.2.43",
         "@types/react-dom": "^18.2.17",
+        "@types/ws": "^8.5.10",
         "@typescript-eslint/eslint-plugin": "^6.14.0",
         "@typescript-eslint/parser": "^6.14.0",
         "@vitejs/plugin-react": "^4.2.1",

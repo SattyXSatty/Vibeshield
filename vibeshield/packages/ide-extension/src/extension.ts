@@ -30,6 +30,8 @@ let smartMemoryManager: SmartMemoryManager;
 let cliExecutor: CLIExecutor;
 let httpExecutor: HTTPExecutor;
 let visualRegressionTracker: VisualRegressionTracker;
+let sharedBrowserAgent: BrowserAgent | null = null;
+let cancellationRequested = false;
 let latestExtractedIntent: any = null;
 let latestTestPlan: any = null;
 
@@ -214,8 +216,191 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands.executeCommand('vibeshield.generateTestPlan');
         } else if (cmd.action === 'execute_test_plan') {
             vscode.commands.executeCommand('vibeshield.executeTestPlan');
+        } else if (cmd.action === 'execute_single_test') {
+            const data = cmd as any;
+            const targetIndex = data.targetIndex ?? data.payload?.targetIndex;
+            if (latestTestPlan && latestTestPlan.steps && typeof targetIndex === 'number' && latestTestPlan.steps[targetIndex]) {
+                // Create a temporary single-step plan and execute it
+                const originalSteps = latestTestPlan.steps;
+                const singleStep = latestTestPlan.steps[targetIndex];
+                latestTestPlan.steps = [singleStep];
+                try {
+                    await vscode.commands.executeCommand('vibeshield.executeTestPlan');
+                } finally {
+                    latestTestPlan.steps = originalSteps; // Restore full plan
+                }
+            } else {
+                connector.sendLog({
+                    id: Date.now().toString(),
+                    timestamp: new Date().toISOString(),
+                    source: 'system',
+                    level: 'error',
+                    content: `Cannot run single test: Invalid step index (${targetIndex}).`
+                });
+            }
+        } else if (cmd.action === 'update_test_plan') {
+            // Sync test plan edits from overlay UI back to backend
+            const data = cmd as any;
+            if (data.payload?.testPlan) {
+                latestTestPlan = data.payload.testPlan;
+                console.log('[VibeShield] Test plan synced from overlay UI. Steps:', latestTestPlan?.steps?.length);
+            }
+        } else if (cmd.action === 'get_settings') {
+            const config = vscode.workspace.getConfiguration('vibeshield');
+            connector.sendMessageToOverlay({
+                type: 'settings_data',
+                timestamp: new Date().toISOString(),
+                payload: {
+                    apiKey: config.get('apiKey', ''),
+                    defaultTestUrl: config.get('defaultTestUrl', ''),
+                    headless: config.get('headless', false)
+                }
+            } as any);
+        } else if (cmd.action === 'update_settings') {
+            const config = vscode.workspace.getConfiguration('vibeshield');
+            const data = cmd as any; // Bypass strict action typing for payload
+            if (data.payload && data.payload.settings) {
+                const s = data.payload.settings;
+                // Update globally so it persists across workspaces
+                await config.update('apiKey', s.apiKey, vscode.ConfigurationTarget.Global);
+                await config.update('defaultTestUrl', s.defaultTestUrl, vscode.ConfigurationTarget.Global);
+                await config.update('headless', s.headless, vscode.ConfigurationTarget.Global);
+
+                connector.sendLog({
+                    id: Date.now().toString(),
+                    timestamp: new Date().toISOString(),
+                    source: 'system',
+                    level: 'info',
+                    content: 'VibeShield Settings updated successfully via UI.'
+                });
+            }
+        } else if (cmd.action === 'execute_auto_pipeline') {
+            const data = cmd as any;
+            const config = data.payload || {};
+            executeAutoPipelineLogic(config);
+        } else if (cmd.action === 'stop_extract' || cmd.action === 'stop_generate') {
+            // Set cancellation flag so the running Cortex-R call knows to abort
+            cancellationRequested = true;
+            connector.sendLog({
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'warn',
+                content: `User cancelled ${cmd.action === 'stop_extract' ? 'intent extraction' : 'test plan generation'}.`
+            });
+        } else if (cmd.action === 'stop_execute') {
+            cancellationRequested = true;
+            // Close BrowserAgent if it's running
+            if (sharedBrowserAgent) {
+                try { await sharedBrowserAgent.close(); } catch (_) { /* ignore close errors */ }
+                sharedBrowserAgent = null;
+            }
+            connector.sendMessageToOverlay({ type: 'execution_error', timestamp: new Date().toISOString() } as any);
+            connector.sendLog({
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'warn',
+                content: 'User cancelled test execution.'
+            });
         }
     });
+
+    const executeAutoPipelineLogic = async (config: any) => {
+        cancellationRequested = false;
+        connector.sendLog({
+            id: Date.now().toString(),
+            timestamp: new Date().toISOString(),
+            source: 'system',
+            level: 'info',
+            content: '========== Starting Auto Mode Pipeline =========='
+        });
+
+        if (config.preflightCommand) {
+            connector.sendLog({
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'info',
+                content: `[Auto Mode] Running pre-flight command: ${config.preflightCommand}`
+            });
+            const folders = vscode.workspace.workspaceFolders;
+            if (folders && processManager) {
+                await new Promise<void>(async (resolve) => {
+                    const disposable = processManager.onExit((code) => {
+                        disposable.dispose();
+                        if (code !== 0 && code !== null) {
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'system',
+                                level: 'warn',
+                                content: `Pre-flight process exited with code ${code}`
+                            });
+                        }
+                        resolve();
+                    });
+                    try {
+                        await processManager.start(config.preflightCommand, folders[0].uri.fsPath);
+                    } catch (err) {
+                        disposable.dispose();
+                        resolve();
+                    }
+                });
+            }
+        }
+
+        if (cancellationRequested) return;
+
+        let intentChanged = true;
+        if (config.autoExtract) {
+            connector.sendLog({
+                id: Date.now().toString(), timestamp: new Date().toISOString(),
+                source: 'system', level: 'info', content: `[Auto Mode] Extracting Intent...`
+            });
+            const previousIntent = latestExtractedIntent ? JSON.stringify(latestExtractedIntent) : null;
+            await extractIntentLogic();
+            if (cancellationRequested) return;
+            const newIntent = latestExtractedIntent ? JSON.stringify(latestExtractedIntent) : null;
+            if (previousIntent === newIntent && latestTestPlan) {
+                intentChanged = false;
+                connector.sendLog({
+                    id: Date.now().toString(), timestamp: new Date().toISOString(),
+                    source: 'system', level: 'info', content: `[Auto Mode] Intent unchanged. Skipping generation.`
+                });
+            }
+        }
+
+        if (cancellationRequested) return;
+
+        if (config.autoGenerate && (intentChanged || !latestTestPlan)) {
+            connector.sendLog({
+                id: Date.now().toString(), timestamp: new Date().toISOString(),
+                source: 'system', level: 'info', content: `[Auto Mode] Generating Tests...`
+            });
+            await generateTestPlanLogic();
+        }
+
+        if (cancellationRequested) return;
+
+        if (config.autoRun && latestTestPlan) {
+            connector.sendLog({
+                id: Date.now().toString(), timestamp: new Date().toISOString(),
+                source: 'system', level: 'info', content: `[Auto Mode] Executing Tests...`
+            });
+            await executeTestPlanLogic();
+        }
+
+        if (!cancellationRequested) {
+            connector.sendLog({
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'info',
+                content: '========== Auto Mode Pipeline Completed =========='
+            });
+        }
+    };
 
     const extractIntentLogic = async () => {
         if (!cortexBridge.isReady()) {
@@ -227,9 +412,11 @@ export function activate(context: vscode.ExtensionContext) {
                 content: 'Failed to extract intent: No API key configured. Go to Settings > VibeShield.'
             });
             vscode.window.showErrorMessage('VibeShield: No API key configured. Setting needed for Cortex-R.');
+            connector.sendMessageToOverlay({ type: 'intent_extracted_error', timestamp: new Date().toISOString() } as any);
             return;
         }
 
+        connector.sendMessageToOverlay({ type: 'extracting_started', timestamp: new Date().toISOString() } as any);
         vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: 'Extracting Intent via Cortex-R...' },
             async () => {
@@ -276,7 +463,21 @@ export function activate(context: vscode.ExtensionContext) {
                     }
 
                     // Send to Cortex-R
-                    const intentResult = await cortexBridge.extractIntent(chatContext.chatHistory, diffSummary, currentMemory);
+                    const intentResult = await cortexBridge.extractIntent(chatContext.chatHistory, diffSummary, currentMemory, chatContext.fileContext);
+
+                    if (intentResult.developerIntent && intentResult.developerIntent.includes('Failed')) {
+                        vscode.window.showErrorMessage('Intent Extraction Failed: ' + intentResult.developerIntent);
+                        connector.sendLog({
+                            id: Date.now().toString(),
+                            timestamp: new Date().toISOString(),
+                            source: 'system',
+                            level: 'error',
+                            content: `Failed to extract intent: ${intentResult.developerIntent}`
+                        });
+                        connector.sendMessageToOverlay({ type: 'intent_extracted_error', timestamp: new Date().toISOString() } as any);
+                        return;
+                    }
+
                     latestExtractedIntent = intentResult;
 
                     // Send back to overlay
@@ -294,6 +495,7 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.window.showTextDocument(resultDoc);
                 } catch (e: any) {
                     vscode.window.showErrorMessage('Intent Extraction Failed: ' + e.message);
+                    connector.sendMessageToOverlay({ type: 'intent_extracted_error', timestamp: new Date().toISOString() } as any);
                 }
             }
         );
@@ -302,14 +504,17 @@ export function activate(context: vscode.ExtensionContext) {
     const generateTestPlanLogic = async () => {
         if (!latestExtractedIntent) {
             vscode.window.showErrorMessage('VibeShield: No intent extracted yet. Please extract intent first.');
+            connector.sendMessageToOverlay({ type: 'test_plan_generated_error', timestamp: new Date().toISOString() } as any);
             return;
         }
 
         if (!cortexBridge.isReady()) {
             vscode.window.showErrorMessage('VibeShield: No API key configured. Setting needed for Cortex-R.');
+            connector.sendMessageToOverlay({ type: 'test_plan_generated_error', timestamp: new Date().toISOString() } as any);
             return;
         }
 
+        connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
         vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: 'Generating Test Plan via Cortex-R...' },
             async () => {
@@ -327,6 +532,19 @@ export function activate(context: vscode.ExtensionContext) {
 
                     const testPlan = await cortexBridge.generateTestPlan(latestExtractedIntent, projectContext);
 
+                    if (testPlan.planName === 'Generation Failed') {
+                        vscode.window.showErrorMessage('Test Plan Generation Failed: ' + testPlan.description);
+                        connector.sendLog({
+                            id: Date.now().toString(),
+                            timestamp: new Date().toISOString(),
+                            source: 'system',
+                            level: 'error',
+                            content: `Failed to generate test plan: ${testPlan.description}`
+                        });
+                        connector.sendMessageToOverlay({ type: 'test_plan_generated_error', timestamp: new Date().toISOString() } as any);
+                        return;
+                    }
+
                     latestTestPlan = testPlan;
                     connector.sendMessageToOverlay({
                         type: 'test_plan_generated',
@@ -341,6 +559,7 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.window.showTextDocument(resultDoc);
                 } catch (e: any) {
                     vscode.window.showErrorMessage('Test Plan Generation Failed: ' + e.message);
+                    connector.sendMessageToOverlay({ type: 'test_plan_generated_error', timestamp: new Date().toISOString() } as any);
                 }
             }
         );
@@ -348,13 +567,22 @@ export function activate(context: vscode.ExtensionContext) {
 
     const executeTestPlanLogic = async () => {
         if (!latestTestPlan || !latestTestPlan.steps || latestTestPlan.steps.length === 0) {
-            vscode.window.showErrorMessage('VibeShield: No valid test plan to execute.');
+            vscode.window.showErrorMessage('VibeShield: No valid test plan to execute. Generate or add test cases first.');
+            connector.sendMessageToOverlay({ type: 'execution_error', timestamp: new Date().toISOString() } as any);
+            connector.sendLog({
+                id: Date.now().toString(),
+                timestamp: new Date().toISOString(),
+                source: 'system',
+                level: 'error',
+                content: 'Cannot execute: No test plan available. Please generate or add test cases first.'
+            });
             return;
         }
 
         const folders = vscode.workspace.workspaceFolders;
         if (!folders) {
             vscode.window.showErrorMessage('VibeShield: No workspace folder open.');
+            connector.sendMessageToOverlay({ type: 'execution_error', timestamp: new Date().toISOString() } as any);
             return;
         }
 
@@ -371,17 +599,27 @@ export function activate(context: vscode.ExtensionContext) {
 
                 const steps = latestTestPlan.steps;
                 let allPassed = true;
+                cancellationRequested = false; // Reset at start of execution
+
+                // Send execution_started so overlay shows progress
+                connector.sendMessageToOverlay({
+                    type: 'execution_started',
+                    timestamp: new Date().toISOString(),
+                    payload: { total: steps.length }
+                } as any);
 
                 // --- Aggregation State ---
                 const startTime = Date.now();
                 const stepResults: any[] = [];
                 let failedLogBuffer = '';
 
-                let sharedBrowserAgent: BrowserAgent | null = null;
                 const apiKey = vscode.workspace.getConfiguration('vibeshield').get<string>('apiKey');
 
                 if ((latestTestPlan.testType === 'ui' || latestTestPlan.testType === 'e2e') && apiKey) {
                     try {
+                        if (sharedBrowserAgent) {
+                            await sharedBrowserAgent.close();
+                        }
                         sharedBrowserAgent = new BrowserAgent({
                             apiKey,
                             headless: false,
@@ -391,12 +629,23 @@ export function activate(context: vscode.ExtensionContext) {
                     } catch (e: any) {
                         vscode.window.showErrorMessage('Failed to start BrowserAgent: ' + e.message);
                         if (sharedBrowserAgent) await sharedBrowserAgent.close();
+                        connector.sendMessageToOverlay({ type: 'execution_error', timestamp: new Date().toISOString() } as any);
                         return;
                     }
                 }
 
                 try {
                     for (let i = 0; i < steps.length; i++) {
+                        if (cancellationRequested) {
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'system',
+                                level: 'warn',
+                                content: 'Test execution cancelled by user.'
+                            });
+                            break;
+                        }
                         const step = steps[i];
                         const stepStartTime = Date.now();
 
@@ -405,8 +654,15 @@ export function activate(context: vscode.ExtensionContext) {
                             timestamp: new Date().toISOString(),
                             source: 'system',
                             level: 'info',
-                            content: `--- Step ${i + 1}: ${step.stepName} ---`
+                            content: `--- Step ${i + 1}/${steps.length}: ${step.stepName} ---`
                         });
+
+                        // Send progress to overlay
+                        connector.sendMessageToOverlay({
+                            type: 'execution_step_progress',
+                            timestamp: new Date().toISOString(),
+                            payload: { current: i + 1, total: steps.length }
+                        } as any);
 
                         let stepPassed = false;
                         let stepAnalysis = '';
@@ -722,21 +978,56 @@ export function activate(context: vscode.ExtensionContext) {
                                 });
                                 failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${analysis.rootCause || analysis.analysis}\n`;
                             }
+                        } else if (step.action && step.action.trim() !== '') {
+                            // Step has a descriptive action but no explicit apiRequest or cliCommand,
+                            // and testType is not 'ui'/'e2e'. Treat as a user-created UI step anyway.
+                            stepType = 'manual';
+                            if (apiKey && sharedBrowserAgent) {
+                                try {
+                                    const targetUrl = vscode.workspace.getConfiguration('vibeshield').get<string>('defaultTestUrl') || '';
+                                    if (i === 0 && targetUrl) {
+                                        await sharedBrowserAgent.execute(`Navigate to ${targetUrl}`, 3);
+                                    }
+                                    const success = await sharedBrowserAgent.execute(step.action, 5);
+                                    stepPassed = success;
+                                    stepAnalysis = success ? 'Browser action executed successfully.' : 'Browser action did not complete as expected.';
+                                    if (!success) {
+                                        allPassed = false;
+                                        failedLogBuffer += `\nStep: ${step.stepName}\nReason: Browser action did not complete.\n`;
+                                    }
+                                } catch (err: any) {
+                                    stepPassed = false;
+                                    stepAnalysis = 'Error during browser execution: ' + err.message;
+                                    allPassed = false;
+                                    failedLogBuffer += `\nStep: ${step.stepName}\nReason: ${err.message}\n`;
+                                }
+                            } else {
+                                // No BrowserAgent available → manual pass-through
+                                stepPassed = true;
+                                stepAnalysis = 'No BrowserAgent available. Step recorded as manual pass-through.';
+                            }
+                            connector.sendLog({
+                                id: Date.now().toString(),
+                                timestamp: new Date().toISOString(),
+                                source: 'system',
+                                level: stepPassed ? 'info' : 'error',
+                                content: stepPassed ? `✅ Step executed: ${step.action}` : `❌ Step failed: ${stepAnalysis}`
+                            });
                         } else {
                             stepType = 'manual';
-                            stepPassed = true; // Mark as passed logically so it doesn't fail the suite
-                            stepAnalysis = 'Skipped automated execution (Manual Step).';
+                            stepPassed = true;
+                            stepAnalysis = 'No action defined. Treated as manual placeholder.';
                             connector.sendLog({
                                 id: Date.now().toString(),
                                 timestamp: new Date().toISOString(),
                                 source: 'system',
                                 level: 'warn',
-                                content: `Manual Test Step: ${step.action}\n(No automated CLI/API command available. Skipping execution.)`
+                                content: `Manual Test Step: ${step.stepName}\n(No automated action available. Step passed as placeholder.)`
                             });
                         }
 
                         // Store Result
-                        stepResults.push({
+                        const stepResult = {
                             stepName: step.stepName,
                             action: step.action,
                             passed: stepPassed,
@@ -745,9 +1036,17 @@ export function activate(context: vscode.ExtensionContext) {
                             durationMs: Date.now() - stepStartTime,
                             testType: stepType,
                             visualData: visualData
-                        });
+                        };
+                        stepResults.push(stepResult);
 
-                        if (!allPassed) break; // Still stop on first failure to save tokens
+                        // Send live step result to overlay so Results tab updates in real-time
+                        connector.sendMessageToOverlay({
+                            type: 'execution_step_result',
+                            timestamp: new Date().toISOString(),
+                            payload: stepResult
+                        } as any);
+
+                        // if (!allPassed) break; // We no longer break, run the whole suite!
                     }
                 } finally {
                     if (sharedBrowserAgent) {
@@ -1004,5 +1303,9 @@ export function deactivate() {
     }
     if (agentLoop) {
         agentLoop.dispose();
+    }
+    if (sharedBrowserAgent) {
+        sharedBrowserAgent.close().catch(e => console.error('[VibeShield] Error closing browser agent on deactivate:', e));
+        sharedBrowserAgent = null;
     }
 }

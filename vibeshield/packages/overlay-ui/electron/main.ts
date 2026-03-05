@@ -77,6 +77,10 @@ const startIpcServer = () => {
         wss.on('connection', (ws) => {
             console.log('Client connected to IPC Server');
 
+            if (win && !win.isDestroyed()) {
+                win.webContents.send('ipc-message', { type: 'extension_connected', timestamp: new Date().toISOString() });
+            }
+
             ws.on('message', (message) => {
                 try {
                     const parsed = JSON.parse(message.toString());
@@ -94,7 +98,12 @@ const startIpcServer = () => {
                 }
             });
 
-            ws.on('close', () => console.log('Client disconnected'));
+            ws.on('close', () => {
+                console.log('Client disconnected');
+                if (win && !win.isDestroyed()) {
+                    win.webContents.send('ipc-message', { type: 'extension_disconnected', timestamp: new Date().toISOString() });
+                }
+            });
         });
 
         wss.on('error', (err) => {
