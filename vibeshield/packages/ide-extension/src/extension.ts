@@ -417,7 +417,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         connector.sendMessageToOverlay({ type: 'extracting_started', timestamp: new Date().toISOString() } as any);
-        vscode.window.withProgress(
+        return vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: 'Extracting Intent via Cortex-R...' },
             async () => {
                 try {
@@ -515,7 +515,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
-        vscode.window.withProgress(
+        return vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: 'Generating Test Plan via Cortex-R...' },
             async () => {
                 try {
@@ -586,7 +586,7 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        vscode.window.withProgress(
+        return vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: 'VibeShield: Executing Test Plan with Cortex-R Analysis...' },
             async () => {
                 connector.sendLog({
