@@ -118,7 +118,7 @@ export function DashboardView() {
                     className={`action-btn run-btn ${(!backendConnected || isAutoPipelineRunning) ? 'disabled' : ''}`}
                     onClick={handleAutoMode}
                     disabled={!backendConnected || isAutoPipelineRunning}
-                    style={{ backgroundColor: 'var(--color-accent-primary)', color: 'var(--color-text-bright)', border: 'none' }}
+                    style={{ backgroundColor: 'var(--color-accent-primary)', color: 'var(--color-bg-base)', border: 'none', fontWeight: 600 }}
                 >
                     <ZapIcon className="action-icon" /> Start Auto Pipeline
                 </button>
