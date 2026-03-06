@@ -34,6 +34,7 @@ let sharedBrowserAgent: BrowserAgent | null = null;
 let cancellationRequested = false;
 let latestExtractedIntent: any = null;
 let latestTestPlan: any = null;
+let lastPipelineContext: string = '';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('VibeShield Extension is now active!');
@@ -356,18 +357,37 @@ export function activate(context: vscode.ExtensionContext) {
         if (config.autoExtract) {
             connector.sendLog({
                 id: Date.now().toString(), timestamp: new Date().toISOString(),
-                source: 'system', level: 'info', content: `[Auto Mode] Extracting Intent...`
+                source: 'system', level: 'info', content: `[Auto Mode] Checking Developer Intent Context...`
             });
-            const previousIntent = latestExtractedIntent ? JSON.stringify(latestExtractedIntent) : null;
-            await extractIntentLogic();
-            if (cancellationRequested) return;
-            const newIntent = latestExtractedIntent ? JSON.stringify(latestExtractedIntent) : null;
-            if (previousIntent === newIntent && latestTestPlan) {
+
+            // Deterministic check for actual Developer Intent change
+            let currentContext = '';
+            const folders = vscode.workspace.workspaceFolders;
+            if (folders) {
+                try {
+                    currentContext += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString();
+                } catch (e) { }
+            }
+            try {
+                const chatContextPreview = await contextExtractor.getIntentContext();
+                currentContext += chatContextPreview.chatHistory;
+            } catch (e) { }
+
+            if (currentContext === lastPipelineContext && latestExtractedIntent && latestTestPlan) {
                 intentChanged = false;
-                connector.sendLog({
-                    id: Date.now().toString(), timestamp: new Date().toISOString(),
-                    source: 'system', level: 'info', content: `[Auto Mode] Intent unchanged. Skipping generation.`
-                });
+                connector.sendMessageToOverlay({ type: 'extracting_started', timestamp: new Date().toISOString() } as any);
+                // Skip extraction by sending cached result
+                setTimeout(() => {
+                    connector.sendMessageToOverlay({ type: 'intent_extracted', timestamp: new Date().toISOString(), payload: latestExtractedIntent } as any);
+                    connector.sendLog({
+                        id: Date.now().toString(), timestamp: new Date().toISOString(),
+                        source: 'system', level: 'info', content: `[Auto Mode] Developer intent is identical. Resuming with previous extraction.`
+                    });
+                }, 500);
+            } else {
+                await extractIntentLogic();
+                if (cancellationRequested) return;
+                lastPipelineContext = currentContext;
             }
         }
 
@@ -379,6 +399,14 @@ export function activate(context: vscode.ExtensionContext) {
                 source: 'system', level: 'info', content: `[Auto Mode] Generating Tests...`
             });
             await generateTestPlanLogic();
+        } else if (config.autoGenerate && !intentChanged && latestTestPlan) {
+            connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            connector.sendMessageToOverlay({ type: 'test_plan_generated', timestamp: new Date().toISOString(), payload: latestTestPlan } as any);
+            connector.sendLog({
+                id: Date.now().toString(), timestamp: new Date().toISOString(),
+                source: 'system', level: 'info', content: `[Auto Mode] Developer intent is identical. Re-using previous test plan.`
+            });
         }
 
         if (cancellationRequested) return;

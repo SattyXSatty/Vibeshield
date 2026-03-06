@@ -102,13 +102,20 @@ export function DashboardView() {
         return 'Run';
     };
 
+    const displayPhase = (() => {
+        if (isExtracting) return 'EXTRACTING';
+        if (isGenerating) return 'GENERATING';
+        if (isExecuting) return 'EXECUTING';
+        return phase ? phase.toUpperCase() : 'IDLE';
+    })();
+
     return (
         <div className="dashboard-container">
             {/* Status Section */}
             <div className="status-panel">
                 <span className="section-label">Status</span>
-                <span className={`status-badge phase-${phase}`}>
-                    {phase.charAt(0).toUpperCase() + phase.slice(1)}
+                <span className={`status-badge phase-${displayPhase.toLowerCase()}`}>
+                    {displayPhase}
                 </span>
             </div>
 

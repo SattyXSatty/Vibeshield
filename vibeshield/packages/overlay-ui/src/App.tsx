@@ -162,31 +162,38 @@ function App() {
                 } else if (msg.type === 'extracting_started') {
                     setExtracting(true);
                 } else if (msg.type === 'generating_started') {
-                    setGenerating(true);
+                    useAgentStore.getState().setGenerating(true);
+                    useAgentStore.getState().setPhase('planning');
                 } else if (msg.type === 'intent_extracted') {
-                    setExtracting(false);
+                    useAgentStore.getState().setExtracting(false);
+                    useAgentStore.getState().setPhase('idle');
                     const intent = msg.payload as any;
                     const content = `Intent Extracted:\n• Intent: ${intent.developerIntent}\n• Strategy: ${intent.testingType}\n• Scenarios: ${intent.scenariosToTest?.join(', ')}`;
                     addLog({ id: Math.random().toString(36).substr(2, 9), timestamp: new Date().toISOString(), source: 'cortex', level: intent.isUnclear ? 'warn' : 'info', content: content });
                 } else if (msg.type === 'intent_extracted_error') {
-                    setExtracting(false);
+                    useAgentStore.getState().setExtracting(false);
+                    useAgentStore.getState().setPhase('idle');
                 } else if (msg.type === 'test_plan_generated') {
-                    setGenerating(false);
+                    useAgentStore.getState().setGenerating(false);
+                    useAgentStore.getState().setTestPlan(msg.payload);
+                    useAgentStore.getState().setPhase('idle');
                     const plan = msg.payload as any;
-                    setTestPlan(plan);
                     const content = `Test Plan Generated:\n• Target: ${plan.testType}\n• Steps: ${plan.steps?.length || 0}`;
                     addLog({ id: Math.random().toString(36).substr(2, 9), timestamp: new Date().toISOString(), source: 'cortex', level: 'info', content: content });
                 } else if (msg.type === 'test_plan_generated_error') {
-                    setGenerating(false);
+                    useAgentStore.getState().setGenerating(false);
+                    useAgentStore.getState().setPhase('idle');
                 } else if (msg.type === 'settings_data') {
                     setSettings(msg.payload);
                 } else if (msg.type === 'test_execution_report') {
                     setReport(msg.payload);
-                    setExecuting(false);
+                    useAgentStore.getState().setExecuting(false);
+                    useAgentStore.getState().setPhase('idle');
                     setExecutionProgress(null);
                     setShowReportOverlay(true);
                 } else if (msg.type === 'execution_started') {
-                    setExecuting(true);
+                    useAgentStore.getState().setExecuting(true);
+                    useAgentStore.getState().setPhase('executing');
                     setExecutionProgress({ current: 0, total: msg.payload?.total || 0 });
                     // Initialize a live report and auto-switch to Results tab
                     const plan = useAgentStore.getState().testPlan;

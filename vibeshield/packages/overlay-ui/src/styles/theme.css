@@ -13,17 +13,17 @@
   --font-size-xl: 20px;
 
   /* Colors: Minimal Dark Theme (Zinc/Neutral inspired) */
-  --color-bg-base: #09090b;
-  /* Very dark background for main container */
-  --color-bg-elevated: #111111;
+  --color-bg-base: rgba(9, 9, 11, 0.75);
+  /* Very dark but transparent background for main container */
+  --color-bg-elevated: rgba(17, 17, 17, 0.85);
   /* Sub-panel backgrounds */
-  --color-bg-glass: rgba(17, 17, 17, 0.95);
-  --color-bg-hover: #27272a;
+  --color-bg-glass: rgba(17, 17, 17, 0.65);
+  --color-bg-hover: rgba(39, 39, 42, 0.8);
   /* Zinc 800 */
-  --color-bg-active: #3f3f46;
+  --color-bg-active: rgba(63, 63, 70, 0.9);
   /* Zinc 700 */
 
-  --color-border: #27272a;
+  --color-border: rgba(39, 39, 42, 0.8);
   /* Muted borders between sections */
   --color-border-hover: #3f3f46;
 
