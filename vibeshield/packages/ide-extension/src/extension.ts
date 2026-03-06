@@ -366,12 +366,12 @@ export function activate(context: vscode.ExtensionContext) {
             if (folders) {
                 try {
                     currentContext += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString();
-                } catch (e) { }
+                } catch (e) { /* ignore exec errors */ }
             }
             try {
                 const chatContextPreview = await contextExtractor.getIntentContext();
                 currentContext += chatContextPreview.chatHistory;
-            } catch (e) { }
+            } catch (e) { /* ignore generic extraction errors */ }
 
             if (currentContext === lastPipelineContext && latestExtractedIntent && latestTestPlan) {
                 intentChanged = false;
