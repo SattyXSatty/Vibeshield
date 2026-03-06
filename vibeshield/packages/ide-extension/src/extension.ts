@@ -327,8 +327,10 @@ export function activate(context: vscode.ExtensionContext) {
             });
             const folders = vscode.workspace.workspaceFolders;
             if (folders && processManager) {
-                await new Promise<void>(async (resolve) => {
-                    const disposable = processManager.onExit((code) => {
+                await new Promise<void>((resolve) => {
+                    // processManager is definitely defined because of the if condition above
+                    const pm = processManager!;
+                    const disposable = pm.onExit((code) => {
                         disposable.dispose();
                         if (code !== 0 && code !== null) {
                             connector.sendLog({
@@ -341,12 +343,11 @@ export function activate(context: vscode.ExtensionContext) {
                         }
                         resolve();
                     });
-                    try {
-                        await processManager.start(config.preflightCommand, folders[0].uri.fsPath);
-                    } catch (err) {
+
+                    pm.start(config.preflightCommand, folders[0].uri.fsPath).catch((_err) => {
                         disposable.dispose();
                         resolve();
-                    }
+                    });
                 });
             }
         }
