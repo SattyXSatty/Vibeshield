@@ -161,7 +161,10 @@ function App() {
                     msg.payload.forEach((log: LogEntry) => addLog(log));
                 } else if (msg.type === 'extracting_started') {
                     setExtracting(true);
+                } else if (msg.type === 'analyzing_intent_started') {
+                    useAgentStore.getState().setAnalyzingIntent(true);
                 } else if (msg.type === 'generating_started') {
+                    useAgentStore.getState().setAnalyzingIntent(false);
                     useAgentStore.getState().setGenerating(true);
                     useAgentStore.getState().setPhase('planning');
                 } else if (msg.type === 'intent_extracted') {
@@ -174,6 +177,7 @@ function App() {
                     useAgentStore.getState().setExtracting(false);
                     useAgentStore.getState().setPhase('idle');
                 } else if (msg.type === 'test_plan_generated') {
+                    useAgentStore.getState().setAnalyzingIntent(false);
                     useAgentStore.getState().setGenerating(false);
                     useAgentStore.getState().setTestPlan(msg.payload);
                     useAgentStore.getState().setPhase('idle');
@@ -181,6 +185,7 @@ function App() {
                     const content = `Test Plan Generated:\n• Target: ${plan.testType}\n• Steps: ${plan.steps?.length || 0}`;
                     addLog({ id: Math.random().toString(36).substr(2, 9), timestamp: new Date().toISOString(), source: 'cortex', level: 'info', content: content });
                 } else if (msg.type === 'test_plan_generated_error') {
+                    useAgentStore.getState().setAnalyzingIntent(false);
                     useAgentStore.getState().setGenerating(false);
                     useAgentStore.getState().setPhase('idle');
                 } else if (msg.type === 'settings_data') {

@@ -5,7 +5,7 @@ import { RefreshCwIcon, ZapIcon, PlayIcon, StopIcon } from '../Icons/Icons';
 import './DashboardView.css';
 
 export function DashboardView() {
-    const { phase, logs, testPlan, isExtracting, isGenerating, isExecuting, executionProgress, setExtracting, setGenerating, setExecuting, setExecutionProgress, backendConnected, autoModeConfig } = useAgentStore();
+    const { phase, logs, testPlan, isExtracting, isGenerating, isAnalyzingIntent, isExecuting, executionProgress, setExtracting, setGenerating, setExecuting, setExecutionProgress, backendConnected, autoModeConfig } = useAgentStore();
     const activityRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll activity feed to bottom
@@ -149,6 +149,10 @@ export function DashboardView() {
                 {isGenerating ? (
                     <button className="action-btn stop-btn" onClick={() => handleStop('generate')}>
                         <StopIcon className="action-icon" /> Stop
+                    </button>
+                ) : isAnalyzingIntent ? (
+                    <button className="action-btn generate-btn loading" disabled>
+                        <ZapIcon className="action-icon" /> Analyzing Intent...
                     </button>
                 ) : (
                     <button

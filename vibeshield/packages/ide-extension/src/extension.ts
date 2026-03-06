@@ -382,18 +382,22 @@ export function activate(context: vscode.ExtensionContext) {
                 source: 'system', level: 'info', content: `[Auto Mode] Checking Developer Intent Context...`
             });
 
-            // Deterministic check for actual Developer Intent change
-            let currentContext = '';
-            const folders = vscode.workspace.workspaceFolders;
-            if (folders) {
+            const getCurrentContextString = async () => {
+                let ctx = '';
+                const folders = vscode.workspace.workspaceFolders;
+                if (folders) {
+                    try {
+                        ctx += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString();
+                    } catch (e) { /* ignore exec errors */ }
+                }
                 try {
-                    currentContext += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString();
-                } catch (e) { /* ignore exec errors */ }
-            }
-            try {
-                const chatContextPreview = await contextExtractor.getIntentContext();
-                currentContext += chatContextPreview.chatHistory;
-            } catch (e) { /* ignore generic extraction errors */ }
+                    const chatContextPreview = await contextExtractor.getIntentContext();
+                    ctx += chatContextPreview.chatHistory;
+                } catch (e) { /* ignore generic extraction errors */ }
+                return ctx;
+            };
+
+            const currentContext = await getCurrentContextString();
 
             if (currentContext === lastPipelineContext && latestExtractedIntent && latestTestPlan) {
                 intentChanged = false;
@@ -406,10 +410,10 @@ export function activate(context: vscode.ExtensionContext) {
                         source: 'system', level: 'info', content: `[Auto Mode] Developer intent is identical. Resuming with previous extraction.`
                     });
                 }, 500);
-            } else {
                 await extractIntentLogic();
                 if (cancellationRequested) return;
                 lastPipelineContext = currentContext;
+                globalContext?.workspaceState.update('vibeshield.lastPipelineContext', lastPipelineContext);
             }
         }
 
@@ -531,6 +535,22 @@ export function activate(context: vscode.ExtensionContext) {
                     latestExtractedIntent = intentResult;
                     globalContext?.workspaceState.update('vibeshield.latestExtractedIntent', intentResult);
 
+                    // Re-calculate the current context string after manual extraction and cache it
+                    const getCurrentContextString = async () => {
+                        let ctx = '';
+                        const folders = vscode.workspace.workspaceFolders;
+                        if (folders) {
+                            try { ctx += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString(); } catch (e) { }
+                        }
+                        try {
+                            const chatContextPreview = await contextExtractor.getIntentContext();
+                            ctx += chatContextPreview.chatHistory;
+                        } catch (e) { }
+                        return ctx;
+                    };
+                    lastPipelineContext = await getCurrentContextString();
+                    globalContext?.workspaceState.update('vibeshield.lastPipelineContext', lastPipelineContext);
+
                     // Send back to overlay
                     connector.sendMessageToOverlay({
                         type: 'intent_extracted',
@@ -579,6 +599,7 @@ export function activate(context: vscode.ExtensionContext) {
                     id: Date.now().toString(), timestamp: new Date().toISOString(),
                     source: 'system', level: 'info', content: `[VibeShield] Analyzing if intent changed using Cortex AI...`
                 });
+                connector.sendMessageToOverlay({ type: 'analyzing_intent_started', timestamp: new Date().toISOString() } as any);
 
                 const intentChanged = await cortexBridge.hasIntentChanged(oldIntentObj, latestExtractedIntent);
 

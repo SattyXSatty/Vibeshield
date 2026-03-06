@@ -21,6 +21,7 @@ interface AgentStore {
 
     isExtracting: boolean;
     isGenerating: boolean;
+    isAnalyzingIntent: boolean;
     isExecuting: boolean;
     executionProgress: { current: number; total: number } | null;
     backendConnected: boolean;
@@ -41,6 +42,7 @@ interface AgentStore {
     setSettings: (settings: Record<string, any>) => void;
     setExtracting: (val: boolean) => void;
     setGenerating: (val: boolean) => void;
+    setAnalyzingIntent: (val: boolean) => void;
     setExecuting: (val: boolean) => void;
     setExecutionProgress: (progress: { current: number; total: number } | null) => void;
     setBackendConnected: (val: boolean) => void;
@@ -82,6 +84,7 @@ export const useAgentStore = create<AgentStore>()(
                 settings: null,
                 isExtracting: false,
                 isGenerating: false,
+                isAnalyzingIntent: false,
                 isExecuting: false,
                 executionProgress: null,
                 backendConnected: false,
@@ -103,7 +106,7 @@ export const useAgentStore = create<AgentStore>()(
                     return { logs: newLogs };
                 }),
 
-                clearLogs: () => set({ logs: [], currentReport: null, lastReport: null, testPlan: null, isExtracting: false, isGenerating: false, isExecuting: false, executionProgress: null }),
+                clearLogs: () => set({ logs: [], currentReport: null, lastReport: null, testPlan: null, isExtracting: false, isGenerating: false, isAnalyzingIntent: false, isExecuting: false, executionProgress: null }),
 
                 setReport: (report) => set((state) => ({
                     currentReport: report,
@@ -116,6 +119,7 @@ export const useAgentStore = create<AgentStore>()(
 
                 setExtracting: (val) => set({ isExtracting: val }),
                 setGenerating: (val) => set({ isGenerating: val }),
+                setAnalyzingIntent: (val) => set({ isAnalyzingIntent: val }),
                 setExecuting: (val) => set({ isExecuting: val }),
                 setExecutionProgress: (progress) => set({ executionProgress: progress }),
                 setBackendConnected: (val) => set({ backendConnected: val }),
@@ -189,7 +193,7 @@ export const useAgentStore = create<AgentStore>()(
                     return { testPlan: newPlan };
                 }),
 
-                reset: () => set({ phase: 'idle', logs: [], currentReport: null, lastReport: null, testPlan: null, isExtracting: false, isGenerating: false, isExecuting: false, executionProgress: null }),
+                reset: () => set({ phase: 'idle', logs: [], currentReport: null, lastReport: null, testPlan: null, isExtracting: false, isGenerating: false, isAnalyzingIntent: false, isExecuting: false, executionProgress: null }),
             });
         },
         {
