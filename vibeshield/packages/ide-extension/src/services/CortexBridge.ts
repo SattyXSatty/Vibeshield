@@ -239,6 +239,63 @@ Format:
         }
     }
 
+    public async hasIntentChanged(oldIntent: any, newIntent: any): Promise<boolean> {
+        if (!this.model) {
+            this.updateConfig();
+        }
+
+        if (!this.model) {
+            return true; // Safe fallback: generate new tests if we can't check
+        }
+
+        // Fast path: Exact string match
+        if (JSON.stringify(oldIntent) === JSON.stringify(newIntent)) {
+            return false;
+        }
+
+        const prompt = `
+You are an expert QA Automation Engineer evaluating developer intents to decide if tests need to be regenerated.
+Compare the PREVIOUS intent with the NEW intent.
+Determine if there is any meaningful change in the testing goals, scenarios, edge cases, or features to test.
+If the wording is slightly different but the literal testing goals and steps are functionally identical, respond FALSE (intent has not changed).
+If the new intent asks to test something new, changes existing requirements, or has different scenarios, respond TRUE (intent has changed).
+
+PREVIOUS INTENT:
+${JSON.stringify(oldIntent, null, 2)}
+
+NEW INTENT:
+${JSON.stringify(newIntent, null, 2)}
+
+Respond with STRICTLY valid JSON:
+{
+  "changed": boolean,
+  "reason": "string"
+}
+`;
+
+        const maxRetries = 3;
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                const result = await this.model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
+
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
+                const parsed = JSON.parse(cleanJson);
+                return !!parsed.changed;
+            } catch (error: any) {
+                console.error(`[VibeShield] Cortex-R Intent Change Check Attempt ${attempt} Failed:`, error);
+                if (attempt === maxRetries) {
+                    return true; // Fallback to regenerating tests on total failure
+                }
+                const delayMs = this.retryDelay(attempt, error);
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
+        }
+        return true;
+    }
+
     public async generateTestPlan(intent: any, projectContext: string): Promise<any> {
         if (!this.model) {
             this.updateConfig();

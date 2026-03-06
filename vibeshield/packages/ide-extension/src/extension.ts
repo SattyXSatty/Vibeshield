@@ -566,18 +566,34 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const currentIntentStr = JSON.stringify(latestExtractedIntent);
-        const lastGeneratedIntentStr = globalContext?.workspaceState.get('vibeshield.lastGeneratedIntentString');
+        const lastGeneratedIntentStr = globalContext?.workspaceState.get('vibeshield.lastGeneratedIntentString') as string | undefined;
 
-        if (currentIntentStr === lastGeneratedIntentStr && latestTestPlan) {
-            vscode.window.showInformationMessage('VibeShield: Intent identical to previous extraction. Reusing existing test plan.');
-            connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            connector.sendMessageToOverlay({
-                type: 'test_plan_generated',
-                timestamp: new Date().toISOString(),
-                payload: latestTestPlan
-            } as any);
-            return;
+        if (lastGeneratedIntentStr && latestTestPlan) {
+            let oldIntentObj = null;
+            try {
+                oldIntentObj = JSON.parse(lastGeneratedIntentStr);
+            } catch (e) { }
+
+            if (oldIntentObj) {
+                connector.sendLog({
+                    id: Date.now().toString(), timestamp: new Date().toISOString(),
+                    source: 'system', level: 'info', content: `[VibeShield] Analyzing if intent changed using Cortex AI...`
+                });
+
+                const intentChanged = await cortexBridge.hasIntentChanged(oldIntentObj, latestExtractedIntent);
+
+                if (!intentChanged) {
+                    vscode.window.showInformationMessage('VibeShield: Intent identical to previous extraction. Reusing existing test plan.');
+                    connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    connector.sendMessageToOverlay({
+                        type: 'test_plan_generated',
+                        timestamp: new Date().toISOString(),
+                        payload: latestTestPlan
+                    } as any);
+                    return;
+                }
+            }
         }
 
         connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
