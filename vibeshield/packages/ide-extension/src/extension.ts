@@ -540,12 +540,12 @@ export function activate(context: vscode.ExtensionContext) {
                         let ctx = '';
                         const folders = vscode.workspace.workspaceFolders;
                         if (folders) {
-                            try { ctx += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString(); } catch (e) { }
+                            try { ctx += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString(); } catch (e) { /* silent err */ }
                         }
                         try {
                             const chatContextPreview = await contextExtractor.getIntentContext();
                             ctx += chatContextPreview.chatHistory;
-                        } catch (e) { }
+                        } catch (e) { /* silent err */ }
                         return ctx;
                     };
                     lastPipelineContext = await getCurrentContextString();
