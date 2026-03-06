@@ -216,10 +216,23 @@ export function activate(context: vscode.ExtensionContext) {
         } else if (cmd.action === 'generate_test_plan') {
             vscode.commands.executeCommand('vibeshield.generateTestPlan');
         } else if (cmd.action === 'execute_test_plan') {
+            const data = cmd as any;
+            const updatedPlan = data.testPlan || data.payload?.testPlan;
+            if (updatedPlan) {
+                latestTestPlan = updatedPlan;
+                console.log('[VibeShield] Test plan synchronized from UI before execution.');
+            }
             vscode.commands.executeCommand('vibeshield.executeTestPlan');
         } else if (cmd.action === 'execute_single_test') {
             const data = cmd as any;
-            const targetIndex = data.targetIndex ?? data.payload?.targetIndex;
+            const payload = data.payload || data;
+            const targetIndex = payload.targetIndex;
+            const updatedPlan = payload.testPlan;
+            if (updatedPlan) {
+                latestTestPlan = updatedPlan;
+                console.log('[VibeShield] Test plan synchronized from UI before single test execution.');
+            }
+
             if (latestTestPlan && latestTestPlan.steps && typeof targetIndex === 'number' && latestTestPlan.steps[targetIndex]) {
                 // Create a temporary single-step plan and execute it
                 const originalSteps = latestTestPlan.steps;

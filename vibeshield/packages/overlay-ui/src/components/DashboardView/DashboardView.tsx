@@ -68,7 +68,7 @@ export function DashboardView() {
             return; // Button should be disabled, but guard anyway
         }
         if ((window as any).electronAPI) {
-            (window as any).electronAPI.sendMessage({ type: 'command', timestamp: new Date().toISOString(), payload: { action: 'execute_test_plan' } } as any);
+            (window as any).electronAPI.sendMessage({ type: 'command', timestamp: new Date().toISOString(), payload: { action: 'execute_test_plan', testPlan } } as any);
         }
     };
 
@@ -98,8 +98,8 @@ export function DashboardView() {
         if (isExecuting && executionProgress) {
             return `Running ${executionProgress.current}/${executionProgress.total}`;
         }
-        if (isExecuting) return 'Running...';
-        return 'Run';
+        if (isExecuting) return 'Running Tests...';
+        return 'Run Tests';
     };
 
     const displayPhase = (() => {
@@ -143,7 +143,7 @@ export function DashboardView() {
                         onClick={handleExtract}
                         disabled={!backendConnected}
                     >
-                        <RefreshCwIcon className="action-icon" /> Extract
+                        <RefreshCwIcon className="action-icon" /> Extract Intent
                     </button>
                 )}
                 {isGenerating ? (
@@ -156,7 +156,7 @@ export function DashboardView() {
                         onClick={handleGenerate}
                         disabled={!backendConnected}
                     >
-                        <ZapIcon className="action-icon" /> Generate
+                        <ZapIcon className="action-icon" /> Generate Tests
                     </button>
                 )}
                 {isExecuting ? (

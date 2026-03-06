@@ -20,21 +20,21 @@ export function TestCasesView() {
     const dynamicSteps = testPlan?.steps || [];
     const hasTests = dynamicSteps.length > 0;
 
-    
+
     const handleRunSingle = (index: number) => {
         if (!hasTests || isExecuting) return;
         if ((window as any).electronAPI) {
             (window as any).electronAPI.sendMessage({
                 type: 'command',
                 timestamp: new Date().toISOString(),
-                payload: { action: 'execute_single_test', targetIndex: index }
+                payload: { action: 'execute_single_test', targetIndex: index, testPlan }
             } as any);
         }
     };
 
     const handleRunAll = () => {
         if ((window as any).electronAPI) {
-            (window as any).electronAPI.sendMessage({ type: 'command', timestamp: new Date().toISOString(), payload: { action: 'execute_test_plan' } } as any);
+            (window as any).electronAPI.sendMessage({ type: 'command', timestamp: new Date().toISOString(), payload: { action: 'execute_test_plan', testPlan } } as any);
         }
     };
 
