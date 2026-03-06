@@ -35,8 +35,13 @@ let cancellationRequested = false;
 let latestExtractedIntent: any = null;
 let latestTestPlan: any = null;
 let lastPipelineContext: string = '';
+let globalContext: vscode.ExtensionContext | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
+    globalContext = context;
+    latestExtractedIntent = context.workspaceState.get('vibeshield.latestExtractedIntent', null);
+    latestTestPlan = context.workspaceState.get('vibeshield.latestTestPlan', null);
+
     console.log('VibeShield Extension is now active!');
 
     const folders = vscode.workspace.workspaceFolders;
@@ -220,6 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
             const updatedPlan = data.testPlan || data.payload?.testPlan;
             if (updatedPlan) {
                 latestTestPlan = updatedPlan;
+                globalContext?.workspaceState.update('vibeshield.latestTestPlan', latestTestPlan);
                 console.log('[VibeShield] Test plan synchronized from UI before execution.');
             }
             vscode.commands.executeCommand('vibeshield.executeTestPlan');
@@ -230,6 +236,7 @@ export function activate(context: vscode.ExtensionContext) {
             const updatedPlan = payload.testPlan;
             if (updatedPlan) {
                 latestTestPlan = updatedPlan;
+                globalContext?.workspaceState.update('vibeshield.latestTestPlan', latestTestPlan);
                 console.log('[VibeShield] Test plan synchronized from UI before single test execution.');
             }
 
@@ -257,6 +264,7 @@ export function activate(context: vscode.ExtensionContext) {
             const data = cmd as any;
             if (data.payload?.testPlan) {
                 latestTestPlan = data.payload.testPlan;
+                globalContext?.workspaceState.update('vibeshield.latestTestPlan', latestTestPlan);
                 console.log('[VibeShield] Test plan synced from overlay UI. Steps:', latestTestPlan?.steps?.length);
             }
         } else if (cmd.action === 'get_settings') {
@@ -521,6 +529,7 @@ export function activate(context: vscode.ExtensionContext) {
                     }
 
                     latestExtractedIntent = intentResult;
+                    globalContext?.workspaceState.update('vibeshield.latestExtractedIntent', intentResult);
 
                     // Send back to overlay
                     connector.sendMessageToOverlay({
@@ -556,6 +565,21 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
+        const currentIntentStr = JSON.stringify(latestExtractedIntent);
+        const lastGeneratedIntentStr = globalContext?.workspaceState.get('vibeshield.lastGeneratedIntentString');
+
+        if (currentIntentStr === lastGeneratedIntentStr && latestTestPlan) {
+            vscode.window.showInformationMessage('VibeShield: Intent identical to previous extraction. Reusing existing test plan.');
+            connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
+            await new Promise(resolve => setTimeout(resolve, 500));
+            connector.sendMessageToOverlay({
+                type: 'test_plan_generated',
+                timestamp: new Date().toISOString(),
+                payload: latestTestPlan
+            } as any);
+            return;
+        }
+
         connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
         return vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: 'Generating Test Plan via Cortex-R...' },
@@ -588,6 +612,9 @@ export function activate(context: vscode.ExtensionContext) {
                     }
 
                     latestTestPlan = testPlan;
+                    globalContext?.workspaceState.update('vibeshield.latestTestPlan', testPlan);
+                    globalContext?.workspaceState.update('vibeshield.lastGeneratedIntentString', currentIntentStr);
+
                     connector.sendMessageToOverlay({
                         type: 'test_plan_generated',
                         timestamp: new Date().toISOString(),
