@@ -375,74 +375,45 @@ export function activate(context: vscode.ExtensionContext) {
 
         if (cancellationRequested) return;
 
-        let intentChanged = true;
+        // Step 1: Mandatory Intent Extraction
         if (config.autoExtract) {
             connector.sendLog({
                 id: Date.now().toString(), timestamp: new Date().toISOString(),
-                source: 'system', level: 'info', content: `[Auto Mode] Checking Developer Intent Context...`
+                source: 'system', level: 'info', content: `[Auto Mode] Phase 1/3: Extracting Developer Intent...`
             });
-
-            const getCurrentContextString = async () => {
-                let ctx = '';
-                const folders = vscode.workspace.workspaceFolders;
-                if (folders) {
-                    try {
-                        ctx += cp.execSync('git diff HEAD', { cwd: folders[0].uri.fsPath, encoding: 'utf8' }).toString();
-                    } catch (e) { /* ignore exec errors */ }
-                }
-                try {
-                    const chatContextPreview = await contextExtractor.getIntentContext();
-                    ctx += chatContextPreview.chatHistory;
-                } catch (e) { /* ignore generic extraction errors */ }
-                return ctx;
-            };
-
-            const currentContext = await getCurrentContextString();
-
-            if (currentContext === lastPipelineContext && latestExtractedIntent && latestTestPlan) {
-                intentChanged = false;
-                connector.sendMessageToOverlay({ type: 'extracting_started', timestamp: new Date().toISOString() } as any);
-                // Skip extraction by sending cached result
-                setTimeout(() => {
-                    connector.sendMessageToOverlay({ type: 'intent_extracted', timestamp: new Date().toISOString(), payload: latestExtractedIntent } as any);
-                    connector.sendLog({
-                        id: Date.now().toString(), timestamp: new Date().toISOString(),
-                        source: 'system', level: 'info', content: `[Auto Mode] Developer intent is identical. Resuming with previous extraction.`
-                    });
-                }, 500);
-                await extractIntentLogic();
-                if (cancellationRequested) return;
-                lastPipelineContext = currentContext;
-                globalContext?.workspaceState.update('vibeshield.lastPipelineContext', lastPipelineContext);
-            }
+            await extractIntentLogic();
+            if (cancellationRequested) return;
         }
 
-        if (cancellationRequested) return;
-
-        if (config.autoGenerate && (intentChanged || !latestTestPlan)) {
+        // Step 2: Test Plan Generation (generateTestPlanLogic handles semantic skipping internally)
+        if (config.autoGenerate && latestExtractedIntent) {
             connector.sendLog({
                 id: Date.now().toString(), timestamp: new Date().toISOString(),
-                source: 'system', level: 'info', content: `[Auto Mode] Generating Tests...`
+                source: 'system', level: 'info', content: `[Auto Mode] Phase 2/3: Coordinating Test Plan...`
             });
             await generateTestPlanLogic();
-        } else if (config.autoGenerate && !intentChanged && latestTestPlan) {
-            connector.sendMessageToOverlay({ type: 'generating_started', timestamp: new Date().toISOString() } as any);
-            await new Promise(resolve => setTimeout(resolve, 500));
-            connector.sendMessageToOverlay({ type: 'test_plan_generated', timestamp: new Date().toISOString(), payload: latestTestPlan } as any);
+            if (cancellationRequested) return;
+        } else if (config.autoGenerate && !latestExtractedIntent) {
             connector.sendLog({
                 id: Date.now().toString(), timestamp: new Date().toISOString(),
-                source: 'system', level: 'info', content: `[Auto Mode] Developer intent is identical. Re-using previous test plan.`
+                source: 'system', level: 'warn', content: `[Auto Mode] Skipping generation: No extracted intent available.`
             });
         }
 
-        if (cancellationRequested) return;
-
-        if (config.autoRun && latestTestPlan) {
-            connector.sendLog({
-                id: Date.now().toString(), timestamp: new Date().toISOString(),
-                source: 'system', level: 'info', content: `[Auto Mode] Executing Tests...`
-            });
-            await executeTestPlanLogic();
+        // Step 3: Mandatory Test Execution
+        if (config.autoRun) {
+            if (latestTestPlan) {
+                connector.sendLog({
+                    id: Date.now().toString(), timestamp: new Date().toISOString(),
+                    source: 'system', level: 'info', content: `[Auto Mode] Phase 3/3: Executing Test Suite...`
+                });
+                await executeTestPlanLogic();
+            } else {
+                connector.sendLog({
+                    id: Date.now().toString(), timestamp: new Date().toISOString(),
+                    source: 'system', level: 'warn', content: `[Auto Mode] Cannot run tests: No test plan available.`
+                });
+            }
         }
 
         if (!cancellationRequested) {
