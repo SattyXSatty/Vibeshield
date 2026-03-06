@@ -281,7 +281,7 @@ Respond with STRICTLY valid JSON:
                 const text = response.text();
 
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
-                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/\`\`\`json/g, '').replace(/\`\`\`/g, '').trim();
+                const cleanJson = jsonMatch ? jsonMatch[0] : text.replace(/```json/g, '').replace(/```/g, '').trim();
                 const parsed = JSON.parse(cleanJson);
                 return !!parsed.changed;
             } catch (error: any) {

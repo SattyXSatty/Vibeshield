@@ -572,7 +572,7 @@ export function activate(context: vscode.ExtensionContext) {
             let oldIntentObj = null;
             try {
                 oldIntentObj = JSON.parse(lastGeneratedIntentStr);
-            } catch (e) { }
+            } catch (e) { /* silent fail on parse error */ }
 
             if (oldIntentObj) {
                 connector.sendLog({
